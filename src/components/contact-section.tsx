@@ -1,0 +1,32 @@
+import { ArrowUpRight, Github, Mail } from "lucide-react";
+
+type ContactSectionProps = {
+  identity: { fullName: string; email: string; location: string };
+  contact: { eyebrow: string; title: string; body: string };
+  github: string;
+};
+
+export function ContactSection({ identity, contact, github }: ContactSectionProps) {
+  return (
+    <footer className="contact-section" id="contact">
+      <div className="contact-section__orb" aria-hidden="true">EGP</div>
+      <div className="contact-section__content">
+        <p className="eyebrow">{contact.eyebrow}</p>
+        <h2>{contact.title}</h2>
+        <p>{contact.body}</p>
+        <a className="contact-email" href={`mailto:${identity.email}`}>
+          <Mail aria-hidden="true" />
+          <span>{identity.email}</span>
+          <ArrowUpRight aria-hidden="true" />
+        </a>
+      </div>
+      <div className="footer-row">
+        <span>© 2026 {identity.fullName}</span>
+        <span>{identity.location}</span>
+        <a href={github} target="_blank" rel="noreferrer">
+          <Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" />
+        </a>
+      </div>
+    </footer>
+  );
+}

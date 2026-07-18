@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="RMAIS">
+  <rect width="512" height="512" rx="96" fill="#00450d"/>
+  <path d="M256 96c70 38 116 102 116 168 0 77-52 136-116 152-64-16-116-75-116-152 0-66 46-130 116-168Z" fill="#91d78a"/>
+  <path d="M256 130v252M208 198c26 10 44 29 48 54M304 198c-26 10-44 29-48 54M196 276c30 7 52 25 60 52M316 276c-30 7-52 25-60 52" stroke="#00450d" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
