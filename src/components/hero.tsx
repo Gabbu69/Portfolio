@@ -1,5 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { ArrowDown, ArrowUpRight, MapPin } from "lucide-react";
+import { m, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { useRef } from "react";
+import profilePortrait from "../../public/images/profile.webp";
 
 type HeroProps = {
   identity: {
@@ -10,81 +15,99 @@ type HeroProps = {
     availability: string;
     headline: string;
     intro: string;
-    portrait: string;
   };
+  projectCount: number;
+  workflowCount: number;
 };
 
-export function Hero({ identity }: HeroProps) {
-  const nameParts = identity.fullName.split(" ");
-  const firstLine = nameParts.slice(0, 2).join(" ");
-  const lastLine = nameParts.slice(2).join(" ");
+export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
+  const heroRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const portraitOffset = useTransform(scrollYProgress, [0, 1], [0, 72]);
+  const portraitY = useSpring(portraitOffset, {
+    stiffness: 120,
+    damping: 24,
+    mass: 0.35,
+  });
 
   return (
-    <section className="hero" id="top" aria-labelledby="hero-title">
+    <section className="hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
       <div className="hero__copy">
-        <div className="status-line">
+        <p className="status-line">
           <span className="status-line__dot" aria-hidden="true" />
           {identity.availability}
-        </div>
+        </p>
 
-        <p className="hero__role">{identity.role}</p>
+        <p className="hero__role">
+          {identity.role} <span aria-hidden="true">/</span> {identity.fullName}
+        </p>
         <h1 id="hero-title">
-          <span>{firstLine}</span>
-          <span className="hero__surname">{lastLine}</span>
+          <span>Hi, I’m Gabriel.</span>
+          <em>I build practical software.</em>
         </h1>
 
-        <div className="hero__statement">
-          <p className="hero__headline">{identity.headline}</p>
-          <p className="hero__intro">{identity.intro}</p>
-        </div>
+        <p className="hero__headline">{identity.headline}</p>
+        <p className="hero__intro">{identity.intro}</p>
 
         <div className="hero__actions">
           <a className="button button--primary" href={`mailto:${identity.email}`}>
-            Start a conversation <ArrowUpRight aria-hidden="true" />
+            Send me a note <ArrowUpRight aria-hidden="true" />
           </a>
           <a className="button button--quiet" href="#work">
-            Explore my work <ArrowDown aria-hidden="true" />
+            See selected work <ArrowDown aria-hidden="true" />
           </a>
         </div>
 
-        <div className="hero__location">
-          <MapPin aria-hidden="true" />
-          <span>{identity.location}</span>
+        <div className="hero__facts" aria-label="Portfolio highlights">
+          <div>
+            <strong>{String(projectCount).padStart(2, "0")}</strong>
+            <span>Selected projects</span>
+          </div>
+          <div>
+            <strong>{String(workflowCount).padStart(2, "0")}</strong>
+            <span>Hospital workflow areas</span>
+          </div>
+          <div>
+            <strong>Full</strong>
+            <span>Stack perspective</span>
+          </div>
         </div>
       </div>
 
       <div className="hero__visual">
-        <div className="portrait-frame">
-          <div className="portrait-frame__label">
-            <span>Based in Mindanao</span>
-            <span>2026</span>
-          </div>
-          <Image
-            src={identity.portrait}
-            alt={`Portrait of ${identity.fullName}`}
-            width={460}
-            height={460}
-            priority
-            sizes="(max-width: 760px) 76vw, 38vw"
-          />
-          <span className="portrait-frame__corner portrait-frame__corner--one" aria-hidden="true" />
-          <span className="portrait-frame__corner portrait-frame__corner--two" aria-hidden="true" />
-        </div>
+        <m.div
+          className="hero__portrait-motion"
+          style={{ y: reduceMotion ? 0 : portraitY }}
+        >
+          <figure className="portrait-card">
+            <div className="portrait-frame">
+              <Image
+                src={profilePortrait}
+                alt={`Portrait of ${identity.fullName}`}
+                preload
+                placeholder="blur"
+                sizes="(max-width: 820px) 74vw, 34vw"
+              />
+            </div>
+            <figcaption>
+              <span>{identity.fullName}</span>
+              <span><MapPin aria-hidden="true" /> {identity.location}</span>
+            </figcaption>
+          </figure>
+        </m.div>
 
-        <svg className="hero-wave" viewBox="0 0 680 200" role="img" aria-label="Abstract data waveform">
-          <path className="hero-wave__ghost" d="M0 105C55 105 62 105 86 104C116 103 114 76 140 76C168 76 168 126 196 126C224 126 225 87 253 87C283 87 281 113 310 113C343 113 343 62 377 62C412 62 410 145 444 145C476 145 474 94 506 94C540 94 537 110 570 110C612 110 625 105 680 105" />
-          <path className="hero-wave__line" d="M0 105C55 105 62 105 86 104C116 103 114 76 140 76C168 76 168 126 196 126C224 126 225 87 253 87C283 87 281 113 310 113C343 113 343 62 377 62C412 62 410 145 444 145C476 145 474 94 506 94C540 94 537 110 570 110C612 110 625 105 680 105" />
-        </svg>
-
-        <div className="hero__facts" aria-label="Portfolio highlights">
-          <div><strong>05</strong><span>Selected projects</span></div>
-          <div><strong>04</strong><span>OJT workflow areas</span></div>
-          <div><strong>Full</strong><span>Stack perspective</span></div>
-        </div>
+        <aside className="hero__margin-note">
+          <span aria-hidden="true">Note / 01</span>
+          <p>I like work that begins with a real process, not a feature list.</p>
+        </aside>
       </div>
 
-      <a className="scroll-cue" href="#experience" aria-label="Scroll to OJT experience">
-        <span>Scroll to explore</span>
+      <a className="scroll-cue" href="#work" aria-label="Scroll to selected work">
+        <span>Scroll to work</span>
         <ArrowDown aria-hidden="true" />
       </a>
     </section>

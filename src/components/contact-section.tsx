@@ -9,9 +9,14 @@ type ContactSectionProps = {
 export function ContactSection({ identity, contact, github }: ContactSectionProps) {
   return (
     <footer className="contact-section" id="contact">
-      <div className="contact-section__orb" aria-hidden="true">EGP</div>
+      <div className="contact-section__orb" aria-hidden="true">
+        <span>EGP</span>
+      </div>
       <div className="contact-section__content">
-        <p className="eyebrow">{contact.eyebrow}</p>
+        <div className="contact-section__label">
+          <span>05</span>
+          <p className="eyebrow">{contact.eyebrow}</p>
+        </div>
         <h2>{contact.title}</h2>
         <p>{contact.body}</p>
         <a className="contact-email" href={`mailto:${identity.email}`}>

@@ -14,8 +14,8 @@ export function AboutSection({ body, closing, principles }: AboutSectionProps) {
     <section className="page-section about-section" id="about">
       <SectionHeading
         index="04"
-        eyebrow="How I work"
-        title="Curious across the stack. Grounded in the workflow."
+        eyebrow="A little about me"
+        title="I care about the details behind the screen."
       />
       <div className="about-grid">
         <div className="about-copy">

@@ -19,10 +19,10 @@ export function ExperienceSection({ experience }: ExperienceSectionProps) {
   return (
     <section className="page-section" id="experience">
       <SectionHeading
-        index="01"
-        eyebrow="Field experience"
-        title="Software shaped by a real workplace."
-        description="A short OJT, but a useful look at the careful, repetitive workflows behind hospital operations."
+        index="02"
+        eyebrow="Experience / OJT"
+        title="Learning from the people doing the work."
+        description="At USM Hospital, I explored how small software tools could reduce repetitive encoding and make routine information easier to review."
       />
 
       <article className="experience-card">

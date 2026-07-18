@@ -24,6 +24,7 @@ const publicSiteUrl =
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : "http://localhost:3000");
+const themeBootScript = `(function(){try{var s=localStorage.getItem("gab-portfolio-theme");var t=s==="light"||s==="dark"?s:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";var e=document.documentElement;e.dataset.theme=t;e.style.colorScheme=t}catch(e){}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(publicSiteUrl),
@@ -85,8 +86,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#070708",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f3f0e8" },
+    { media: "(prefers-color-scheme: dark)", color: "#111411" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -97,8 +101,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="light"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -1,9 +1,8 @@
 "use client";
 
-import type { CSSProperties } from "react";
-import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useState, type CSSProperties } from "react";
 import { Database } from "lucide-react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import {
   SiArduino,
   SiFastapi,
@@ -44,6 +43,25 @@ type SkillKeyboardProps = {
   skills: readonly Skill[];
 };
 
+const listVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      delayChildren: 0.08,
+      staggerChildren: 0.045,
+    },
+  },
+};
+
+const skillVariants = {
+  hidden: { y: 22, scale: 0.975 },
+  visible: {
+    y: 0,
+    scale: 1,
+    transition: { type: "spring" as const, stiffness: 180, damping: 20 },
+  },
+};
+
 export function SkillKeyboard({ skills }: SkillKeyboardProps) {
   const [activeName, setActiveName] = useState(skills[0]?.name ?? "");
   const reduceMotion = useReducedMotion();
@@ -54,52 +72,74 @@ export function SkillKeyboard({ skills }: SkillKeyboardProps) {
   const ActiveIcon = skillIcons[activeSkill.icon];
 
   return (
-    <div className="skills-stage">
-      <motion.div
-        className="skill-readout"
-        key={activeSkill.name}
-        initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.22 }}
+    <div className="skill-explorer">
+      <AnimatePresence mode="wait" initial={false}>
+        <m.aside
+          className="skill-readout"
+          key={activeSkill.name}
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
+          transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+          aria-live="polite"
+        >
+          <span className="skill-readout__label">Selected tool</span>
+          <span className="skill-readout__icon" style={{ color: activeSkill.color }}>
+            <ActiveIcon aria-hidden="true" />
+          </span>
+          <div>
+            <h3>{activeSkill.name}</h3>
+            <p>{activeSkill.note}</p>
+          </div>
+          <span className="skill-readout__hint">Hover, focus, or tap a tool</span>
+        </m.aside>
+      </AnimatePresence>
+
+      <m.ul
+        className="skill-list"
+        aria-label="Interactive technology toolkit"
+        variants={listVariants}
+        initial={reduceMotion ? false : "hidden"}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.12 }}
       >
-        <span className="skill-readout__icon" style={{ color: activeSkill.color }}>
-          <ActiveIcon aria-hidden="true" />
-        </span>
-        <div>
-          <p className="eyebrow">Currently selected</p>
-          <h3>{activeSkill.name}</h3>
-          <p>{activeSkill.note}</p>
-        </div>
-      </motion.div>
+        {skills.map((skill, index) => {
+          const Icon = skillIcons[skill.icon];
+          const isActive = activeSkill.name === skill.name;
+          const style = { "--skill-color": skill.color } as CSSProperties;
 
-      <div className="keyboard-wrap">
-        <div className="keyboard" aria-label="Interactive technology toolkit">
-          {skills.map((skill, index) => {
-            const Icon = skillIcons[skill.icon];
-            const isActive = activeSkill.name === skill.name;
-            const keyStyle = { "--key-accent": skill.color } as CSSProperties;
-
-            return (
+          return (
+            <m.li
+              key={skill.name}
+              className={`skill-item${isActive ? " is-active" : ""}`}
+              style={style}
+              variants={skillVariants}
+              whileHover={reduceMotion ? undefined : { y: -5 }}
+              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            >
               <button
-                className={`skill-key skill-key--${(index % 5) + 1}${isActive ? " is-active" : ""}`}
-                key={skill.name}
+                className="skill-item__button"
                 type="button"
-                style={keyStyle}
                 aria-pressed={isActive}
                 onClick={() => setActiveName(skill.name)}
                 onMouseEnter={() => setActiveName(skill.name)}
                 onFocus={() => setActiveName(skill.name)}
               >
-                <span className="skill-key__top">
-                  <Icon aria-hidden="true" />
-                  <small>{String(index + 1).padStart(2, "0")}</small>
+                <span className="skill-item__index" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="skill-item__icon" aria-hidden="true">
+                  <Icon />
+                </span>
+                <span className="skill-item__copy">
                   <strong>{skill.name}</strong>
+                  <small>{skill.note}</small>
                 </span>
               </button>
-            );
-          })}
-        </div>
-      </div>
+            </m.li>
+          );
+        })}
+      </m.ul>
     </div>
   );
 }

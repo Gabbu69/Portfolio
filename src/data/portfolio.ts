@@ -13,9 +13,12 @@ export const projectCategories = [
 
 export type ProjectCategory = (typeof projectCategories)[number];
 
-export type ProjectVisual =
-  | { kind: "image"; src: string; alt: string; fit?: "cover" | "contain" }
-  | { kind: "encodex"; alt: string };
+export type ProjectVisual = {
+  kind: "image";
+  src: string;
+  alt: string;
+  fit?: "cover" | "contain";
+};
 
 export type Project = {
   title: string;
@@ -63,14 +66,14 @@ export const portfolio = {
     email: "gabriellimjuco@gmail.com",
     location: "Kabacan, Cotabato, Philippines",
     availability: "Open to full-stack opportunities",
-    headline: "I turn everyday problems into software people can actually use.",
+    headline: "Useful software, built around real work.",
     intro:
-      "Hi, I’m Edgardo Gabriel Paclibar. I build web apps, desktop tools, and connected dashboards with a focus on clear workflows and practical results.",
+      "I’m Gabriel, a full-stack developer from Cotabato. I turn repetitive or confusing workflows into straightforward web apps, desktop tools, and connected prototypes.",
     portrait: "/images/profile.webp",
   },
   navigation: [
     { label: "Work", href: "#work" },
-    { label: "OJT", href: "#experience" },
+    { label: "Experience", href: "#experience" },
     { label: "Skills", href: "#skills" },
     { label: "About", href: "#about" },
     { label: "Contact", href: "#contact" },
@@ -91,21 +94,6 @@ export const portfolio = {
     modules: ["YAKAP", "X-ray", "Laboratory", "Pharmacy"],
   },
   projects: [
-    {
-      title: "Encodex",
-      eyebrow: "OJT prototype · desktop",
-      category: "Healthcare",
-      featured: true,
-      summary:
-        "A privacy-minded desktop prototype for capturing supported medical forms with a phone. Staff can review locally extracted information and copy only the fields they approve into an existing encoding workflow.",
-      note: "Built around review-first capture; no real patient records are displayed.",
-      stack: ["React", "TypeScript", "Electron", "OCR"],
-      repo: "https://github.com/Gabbu69/Encodex",
-      visual: {
-        kind: "encodex",
-        alt: "Fabricated Encodex review workflow using demo fields",
-      },
-    },
     {
       title: "USM HealthSync",
       eyebrow: "OJT prototype · full stack",
@@ -195,18 +183,18 @@ export const portfolio = {
   ] satisfies readonly Skill[],
   about: {
     body:
-      "I enjoy working across the whole stack: shaping the interface, connecting the API and data, then testing the details that make a tool dependable. My projects cover healthcare workflows, agriculture, document capture, and IoT.",
+      "I’m happiest when I can follow a feature all the way through—from the first rough screen to the API and database behind it. Most of my projects start with a workflow that feels slower or more confusing than it needs to be.",
     closing:
-      "I’m looking for a full-stack role where I can keep learning, contribute honestly, and build useful things with a team.",
+      "I’m early in my career and looking for a full-stack role where I can learn from a good team, contribute honestly, and keep building useful things.",
     principles: [
-      { number: "01", title: "Make it understandable", text: "Clear screens, plain language, and visible system feedback." },
-      { number: "02", title: "Respect the context", text: "Prototype honestly and protect the people behind the data." },
-      { number: "03", title: "Ship the useful part", text: "Start from the real workflow, then improve it one detail at a time." },
+      { number: "01", title: "Start with the workflow", text: "Understand what someone is already doing before changing the screen." },
+      { number: "02", title: "Make the state obvious", text: "Use plain language, clear feedback, and data people can verify." },
+      { number: "03", title: "Be honest about the prototype", text: "Show what works, say what does not, and protect the context around the data." },
     ],
   },
   contact: {
-    eyebrow: "Have a useful problem?",
-    title: "Let’s build something that earns its place.",
-    body: "I’m open to full-stack opportunities, collaborations, and conversations about practical software.",
+    eyebrow: "Get in touch",
+    title: "Have something in mind? Send me a note.",
+    body: "I’m open to full-stack opportunities, collaborations, and straightforward conversations about practical software.",
   },
 } as const;
