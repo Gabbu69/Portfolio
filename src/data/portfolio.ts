@@ -13,18 +13,26 @@ export const projectCategories = [
 
 export type ProjectCategory = (typeof projectCategories)[number];
 
-export type ProjectVisual = {
-  kind: "image";
-  src: string;
-  alt: string;
-  fit?: "cover" | "contain";
-};
+export type ProjectVisual =
+  | {
+      kind: "image";
+      src: string;
+      alt: string;
+      fit?: "cover" | "contain";
+    }
+  | {
+      kind: "interface";
+      label: string;
+      detail: string;
+      tone: "signal" | "market";
+    };
 
 export type Project = {
   title: string;
   eyebrow: string;
   category: Exclude<ProjectCategory, "All">;
   featured: boolean;
+  spotlight?: boolean;
   summary: string;
   note?: string;
   stack: readonly string[];
@@ -95,15 +103,16 @@ export const portfolio = {
   },
   projects: [
     {
-      title: "USM HealthSync",
-      eyebrow: "OJT prototype · full stack",
+      title: "USM Hospital System",
+      eyebrow: "Hospital operations · full stack",
       category: "Healthcare",
       featured: true,
+      spotlight: true,
       summary:
-        "A full-stack demo for annual PhilHealth FPA reminders, with role-based access, consent and opt-out controls, message previews, and sending guardrails.",
-      note: "Uses synthetic client data and simulated SMS rather than a live hospital deployment.",
-      stack: ["React", "TypeScript", "Python", "FastAPI"],
-      repo: "https://github.com/Gabbu69/USMHealthSync",
+        "A collaborative hospital operations system connecting patient records, laboratory and radiology transactions, pharmacy inventory and dispensing, Konsulta settings, reports, and staff-specific dashboards.",
+      note: "Built around distinct workflows for administrators, doctors, nurses, pharmacists, laboratory staff, radiology staff, and receptionists.",
+      stack: ["Laravel", "PHP", "Vue", "Tailwind"],
+      repo: "https://github.com/rzgonzaga/USMHospital",
       visual: {
         kind: "image",
         src: "/images/usm-hospital-logo.webp",
@@ -130,20 +139,38 @@ export const portfolio = {
       },
     },
     {
-      title: "SiloGuard",
-      eyebrow: "IoT research · dashboard",
+      title: "LIGTAS-AI",
+      eyebrow: "Thesis research · offline AI",
       category: "Research",
       featured: false,
       summary:
-        "An IoT research prototype for monitoring rice-storage conditions through ESP32 sensors and Supabase, with live readings, history, risk levels, alerts, and actuator controls.",
-      stack: ["ESP32", "Supabase", "TypeScript", "C++"],
-      repo: "https://github.com/Gabbu69/SiloGuard",
-      live: "https://silo-guard.vercel.app",
+        "An offline English-Filipino-Taglish disaster-preparedness research system that retrieves grounded guidance, shows traceable citations, and abstains when its local corpus cannot support an answer.",
+      note: "Educational preparedness prototype only—not a live warning service, emergency router, predictor, or medical adviser.",
+      stack: ["Python", "FastAPI", "SQLite FTS5", "BM25"],
+      repo: "https://github.com/Gabbu69/Ligtas_AI",
       visual: {
-        kind: "image",
-        src: "/images/siloguard-logo.webp",
-        alt: "SiloGuard rice storage monitoring logo",
-        fit: "contain",
+        kind: "interface",
+        label: "LIGTAS—AI",
+        detail: "Offline · cited · bounded",
+        tone: "signal",
+      },
+    },
+    {
+      title: "AgriPresyo",
+      eyebrow: "Market intelligence · bilingual",
+      category: "Community",
+      featured: false,
+      summary:
+        "A bilingual Philippine agricultural market-intelligence platform with commodity price tracking, vendor comparison, interactive history charts, and practical budget-planning tools.",
+      note: "Uses a simulated real-time trading experience to make agricultural price information easier to compare and understand.",
+      stack: ["React", "TypeScript", "Tailwind", "Recharts"],
+      repo: "https://github.com/Gabbu69/AgriPresyo",
+      live: "https://agripresyo-dusky.vercel.app",
+      visual: {
+        kind: "interface",
+        label: "AgriPresyo",
+        detail: "Philippine market pulse",
+        tone: "market",
       },
     },
     {

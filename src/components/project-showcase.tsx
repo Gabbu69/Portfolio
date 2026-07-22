@@ -81,6 +81,58 @@ function ProjectLinks({ project }: { project: Project }) {
   );
 }
 
+function ProjectVisual({ project, compact = false }: { project: Project; compact?: boolean }) {
+  if (project.visual.kind === "interface") {
+    return (
+      <div className={`project-system project-system--${project.visual.tone}${compact ? " project-system--compact" : ""}`}>
+        <span className="project-system__status"><i /> system ready</span>
+        <strong>{project.visual.label}</strong>
+        <span className="project-system__detail">{project.visual.detail}</span>
+        <div className="project-system__lines" aria-hidden="true"><i /><i /><i /></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`project-image project-image--${project.visual.fit ?? "cover"}`}>
+      <Image
+        src={project.visual.src}
+        alt={project.visual.alt}
+        fill
+        sizes={compact ? "120px" : "(max-width: 820px) 92vw, 48vw"}
+      />
+    </div>
+  );
+}
+
+function USMHospitalPreview({ project }: { project: Project }) {
+  if (project.visual.kind !== "image") return <ProjectVisual project={project} />;
+
+  return (
+    <div className="healthsync-preview">
+      <div className="healthsync-preview__brand">
+        <Image src={project.visual.src} alt={project.visual.alt} width={150} height={150} />
+        <div><span>University of Southern Mindanao</span><strong>Hospital System</strong></div>
+      </div>
+      <div className="healthsync-preview__window">
+        <div className="healthsync-preview__bar"><i /><i /><i /><span>Hospital operations overview</span></div>
+        <div className="healthsync-preview__stats">
+          <div><span>Staff roles</span><strong>07</strong><small>Role-based access</small></div>
+          <div><span>Core modules</span><strong>04</strong><small>Connected workflows</small></div>
+          <div><span>Exports</span><strong>PDF</strong><small>Reports and records</small></div>
+        </div>
+        <div className="healthsync-preview__queue">
+          <span>Connected departments</span>
+          <div><b>RX</b><i style={{ width: "84%" }} /><em>Pharmacy</em></div>
+          <div><b>LB</b><i style={{ width: "66%" }} /><em>Laboratory</em></div>
+          <div><b>XR</b><i style={{ width: "42%" }} /><em>Radiology</em></div>
+        </div>
+      </div>
+      <span className="healthsync-preview__stamp">Collaborative system · role based</span>
+    </div>
+  );
+}
+
 function ProjectCard({
   project,
   number,
@@ -94,7 +146,7 @@ function ProjectCard({
 
   return (
     <m.article
-      className="project-card"
+      className={`project-card${project.spotlight ? " project-card--lead" : ""}`}
       layout={!reduceMotion}
       initial={reduceMotion ? false : { opacity: 0, y: 58 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -106,14 +158,7 @@ function ProjectCard({
         className={`project-card__visual project-card__visual--${number}`}
         reduceMotion={reduceMotion}
       >
-        <div className={`project-image project-image--${project.visual.fit ?? "cover"}`}>
-          <Image
-            src={project.visual.src}
-            alt={project.visual.alt}
-            fill
-            sizes="(max-width: 820px) 92vw, 48vw"
-          />
-        </div>
+        {project.spotlight ? <USMHospitalPreview project={project} /> : <ProjectVisual project={project} />}
         <span className="project-card__number" aria-hidden="true">{displayNumber}</span>
       </TiltVisual>
 
@@ -168,12 +213,7 @@ function CompactProject({
       </div>
       <div className="project-compact__body">
         <div className="project-compact__image">
-          <Image
-            src={project.visual.src}
-            alt={project.visual.alt}
-            fill
-            sizes="120px"
-          />
+          <ProjectVisual project={project} compact />
         </div>
         <div>
           <p className="eyebrow">{project.eyebrow}</p>

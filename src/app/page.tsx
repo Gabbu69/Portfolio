@@ -28,6 +28,20 @@ export default function Home() {
           workflowCount={portfolio.experience.modules.length}
         />
 
+        <div className="process-rail" aria-label="Gabriel's working process">
+          <div className="process-rail__track">
+            {[0, 1].map((copy) => (
+              <div className="process-rail__set" aria-hidden={copy === 1} key={copy}>
+                <span>Observe the workflow</span><i>01</i>
+                <span>Sketch the simplest path</span><i>02</i>
+                <span>Build both sides</span><i>03</i>
+                <span>Test with real context</span><i>04</i>
+                <span>Refine what matters</span><i>05</i>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <section className="page-section" id="work">
           <SectionHeading
             index="01"

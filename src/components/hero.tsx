@@ -79,6 +79,14 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
       </div>
 
       <div className="hero__visual">
+        <div className="hero-orbit" aria-hidden="true">
+          <span className="hero-orbit__ring hero-orbit__ring--outer" />
+          <span className="hero-orbit__ring hero-orbit__ring--inner" />
+          <span className="hero-orbit__runner hero-orbit__runner--one"><i /></span>
+          <span className="hero-orbit__runner hero-orbit__runner--two"><i /></span>
+          <span className="hero-orbit__label hero-orbit__label--top">01 / frontend</span>
+          <span className="hero-orbit__label hero-orbit__label--side">02 / backend</span>
+        </div>
         <m.div
           className="hero__portrait-motion"
           style={{ y: reduceMotion ? 0 : portraitY }}
