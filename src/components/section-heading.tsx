@@ -51,15 +51,21 @@ export function SectionHeading({
         aria-hidden="true"
         variants={markerVariants}
       >
-        <span>{index}</span>
+        <span>Section</span>
+        <strong>{index}</strong>
       </m.div>
       <m.div
+        className="section-heading__copy"
         variants={copyVariants}
       >
         <p className="eyebrow">{eyebrow}</p>
-        <h2>{title}</h2>
-        {description ? <p className="section-heading__description">{description}</p> : null}
+        <h2><span>{title}</span></h2>
       </m.div>
+      {description ? (
+        <m.p className="section-heading__description" variants={copyVariants}>
+          {description}
+        </m.p>
+      ) : null}
     </m.header>
   );
 }

@@ -3,7 +3,6 @@ import { ContactSection } from "@/components/contact-section";
 import { ExperienceSection } from "@/components/experience-section";
 import { Hero } from "@/components/hero";
 import { MotionProvider } from "@/components/motion-provider";
-import { PointerAura } from "@/components/pointer-aura";
 import { ProjectShowcase } from "@/components/project-showcase";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteHeader } from "@/components/site-header";
@@ -13,7 +12,6 @@ import { portfolio, projectCategories } from "@/data/portfolio";
 export default function Home() {
   return (
     <MotionProvider>
-      <PointerAura />
       <SiteHeader
         initials={portfolio.identity.initials}
         name={portfolio.identity.shortName}
@@ -21,7 +19,7 @@ export default function Home() {
         github={portfolio.socials.github}
       />
 
-      <main className="site-shell">
+      <main>
         <Hero
           identity={portfolio.identity}
           projectCount={portfolio.projects.length}
@@ -32,11 +30,11 @@ export default function Home() {
           <div className="process-rail__track">
             {[0, 1].map((copy) => (
               <div className="process-rail__set" aria-hidden={copy === 1} key={copy}>
-                <span>Observe the workflow</span><i>01</i>
-                <span>Sketch the simplest path</span><i>02</i>
-                <span>Build both sides</span><i>03</i>
-                <span>Test with real context</span><i>04</i>
-                <span>Refine what matters</span><i>05</i>
+                <span>Observe</span><i>01</i>
+                <span>Design</span><i>02</i>
+                <span>Build</span><i>03</i>
+                <span>Test</span><i>04</i>
+                <span>Refine</span><i>05</i>
               </div>
             ))}
           </div>
@@ -46,7 +44,7 @@ export default function Home() {
           <SectionHeading
             index="01"
             eyebrow="Selected work"
-            title="A few things I’ve built and learned from."
+            title="Built for real work."
             description={`${portfolio.projects.length} practical projects across healthcare, agriculture, community tools, and connected systems. Each one started with a specific workflow to improve.`}
           />
           <ProjectShowcase projects={portfolio.projects} categories={projectCategories} />
@@ -58,7 +56,7 @@ export default function Home() {
           <SectionHeading
             index="03"
             eyebrow="Toolkit"
-            title="Tools I’m comfortable working with."
+            title="A stack with range."
             description="I choose the stack around the problem, but these are the technologies I keep coming back to."
           />
           <SkillKeyboard skills={portfolio.skills} />

@@ -27,38 +27,116 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const portraitOffset = useTransform(scrollYProgress, [0, 1], [0, 72]);
+  const portraitOffset = useTransform(scrollYProgress, [0, 1], [0, 64]);
+  const titleOffset = useTransform(scrollYProgress, [0, 1], [0, -32]);
   const portraitY = useSpring(portraitOffset, {
     stiffness: 120,
     damping: 24,
     mass: 0.35,
   });
+  const titleY = useSpring(titleOffset, {
+    stiffness: 120,
+    damping: 26,
+    mass: 0.4,
+  });
 
   return (
     <section className="hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
-      <div className="hero__copy">
+      <div className="hero__topline">
         <p className="status-line">
           <span className="status-line__dot" aria-hidden="true" />
           {identity.availability}
         </p>
+        <span className="hero__edition">Independent developer / Mindanao</span>
+      </div>
 
-        <p className="hero__role">
-          {identity.role} <span aria-hidden="true">/</span> {identity.fullName}
+      <div className="hero__stage">
+        <m.span
+          className="hero__sun"
+          aria-hidden="true"
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.3 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <span className="hero__axis hero__axis--horizontal" aria-hidden="true" />
+        <span className="hero__axis hero__axis--vertical" aria-hidden="true" />
+
+        <m.h1
+          id="hero-title"
+          aria-label={identity.fullName}
+          style={{ y: reduceMotion ? 0 : titleY }}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { delayChildren: 0.1, staggerChildren: 0.12 } },
+          }}
+        >
+          {["Gabriel", "Paclibar"].map((name, index) => (
+            <m.span
+              className={index === 0 ? "hero__name hero__name--first" : "hero__name hero__name--last"}
+              aria-hidden="true"
+              key={name}
+              variants={{
+                hidden: { y: "110%" },
+                visible: {
+                  y: 0,
+                  transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+                },
+              }}
+            >
+              {name}
+            </m.span>
+          ))}
+        </m.h1>
+
+        <m.figure
+          className="hero-portrait"
+          style={{ y: reduceMotion ? 0 : portraitY }}
+          initial={reduceMotion ? false : { clipPath: "inset(0 0 100% 0)" }}
+          animate={{ clipPath: "inset(0 0 0% 0)" }}
+          transition={{ duration: 1.05, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="hero-portrait__frame">
+            <Image
+              className="hero-portrait__image hero-portrait__image--main"
+              src={profilePortrait}
+              alt={`Portrait of ${identity.fullName}`}
+              preload
+              placeholder="blur"
+              sizes="(max-width: 760px) 72vw, 34vw"
+            />
+            <div className="hero-portrait__echo" aria-hidden="true">
+              <Image
+                src={profilePortrait}
+                alt=""
+                sizes="(max-width: 760px) 72vw, 34vw"
+              />
+            </div>
+          </div>
+          <figcaption>
+            <span>Portrait / 2026</span>
+            <span><MapPin aria-hidden="true" /> {identity.location}</span>
+          </figcaption>
+        </m.figure>
+
+        <p className="hero__role" aria-hidden="true">
+          Full-stack <span>/</span> Developer
         </p>
-        <h1 id="hero-title">
-          <span>Hi, I’m Gabriel.</span>
-          <em>I build practical software.</em>
-        </h1>
+      </div>
 
-        <p className="hero__headline">{identity.headline}</p>
-        <p className="hero__intro">{identity.intro}</p>
+      <div className="hero__footer">
+        <div className="hero__copy">
+          <p className="hero__headline">{identity.headline}</p>
+          <p className="hero__intro">{identity.intro}</p>
+        </div>
 
         <div className="hero__actions">
           <a className="button button--primary" href={`mailto:${identity.email}`}>
-            Send me a note <ArrowUpRight aria-hidden="true" />
+            Start a conversation <ArrowUpRight aria-hidden="true" />
           </a>
           <a className="button button--quiet" href="#work">
-            See selected work <ArrowDown aria-hidden="true" />
+            Explore my work <ArrowDown aria-hidden="true" />
           </a>
         </div>
 
@@ -69,53 +147,16 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
           </div>
           <div>
             <strong>{String(workflowCount).padStart(2, "0")}</strong>
-            <span>Hospital workflow areas</span>
+            <span>Hospital workflows</span>
           </div>
           <div>
-            <strong>Full</strong>
-            <span>Stack perspective</span>
+            <strong>FE + BE</strong>
+            <span>Full-stack range</span>
           </div>
         </div>
-      </div>
-
-      <div className="hero__visual">
-        <div className="hero-orbit" aria-hidden="true">
-          <span className="hero-orbit__ring hero-orbit__ring--outer" />
-          <span className="hero-orbit__ring hero-orbit__ring--inner" />
-          <span className="hero-orbit__runner hero-orbit__runner--one"><i /></span>
-          <span className="hero-orbit__runner hero-orbit__runner--two"><i /></span>
-          <span className="hero-orbit__label hero-orbit__label--top">01 / frontend</span>
-          <span className="hero-orbit__label hero-orbit__label--side">02 / backend</span>
-        </div>
-        <m.div
-          className="hero__portrait-motion"
-          style={{ y: reduceMotion ? 0 : portraitY }}
-        >
-          <figure className="portrait-card">
-            <div className="portrait-frame">
-              <Image
-                src={profilePortrait}
-                alt={`Portrait of ${identity.fullName}`}
-                preload
-                placeholder="blur"
-                sizes="(max-width: 820px) 74vw, 34vw"
-              />
-            </div>
-            <figcaption>
-              <span>{identity.fullName}</span>
-              <span><MapPin aria-hidden="true" /> {identity.location}</span>
-            </figcaption>
-          </figure>
-        </m.div>
-
-        <aside className="hero__margin-note">
-          <span aria-hidden="true">Note / 01</span>
-          <p>I like work that begins with a real process, not a feature list.</p>
-        </aside>
       </div>
 
       <a className="scroll-cue" href="#work" aria-label="Scroll to selected work">
-        <span>Scroll to work</span>
         <ArrowDown aria-hidden="true" />
       </a>
     </section>

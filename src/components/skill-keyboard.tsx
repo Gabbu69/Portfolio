@@ -66,6 +66,7 @@ export function SkillKeyboard({ skills }: SkillKeyboardProps) {
   const [activeName, setActiveName] = useState(skills[0]?.name ?? "");
   const reduceMotion = useReducedMotion();
   const activeSkill = skills.find((skill) => skill.name === activeName) ?? skills[0];
+  const activeIndex = skills.findIndex((skill) => skill.name === activeSkill?.name);
 
   if (!activeSkill) return null;
 
@@ -83,7 +84,9 @@ export function SkillKeyboard({ skills }: SkillKeyboardProps) {
           transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
           aria-live="polite"
         >
-          <span className="skill-readout__label">Selected tool</span>
+          <span className="skill-readout__label">
+            Tool {String(activeIndex + 1).padStart(2, "0")} / {String(skills.length).padStart(2, "0")}
+          </span>
           <span className="skill-readout__icon" style={{ color: activeSkill.color }}>
             <ActiveIcon aria-hidden="true" />
           </span>
@@ -91,7 +94,7 @@ export function SkillKeyboard({ skills }: SkillKeyboardProps) {
             <h3>{activeSkill.name}</h3>
             <p>{activeSkill.note}</p>
           </div>
-          <span className="skill-readout__hint">Hover, focus, or tap a tool</span>
+          <span className="skill-readout__word" aria-hidden="true">{activeSkill.name}</span>
         </m.aside>
       </AnimatePresence>
 
@@ -133,7 +136,6 @@ export function SkillKeyboard({ skills }: SkillKeyboardProps) {
                 </span>
                 <span className="skill-item__copy">
                   <strong>{skill.name}</strong>
-                  <small>{skill.note}</small>
                 </span>
               </button>
             </m.li>

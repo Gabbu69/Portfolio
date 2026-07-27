@@ -14,19 +14,20 @@ export function AboutSection({ body, closing, principles }: AboutSectionProps) {
     <section className="page-section about-section" id="about">
       <SectionHeading
         index="04"
-        eyebrow="A little about me"
-        title="I care about the details behind the screen."
+        eyebrow="About / approach"
+        title="The screen is only half the work."
       />
       <div className="about-grid">
         <div className="about-copy">
-          <ArrowDownRight aria-hidden="true" />
-          <p>{body}</p>
-          <p>{closing}</p>
+          <ArrowDownRight className="about-copy__arrow" aria-hidden="true" />
+          <p className="about-copy__lead">{body}</p>
+          <p className="about-copy__closing">{closing}</p>
+          <span className="about-copy__signature" aria-hidden="true">EGP / 2026</span>
         </div>
-        <div className="principles-list">
+        <div className="principles-list" aria-label="Working principles">
           {principles.map((principle) => (
             <article key={principle.number}>
-              <span>{principle.number}</span>
+              <span className="principles-list__number">{principle.number}</span>
               <div>
                 <h3>{principle.title}</h3>
                 <p>{principle.text}</p>

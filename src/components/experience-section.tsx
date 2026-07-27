@@ -17,17 +17,17 @@ type ExperienceSectionProps = {
 
 export function ExperienceSection({ experience }: ExperienceSectionProps) {
   return (
-    <section className="page-section" id="experience">
+    <section className="page-section experience-section" id="experience">
       <SectionHeading
         index="02"
         eyebrow="Experience / OJT"
-        title="Learning from the people doing the work."
+        title="Inside the workflow."
         description="At USM Hospital, I explored how small software tools could reduce repetitive encoding and make routine information easier to review."
       />
 
-      <article className="experience-card">
-        <div className="experience-card__identity">
-          <div className="experience-card__logo">
+      <div className="experience-layout">
+        <div className="experience-identity">
+          <div className="experience-identity__logo">
             <Image
               src={experience.logo}
               alt="USM Hospital logo"
@@ -39,29 +39,29 @@ export function ExperienceSection({ experience }: ExperienceSectionProps) {
           <div>
             <p className="eyebrow">{experience.role}</p>
             <h3>{experience.organization}</h3>
-            <div className="experience-card__meta">
+            <div className="experience-meta">
               <span><Building2 aria-hidden="true" />{experience.shortOrganization}</span>
               <span><CalendarDays aria-hidden="true" />{experience.period}</span>
             </div>
           </div>
         </div>
 
-        <div className="experience-card__body">
-          <p>{experience.summary}</p>
-          <div className="module-list" aria-label="OJT workflow areas">
+        <div className="experience-body">
+          <p className="experience-body__summary">{experience.summary}</p>
+          <ol className="module-list" aria-label="OJT workflow areas">
             {experience.modules.map((module, index) => (
-              <div key={module}>
+              <li key={module}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <strong>{module}</strong>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
           <p className="privacy-note">
             <ShieldCheck aria-hidden="true" />
             <span>{experience.privacyNote}</span>
           </p>
         </div>
-      </article>
+      </div>
     </section>
   );
 }

@@ -2,230 +2,71 @@
 
 import Image from "next/image";
 import { ArrowUpRight, Github } from "lucide-react";
-import {
-  AnimatePresence,
-  m,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-} from "motion/react";
-import { useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import type { Project, ProjectCategory } from "@/data/portfolio";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
+import { useState } from "react";
+import type {
+  Project,
+  ProjectCategory,
+  ProjectVisual as ProjectVisualType,
+} from "@/data/portfolio";
 
 type ProjectShowcaseProps = {
   projects: readonly Project[];
   categories: readonly ProjectCategory[];
 };
 
-const revealTransition = {
-  type: "spring" as const,
-  stiffness: 92,
-  damping: 21,
-  mass: 0.68,
+type ProjectVisualProps = {
+  number: string;
+  title: string;
+  visual: ProjectVisualType;
 };
 
-type TiltVisualProps = {
-  children: ReactNode;
-  className: string;
-  reduceMotion: boolean | null;
-};
-
-function TiltVisual({ children, className, reduceMotion }: TiltVisualProps) {
-  const pointerX = useMotionValue(0);
-  const pointerY = useMotionValue(0);
-  const rotateXTarget = useTransform(pointerY, [-0.5, 0.5], [2.8, -2.8]);
-  const rotateYTarget = useTransform(pointerX, [-0.5, 0.5], [-2.8, 2.8]);
-  const rotateX = useSpring(rotateXTarget, { stiffness: 220, damping: 24 });
-  const rotateY = useSpring(rotateYTarget, { stiffness: 220, damping: 24 });
-
-  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (reduceMotion || event.pointerType !== "mouse") return;
-
-    const bounds = event.currentTarget.getBoundingClientRect();
-    pointerX.set((event.clientX - bounds.left) / bounds.width - 0.5);
-    pointerY.set((event.clientY - bounds.top) / bounds.height - 0.5);
-  };
-
-  const resetTilt = () => {
-    pointerX.set(0);
-    pointerY.set(0);
-  };
-
-  return (
-    <m.div
-      className={className}
-      style={reduceMotion ? undefined : { rotateX, rotateY, transformPerspective: 950 }}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={resetTilt}
-      whileHover={reduceMotion ? undefined : { y: -7, scale: 1.012 }}
-      transition={{ type: "spring", stiffness: 260, damping: 22 }}
-    >
-      {children}
-    </m.div>
-  );
-}
-
-function ProjectLinks({ project }: { project: Project }) {
-  return (
-    <div className="project-card__links">
-      <a href={project.repo} target="_blank" rel="noreferrer">
-        <Github aria-hidden="true" /> View source <ArrowUpRight aria-hidden="true" />
-      </a>
-      {project.live ? (
-        <a href={project.live} target="_blank" rel="noreferrer">
-          Open live demo <ArrowUpRight aria-hidden="true" />
-        </a>
-      ) : null}
-    </div>
-  );
-}
-
-function ProjectVisual({ project, compact = false }: { project: Project; compact?: boolean }) {
-  if (project.visual.kind === "interface") {
+function ProjectVisual({ number, title, visual }: ProjectVisualProps) {
+  if (visual.kind === "image") {
     return (
-      <div className={`project-system project-system--${project.visual.tone}${compact ? " project-system--compact" : ""}`}>
-        <span className="project-system__status"><i /> system ready</span>
-        <strong>{project.visual.label}</strong>
-        <span className="project-system__detail">{project.visual.detail}</span>
-        <div className="project-system__lines" aria-hidden="true"><i /><i /><i /></div>
+      <div
+        className={`project-visual project-visual--image project-visual--${visual.fit ?? "cover"}`}
+      >
+        <div className="project-visual__masthead" aria-hidden="true">
+          <span>{number}</span>
+          <strong>{title}</strong>
+          <span>Case study</span>
+        </div>
+        <div className="project-visual__image">
+          <Image
+            src={visual.src}
+            alt={visual.alt}
+            fill
+            sizes="(max-width: 760px) 100vw, 58vw"
+          />
+        </div>
+        <span className="project-visual__corner project-visual__corner--one" aria-hidden="true" />
+        <span className="project-visual__corner project-visual__corner--two" aria-hidden="true" />
       </div>
     );
   }
 
   return (
-    <div className={`project-image project-image--${project.visual.fit ?? "cover"}`}>
-      <Image
-        src={project.visual.src}
-        alt={project.visual.alt}
-        fill
-        sizes={compact ? "120px" : "(max-width: 820px) 92vw, 48vw"}
-      />
+    <div className={`project-visual project-visual--interface project-visual--${visual.tone}`}>
+      <div className="project-visual__masthead" aria-hidden="true">
+        <span>{number}</span>
+        <strong>{title}</strong>
+        <span>System view</span>
+      </div>
+      <div className="interface-poster" aria-hidden="true">
+        <span className="interface-poster__index">{number}</span>
+        <p>{visual.detail}</p>
+        <strong>{visual.label}</strong>
+        <div className="interface-poster__signal">
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+        <span className="interface-poster__stamp">Prototype</span>
+      </div>
     </div>
-  );
-}
-
-function USMHospitalPreview({ project }: { project: Project }) {
-  if (project.visual.kind !== "image") return <ProjectVisual project={project} />;
-
-  return (
-    <div className="healthsync-preview">
-      <div className="healthsync-preview__brand">
-        <Image src={project.visual.src} alt={project.visual.alt} width={150} height={150} />
-        <div><span>University of Southern Mindanao</span><strong>Hospital System</strong></div>
-      </div>
-      <div className="healthsync-preview__window">
-        <div className="healthsync-preview__bar"><i /><i /><i /><span>Hospital operations overview</span></div>
-        <div className="healthsync-preview__stats">
-          <div><span>Staff roles</span><strong>07</strong><small>Role-based access</small></div>
-          <div><span>Core modules</span><strong>04</strong><small>Connected workflows</small></div>
-          <div><span>Exports</span><strong>PDF</strong><small>Reports and records</small></div>
-        </div>
-        <div className="healthsync-preview__queue">
-          <span>Connected departments</span>
-          <div><b>RX</b><i style={{ width: "84%" }} /><em>Pharmacy</em></div>
-          <div><b>LB</b><i style={{ width: "66%" }} /><em>Laboratory</em></div>
-          <div><b>XR</b><i style={{ width: "42%" }} /><em>Radiology</em></div>
-        </div>
-      </div>
-      <span className="healthsync-preview__stamp">Collaborative system · role based</span>
-    </div>
-  );
-}
-
-function ProjectCard({
-  project,
-  number,
-  reduceMotion,
-}: {
-  project: Project;
-  number: number;
-  reduceMotion: boolean | null;
-}) {
-  const displayNumber = String(number).padStart(2, "0");
-
-  return (
-    <m.article
-      className={`project-card${project.spotlight ? " project-card--lead" : ""}`}
-      layout={!reduceMotion}
-      initial={reduceMotion ? false : { opacity: 0, y: 58 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      exit={reduceMotion ? undefined : { opacity: 0, y: 26, transition: { duration: 0.2 } }}
-      viewport={{ once: true, amount: 0.14 }}
-      transition={revealTransition}
-    >
-      <TiltVisual
-        className={`project-card__visual project-card__visual--${number}`}
-        reduceMotion={reduceMotion}
-      >
-        {project.spotlight ? <USMHospitalPreview project={project} /> : <ProjectVisual project={project} />}
-        <span className="project-card__number" aria-hidden="true">{displayNumber}</span>
-      </TiltVisual>
-
-      <m.div
-        className="project-card__content"
-        initial={reduceMotion ? false : { y: 28 }}
-        whileInView={{ y: 0 }}
-        viewport={{ once: true, amount: 0.25 }}
-        transition={{ ...revealTransition, delay: 0.08 }}
-      >
-        <div className="project-card__meta">
-          <p className="eyebrow">{project.eyebrow}</p>
-          <span>{project.category}</span>
-        </div>
-        <h3>{project.title}</h3>
-        <p className="project-card__summary">{project.summary}</p>
-        {project.note ? <p className="project-card__note">{project.note}</p> : null}
-        <ul className="tech-list" aria-label={`${project.title} technologies`}>
-          {project.stack.map((technology) => <li key={technology}>{technology}</li>)}
-        </ul>
-        <ProjectLinks project={project} />
-      </m.div>
-    </m.article>
-  );
-}
-
-function CompactProject({
-  project,
-  number,
-  reduceMotion,
-}: {
-  project: Project;
-  number: number;
-  reduceMotion: boolean | null;
-}) {
-  const displayNumber = String(number).padStart(2, "0");
-
-  return (
-    <m.article
-      className="project-compact"
-      layout={!reduceMotion}
-      initial={reduceMotion ? false : { opacity: 0, y: 34 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      exit={reduceMotion ? undefined : { opacity: 0, y: 18, transition: { duration: 0.18 } }}
-      whileHover={reduceMotion ? undefined : { y: -6 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ ...revealTransition, delay: Math.max(0, number - 3) * 0.08 }}
-    >
-      <div className="project-compact__topline">
-        <span>{displayNumber}</span>
-        <span>{project.category}</span>
-      </div>
-      <div className="project-compact__body">
-        <div className="project-compact__image">
-          <ProjectVisual project={project} compact />
-        </div>
-        <div>
-          <p className="eyebrow">{project.eyebrow}</p>
-          <h3>{project.title}</h3>
-        </div>
-      </div>
-      <p className="project-compact__summary">{project.summary}</p>
-      <ul className="tech-list" aria-label={`${project.title} technologies`}>
-        {project.stack.map((technology) => <li key={technology}>{technology}</li>)}
-      </ul>
-      <ProjectLinks project={project} />
-    </m.article>
   );
 }
 
@@ -236,91 +77,102 @@ export function ProjectShowcase({ projects, categories }: ProjectShowcaseProps) 
     activeCategory === "All"
       ? projects
       : projects.filter((project) => project.category === activeCategory);
-  const caseStudies =
-    activeCategory === "All"
-      ? visibleProjects.filter((project) => project.featured)
-      : visibleProjects;
-  const smallerProjects =
-    activeCategory === "All"
-      ? visibleProjects.filter((project) => !project.featured)
-      : [];
+
   const projectNumber = (project: Project) =>
-    projects.findIndex((candidate) => candidate.title === project.title) + 1;
+    String(projects.findIndex((candidate) => candidate.title === project.title) + 1).padStart(
+      2,
+      "0",
+    );
 
   return (
     <div className="project-showcase">
-      <div className="project-filters" aria-label="Filter projects">
-        {categories.map((category) => {
-          const count =
-            category === "All"
-              ? projects.length
-              : projects.filter((project) => project.category === category).length;
-          const isActive = activeCategory === category;
+      <div className="project-filter" aria-label="Filter projects by category">
+        <span className="project-filter__title">Filter</span>
+        <div className="project-filter__options">
+          {categories.map((category) => {
+            const count =
+              category === "All"
+                ? projects.length
+                : projects.filter((project) => project.category === category).length;
+            const isActive = category === activeCategory;
 
-          return (
-            <button
-              key={category}
-              type="button"
-              aria-pressed={isActive}
-              onClick={() => setActiveCategory(category)}
-            >
-              {isActive ? (
-                <m.span
-                  className="project-filter__active"
-                  layoutId="active-project-filter"
-                  transition={{ type: "spring", stiffness: 320, damping: 28 }}
-                  aria-hidden="true"
-                />
-              ) : null}
-              <span className="project-filter__label">{category}</span>
-              <span className="project-filter__count">{String(count).padStart(2, "0")}</span>
-            </button>
-          );
-        })}
+            return (
+              <button
+                type="button"
+                className={isActive ? "is-active" : undefined}
+                aria-pressed={isActive}
+                key={category}
+                onClick={() => setActiveCategory(category)}
+              >
+                <span>{category}</span>
+                <small>{String(count).padStart(2, "0")}</small>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      <m.div className="project-showcase__cases" layout={!reduceMotion}>
-        <AnimatePresence initial={false}>
-          {caseStudies.map((project) => (
-            <ProjectCard
-              key={project.title}
-              project={project}
-              number={projectNumber(project)}
-              reduceMotion={reduceMotion}
-            />
-          ))}
+      <m.div className="project-list" layout={!reduceMotion}>
+        <AnimatePresence initial={false} mode="popLayout">
+          {visibleProjects.map((project, index) => {
+            const number = projectNumber(project);
+
+            return (
+              <m.article
+                className={`project-entry${project.spotlight ? " project-entry--spotlight" : ""}${
+                  index % 2 ? " project-entry--reverse" : ""
+                }`}
+                key={project.title}
+                layout={!reduceMotion}
+                initial={reduceMotion ? false : { opacity: 0, y: 46 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: 28 }}
+                transition={{ duration: reduceMotion ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <header className="project-entry__heading">
+                  <span className="project-entry__number">{number}</span>
+                  <div>
+                    <p className="project-entry__eyebrow">{project.eyebrow}</p>
+                    <h3>{project.title}</h3>
+                  </div>
+                  <span className="project-entry__category">{project.category}</span>
+                </header>
+
+                <ProjectVisual
+                  number={number}
+                  title={project.title}
+                  visual={project.visual}
+                />
+
+                <div className="project-entry__body">
+                  <p className="project-entry__summary">{project.summary}</p>
+                  {project.note ? <p className="project-entry__note">{project.note}</p> : null}
+
+                  <ul className="project-entry__stack" aria-label={`${project.title} technologies`}>
+                    {project.stack.map((technology) => (
+                      <li key={technology}>{technology}</li>
+                    ))}
+                  </ul>
+
+                  <div className="project-entry__links">
+                    <a href={project.repo} target="_blank" rel="noreferrer">
+                      <Github aria-hidden="true" />
+                      Source
+                      <ArrowUpRight aria-hidden="true" />
+                    </a>
+                    {project.live ? (
+                      <a href={project.live} target="_blank" rel="noreferrer">
+                        Live project
+                        <ArrowUpRight aria-hidden="true" />
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              </m.article>
+            );
+          })}
         </AnimatePresence>
       </m.div>
-
-      <AnimatePresence initial={false}>
-        {smallerProjects.length ? (
-          <m.section
-            className="project-showcase__more"
-            aria-labelledby="more-projects-title"
-            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, y: 16 }}
-            transition={revealTransition}
-          >
-            <header className="project-showcase__more-heading">
-              <h3 id="more-projects-title">More project work</h3>
-              <p>Research and thesis prototypes from agriculture and community-focused work.</p>
-            </header>
-            <m.div className="project-compact-grid" layout={!reduceMotion}>
-              <AnimatePresence initial={false}>
-                {smallerProjects.map((project) => (
-                  <CompactProject
-                    key={project.title}
-                    project={project}
-                    number={projectNumber(project)}
-                    reduceMotion={reduceMotion}
-                  />
-                ))}
-              </AnimatePresence>
-            </m.div>
-          </m.section>
-        ) : null}
-      </AnimatePresence>
     </div>
   );
 }
