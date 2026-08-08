@@ -12,7 +12,6 @@ type HeroProps = {
     role: string;
     email: string;
     location: string;
-    availability: string;
     headline: string;
     intro: string;
   };
@@ -43,10 +42,6 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
   return (
     <section className="hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
       <div className="hero__topline">
-        <p className="status-line">
-          <span className="status-line__dot" aria-hidden="true" />
-          {identity.availability}
-        </p>
         <span className="hero__edition">Independent developer / Mindanao</span>
       </div>
 

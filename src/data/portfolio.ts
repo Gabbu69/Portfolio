@@ -19,6 +19,7 @@ export type ProjectVisual =
       src: string;
       alt: string;
       fit?: "cover" | "contain";
+      tone?: "institution" | "product" | "agriculture";
     }
   | {
       kind: "interface";
@@ -73,7 +74,6 @@ export const portfolio = {
     role: "Full-stack developer",
     email: "gabriellimjuco@gmail.com",
     location: "Kabacan, Cotabato, Philippines",
-    availability: "Open to full-stack opportunities",
     headline: "Useful software, built around real work.",
     intro:
       "I’m Gabriel, a full-stack developer from Cotabato. I turn repetitive or confusing workflows into straightforward web apps, desktop tools, and connected prototypes.",
@@ -118,6 +118,7 @@ export const portfolio = {
         src: "/images/usm-hospital-logo.webp",
         alt: "USM Hospital logo used in the hospital system case study",
         fit: "contain",
+        tone: "institution",
       },
     },
     {
@@ -136,6 +137,7 @@ export const portfolio = {
         src: "/images/halalscan-knowledge.webp",
         alt: "HalalScan knowledge interface with demo content",
         fit: "cover",
+        tone: "product",
       },
     },
     {
@@ -188,6 +190,7 @@ export const portfolio = {
         src: "/images/rmais-visual.svg",
         alt: "RMAIS rice market information illustration",
         fit: "contain",
+        tone: "agriculture",
       },
     },
   ] satisfies readonly Project[],

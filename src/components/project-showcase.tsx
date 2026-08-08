@@ -7,7 +7,6 @@ import { useState } from "react";
 import type {
   Project,
   ProjectCategory,
-  ProjectVisual as ProjectVisualType,
 } from "@/data/portfolio";
 
 type ProjectShowcaseProps = {
@@ -17,31 +16,57 @@ type ProjectShowcaseProps = {
 
 type ProjectVisualProps = {
   number: string;
-  title: string;
-  visual: ProjectVisualType;
+  project: Project;
 };
 
-function ProjectVisual({ number, title, visual }: ProjectVisualProps) {
+function ProjectVisual({ number, project }: ProjectVisualProps) {
+  const { category, stack, title, visual } = project;
+
   if (visual.kind === "image") {
+    const isContained = visual.fit === "contain";
+
     return (
       <div
-        className={`project-visual project-visual--image project-visual--${visual.fit ?? "cover"}`}
+        className={`project-visual project-visual--image project-visual--${visual.fit ?? "cover"} project-visual--${visual.tone ?? "product"}`}
       >
         <div className="project-visual__masthead" aria-hidden="true">
           <span>{number}</span>
           <strong>{title}</strong>
           <span>Case study</span>
         </div>
-        <div className="project-visual__image">
-          <Image
-            src={visual.src}
-            alt={visual.alt}
-            fill
-            sizes="(max-width: 760px) 100vw, 58vw"
-          />
-        </div>
-        <span className="project-visual__corner project-visual__corner--one" aria-hidden="true" />
-        <span className="project-visual__corner project-visual__corner--two" aria-hidden="true" />
+        {isContained ? (
+          <div className="project-visual__image project-visual__image--composition">
+            <div className="project-media__copy" aria-hidden="true">
+              <span>{category} / {number}</span>
+              <strong>{title}</strong>
+              <small>{stack.join(" · ")}</small>
+            </div>
+            <div className="project-media__asset">
+              <Image
+                src={visual.src}
+                alt={visual.alt}
+                fill
+                sizes="(max-width: 520px) 82vw, (max-width: 760px) 52vw, 32vw"
+              />
+            </div>
+            <span className="project-media__edition" aria-hidden="true">Selected work / 2026</span>
+          </div>
+        ) : (
+          <div className="project-visual__image project-visual__image--screen">
+            <div className="project-screen__frame">
+              <Image
+                src={visual.src}
+                alt={visual.alt}
+                fill
+                sizes="(max-width: 760px) 92vw, 55vw"
+              />
+            </div>
+            <div className="project-screen__caption" aria-hidden="true">
+              <span>{category} interface</span>
+              <span>{stack.slice(0, 2).join(" / ")}</span>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -140,8 +165,7 @@ export function ProjectShowcase({ projects, categories }: ProjectShowcaseProps) 
 
                 <ProjectVisual
                   number={number}
-                  title={project.title}
-                  visual={project.visual}
+                  project={project}
                 />
 
                 <div className="project-entry__body">
