@@ -98,7 +98,7 @@ export const portfolio = {
       "During my OJT, I explored and built prototypes around YAKAP-related encoding, X-ray, laboratory, and pharmacy workflows, with an emphasis on reducing repetitive steps and keeping information clear for staff.",
     privacyNote:
       "These were prototype and learning projects, not claims of production deployment. No patient or confidential hospital data is shown here.",
-    logo: "/images/usm-hospital-logo.webp",
+    logo: "/images/usm-hospital-logo-cutout.png",
     modules: ["YAKAP", "X-ray", "Laboratory", "Pharmacy"],
   },
   projects: [
@@ -115,7 +115,7 @@ export const portfolio = {
       repo: "https://github.com/rzgonzaga/USMHospital",
       visual: {
         kind: "image",
-        src: "/images/usm-hospital-logo.webp",
+        src: "/images/usm-hospital-logo-cutout.png",
         alt: "USM Hospital logo used in the hospital system case study",
         fit: "contain",
         tone: "institution",
