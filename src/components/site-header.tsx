@@ -31,7 +31,7 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
         </a>
 
         <nav className="nav-pill" aria-label="Main navigation">
-          {navigation.slice(0, 4).map((item, index) => (
+          {navigation.map((item, index) => (
             <a key={item.href} href={item.href}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               {item.label}

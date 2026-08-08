@@ -84,6 +84,26 @@ svg {
   outline-offset: 4px;
 }
 
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 300;
+  padding: 11px 15px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper-bright);
+  font-size: 0.75rem;
+  font-weight: 750;
+  transform: translateY(calc(-100% - 16px));
+  transition: transform 180ms ease;
+}
+
+.skip-link:focus-visible {
+  outline-color: var(--paper-bright);
+  transform: translateY(0);
+}
+
 .scroll-progress {
   position: fixed;
   top: 0;

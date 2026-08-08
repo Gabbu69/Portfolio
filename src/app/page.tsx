@@ -12,6 +12,10 @@ import { portfolio, projectCategories } from "@/data/portfolio";
 export default function Home() {
   return (
     <MotionProvider>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+
       <SiteHeader
         initials={portfolio.identity.initials}
         name={portfolio.identity.shortName}
@@ -19,7 +23,7 @@ export default function Home() {
         github={portfolio.socials.github}
       />
 
-      <main>
+      <main id="main-content">
         <Hero
           identity={portfolio.identity}
           projectCount={portfolio.projects.length}
@@ -45,7 +49,7 @@ export default function Home() {
             index="01"
             eyebrow="Selected work"
             title="Built for real work."
-            description={`${portfolio.projects.length} practical projects across healthcare, agriculture, community tools, and connected systems. Each one started with a specific workflow to improve.`}
+            description={`${portfolio.projects.length} practical projects across healthcare, disaster preparedness, agricultural information, and community tools. Each one started with a specific workflow to improve.`}
           />
           <ProjectShowcase projects={portfolio.projects} categories={projectCategories} />
         </section>

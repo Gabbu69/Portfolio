@@ -24,7 +24,7 @@ const roleTitle = portfolio.identity.role.replace(/\b\w/g, (letter) =>
 );
 const title = `${portfolio.identity.fullName} | ${roleTitle}`;
 const description =
-  `Portfolio of ${portfolio.identity.fullName}, a ${portfolio.identity.role} building practical web, desktop, and IoT prototypes for healthcare, agriculture, and everyday workflows.`;
+  `Portfolio of ${portfolio.identity.fullName}, a ${portfolio.identity.role} building practical applications for healthcare, agriculture, disaster preparedness, and community workflows.`;
 const publicSiteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.VERCEL_PROJECT_PRODUCTION_URL

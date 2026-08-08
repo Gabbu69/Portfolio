@@ -2,7 +2,7 @@ import { ArrowUpRight, Github, Mail } from "lucide-react";
 
 type ContactSectionProps = {
   identity: { fullName: string; email: string; location: string };
-  contact: { eyebrow: string; title: string; body: string };
+  contact: { eyebrow: string; title: string; titleAccent: string; body: string };
   github: string;
 };
 
@@ -19,8 +19,8 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
         </div>
 
         <h2>
-          <span>Have something</span>
-          <strong>useful in mind?</strong>
+          <span>{contact.title}</span>
+          <strong>{contact.titleAccent}</strong>
         </h2>
 
         <a className="contact-email" href={`mailto:${identity.email}`}>

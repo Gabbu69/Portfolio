@@ -116,7 +116,7 @@ export const portfolio = {
       visual: {
         kind: "image",
         src: "/images/usm-hospital-logo.webp",
-        alt: "USM Hospital mark used for the HealthSync prototype",
+        alt: "USM Hospital logo used in the hospital system case study",
         fit: "contain",
       },
     },
@@ -221,7 +221,8 @@ export const portfolio = {
   },
   contact: {
     eyebrow: "Get in touch",
-    title: "Have something in mind? Send me a note.",
+    title: "Have something",
+    titleAccent: "useful in mind?",
     body: "I’m open to full-stack opportunities, collaborations, and straightforward conversations about practical software.",
   },
 } as const;
