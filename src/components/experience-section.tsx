@@ -21,6 +21,7 @@ export function ExperienceSection({ experience }: ExperienceSectionProps) {
       <SectionHeading
         index="02"
         eyebrow="Experience / OJT"
+        jpLabel="経歴"
         title="Inside the workflow."
         description="At USM Hospital, I explored how small software tools could reduce repetitive encoding and make routine information easier to review."
       />

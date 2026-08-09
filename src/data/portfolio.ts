@@ -80,11 +80,11 @@ export const portfolio = {
     portrait: "/images/profile.webp",
   },
   navigation: [
-    { label: "Work", href: "#work" },
-    { label: "Experience", href: "#experience" },
-    { label: "Skills", href: "#skills" },
-    { label: "About", href: "#about" },
-    { label: "Contact", href: "#contact" },
+    { label: "Work", jpLabel: "作品", href: "#work" },
+    { label: "Experience", jpLabel: "経歴", href: "#experience" },
+    { label: "Skills", jpLabel: "技術", href: "#skills" },
+    { label: "About", jpLabel: "自己紹介", href: "#about" },
+    { label: "Contact", jpLabel: "連絡", href: "#contact" },
   ],
   socials: {
     github: "https://github.com/Gabbu69",

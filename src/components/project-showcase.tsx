@@ -112,7 +112,10 @@ export function ProjectShowcase({ projects, categories }: ProjectShowcaseProps) 
   return (
     <div className="project-showcase">
       <div className="project-filter" aria-label="Filter projects by category">
-        <span className="project-filter__title">Filter</span>
+        <span className="project-filter__title">
+          <span lang="ja">作品</span>
+          <small>Project archive</small>
+        </span>
         <div className="project-filter__options">
           {categories.map((category) => {
             const count =

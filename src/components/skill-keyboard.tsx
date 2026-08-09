@@ -85,6 +85,7 @@ export function SkillKeyboard({ skills }: SkillKeyboardProps) {
           aria-live="polite"
         >
           <span className="skill-readout__label">
+            <span lang="ja">技術</span>
             Tool {String(activeIndex + 1).padStart(2, "0")} / {String(skills.length).padStart(2, "0")}
           </span>
           <span className="skill-readout__icon" style={{ color: activeSkill.color }}>

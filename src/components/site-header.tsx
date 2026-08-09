@@ -5,6 +5,7 @@ import { useRef } from "react";
 
 type NavigationItem = {
   label: string;
+  jpLabel: string;
   href: string;
 };
 
@@ -33,8 +34,9 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
         <nav className="nav-pill" aria-label="Main navigation">
           {navigation.map((item, index) => (
             <a key={item.href} href={item.href}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {item.label}
+              <span className="nav-pill__index">{String(index + 1).padStart(2, "0")}</span>
+              <span className="nav-pill__jp" lang="ja">{item.jpLabel}</span>
+              <strong>{item.label}</strong>
             </a>
           ))}
         </nav>
@@ -59,8 +61,9 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
             <nav aria-label="Mobile navigation">
               {navigation.map((item, index) => (
                 <a key={item.href} href={item.href} onClick={closeMobileMenu}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  {item.label}
+                  <span className="mobile-menu__index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="mobile-menu__jp" lang="ja">{item.jpLabel}</span>
+                  <strong>{item.label}</strong>
                 </a>
               ))}
               <a href={github} target="_blank" rel="noreferrer" onClick={closeMobileMenu}>

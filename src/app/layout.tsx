@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, Geist, Geist_Mono } from "next/font/google";
+import { Bebas_Neue, Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
 import { portfolio } from "@/data/portfolio";
 import "./globals.css";
 
@@ -17,6 +17,13 @@ const bebasNeue = Bebas_Neue({
   variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
+});
+
+const notoSansJp = Noto_Sans_JP({
+  variable: "--font-noto-jp",
+  weight: ["500", "700"],
+  display: "swap",
+  preload: false,
 });
 
 const roleTitle = portfolio.identity.role.replace(/\b\w/g, (letter) =>
@@ -102,7 +109,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${notoSansJp.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

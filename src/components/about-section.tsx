@@ -15,6 +15,7 @@ export function AboutSection({ body, closing, principles }: AboutSectionProps) {
       <SectionHeading
         index="04"
         eyebrow="About / approach"
+        jpLabel="自己紹介"
         title="The screen is only half the work."
       />
       <div className="about-grid">
