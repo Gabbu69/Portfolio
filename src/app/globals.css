@@ -11,6 +11,9 @@
   --line-soft: #d1cec6;
   --red: #e5382f;
   --green: #b8c79f;
+  --matrix: #25d366;
+  --matrix-bright: #a7ffbc;
+  --matrix-deep: #075f2d;
   --blue-gray: #c8d0d2;
   --white: #fff;
   --shell: min(1320px, calc(100vw - 48px));
@@ -342,10 +345,11 @@ svg {
   z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   min-height: 28px;
 }
 
+.hero__signal,
 .hero__edition,
 .hero__role,
 .hero-portrait figcaption,
@@ -367,6 +371,24 @@ svg {
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0;
   text-transform: uppercase;
+}
+
+.hero__signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--matrix-deep);
+  font-size: 0.5rem;
+  font-weight: 720;
+}
+
+.hero__signal i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--matrix);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--matrix) 45%, transparent);
+  animation: matrix-signal 2.2s ease-out infinite;
 }
 
 .hero__edition {
@@ -430,6 +452,17 @@ svg {
   white-space: nowrap;
 }
 
+.hero__name::after {
+  position: absolute;
+  inset: 0;
+  content: attr(data-text);
+  opacity: 0;
+  pointer-events: none;
+  color: var(--matrix-deep);
+  text-shadow: -4px 0 var(--paper-bright), 4px 0 var(--red);
+  animation: matrix-name-glitch 7.8s steps(1, end) infinite;
+}
+
 .hero__name--first {
   top: 8%;
   left: 0;
@@ -444,6 +477,13 @@ svg {
   color: var(--red);
   -webkit-text-stroke: 1px var(--paper);
   paint-order: stroke fill;
+}
+
+.hero__name--last::after {
+  color: var(--matrix);
+  -webkit-text-stroke: 1px var(--paper);
+  text-shadow: -5px 0 var(--ink), 5px 0 var(--matrix-bright);
+  animation-delay: -4.2s;
 }
 
 .hero-portrait {
@@ -510,6 +550,103 @@ svg {
   filter: grayscale(1) contrast(1.4) sepia(1) saturate(8) hue-rotate(320deg);
 }
 
+.hero-matrix {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.82;
+  background:
+    linear-gradient(90deg, transparent 0%, rgb(3 30 13 / 0.08) 45%, transparent 100%),
+    linear-gradient(180deg, rgb(167 255 188 / 0.03), rgb(7 95 45 / 0.2));
+  mix-blend-mode: multiply;
+  transition: opacity 500ms ease;
+}
+
+.hero-matrix::before {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  content: "";
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 3px,
+    rgb(167 255 188 / 0.08) 4px
+  );
+}
+
+.hero-matrix__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.45;
+  background-image:
+    linear-gradient(rgb(37 211 102 / 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(37 211 102 / 0.12) 1px, transparent 1px);
+  background-size: 100% 34px, 34px 100%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 88%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 88%, transparent);
+}
+
+.hero-matrix__stream {
+  position: absolute;
+  top: -260px;
+  left: var(--stream-left);
+  z-index: 1;
+  color: var(--matrix-deep);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  opacity: var(--stream-opacity);
+  text-orientation: upright;
+  text-shadow: 0 0 7px var(--matrix-bright);
+  writing-mode: vertical-rl;
+  animation: matrix-rain var(--stream-speed) linear infinite;
+  animation-delay: var(--stream-delay);
+  will-change: transform;
+}
+
+.hero-matrix__scan {
+  position: absolute;
+  top: -2px;
+  right: 0;
+  left: 0;
+  z-index: 3;
+  height: 2px;
+  background: var(--matrix-bright);
+  box-shadow:
+    0 0 10px var(--matrix),
+    0 14px 34px rgb(37 211 102 / 0.28);
+  opacity: 0.8;
+  animation: matrix-scan 4.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.hero-matrix__readout {
+  position: absolute;
+  z-index: 4;
+  padding: 3px 5px;
+  background: rgb(239 237 231 / 0.82);
+  color: var(--matrix-deep);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.hero-matrix__readout--top {
+  top: 9px;
+  right: 9px;
+}
+
+.hero-matrix__readout--bottom {
+  right: 9px;
+  bottom: 9px;
+}
+
 .hero-portrait:hover .hero-portrait__image--main {
   filter: grayscale(0.45) contrast(1.12);
   transform: scale(1.025);
@@ -517,6 +654,10 @@ svg {
 
 .hero-portrait:hover .hero-portrait__echo {
   transform: translateX(-7px);
+}
+
+.hero-portrait:hover .hero-matrix {
+  opacity: 1;
 }
 
 .hero-portrait figcaption {
@@ -1878,6 +2019,69 @@ svg {
   }
 }
 
+@keyframes matrix-rain {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 700px, 0);
+  }
+}
+
+@keyframes matrix-scan {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  12%,
+  78% {
+    opacity: 0.82;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(440px);
+  }
+}
+
+@keyframes matrix-signal {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--matrix) 55%, transparent);
+  }
+  75%,
+  100% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+}
+
+@keyframes matrix-name-glitch {
+  0%,
+  88%,
+  100% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+    transform: translate(0);
+  }
+  89% {
+    clip-path: inset(18% 0 58% 0);
+    opacity: 0.85;
+    transform: translate(-6px, 0);
+  }
+  90% {
+    clip-path: inset(62% 0 12% 0);
+    opacity: 0.65;
+    transform: translate(7px, 0);
+  }
+  91% {
+    clip-path: inset(38% 0 40% 0);
+    opacity: 0.75;
+    transform: translate(-3px, 0);
+  }
+  92% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+  }
+}
+
 @media (max-width: 1200px) {
   .hero__stage h1 {
     font-size: 8.2rem;
@@ -2412,6 +2616,14 @@ svg {
     height: 100%;
   }
 
+  .hero-matrix__stream {
+    font-size: 0.5rem;
+  }
+
+  .hero-matrix__readout--top {
+    display: none;
+  }
+
   .hero__intro {
     line-height: 1.5;
   }
@@ -2571,5 +2783,22 @@ svg {
 
   .process-rail__track {
     animation: none;
+  }
+
+  .hero__signal i,
+  .hero__name::after,
+  .hero-matrix__scan {
+    animation: none;
+  }
+
+  .hero__name::after,
+  .hero-matrix__scan {
+    display: none;
+  }
+
+  .hero-matrix__stream {
+    top: -42px;
+    animation: none;
+    transform: none;
   }
 }

@@ -3,8 +3,23 @@
 import Image from "next/image";
 import { ArrowDown, ArrowUpRight, MapPin } from "lucide-react";
 import { m, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import type { CSSProperties } from "react";
 import { useRef } from "react";
 import profilePortrait from "../../public/images/profile.webp";
+
+const matrixStreams = [
+  { glyphs: "0101GABRIEL101001", left: "3%", delay: "-7.4s", speed: "10.8s", opacity: 0.46 },
+  { glyphs: "10110BUILD01101", left: "12%", delay: "-2.2s", speed: "8.1s", opacity: 0.72 },
+  { glyphs: "001REACT10110010", left: "21%", delay: "-5.8s", speed: "12.4s", opacity: 0.38 },
+  { glyphs: "110010API011101", left: "30%", delay: "-1.1s", speed: "9.3s", opacity: 0.64 },
+  { glyphs: "01DESIGN1001011", left: "39%", delay: "-8.9s", speed: "13.2s", opacity: 0.42 },
+  { glyphs: "101101SHIP00101", left: "48%", delay: "-4.3s", speed: "8.7s", opacity: 0.78 },
+  { glyphs: "001TSX10101100", left: "57%", delay: "-10.1s", speed: "11.6s", opacity: 0.5 },
+  { glyphs: "110FULLSTACK0101", left: "66%", delay: "-3.6s", speed: "9.9s", opacity: 0.68 },
+  { glyphs: "01001DATA11001", left: "75%", delay: "-6.7s", speed: "12.8s", opacity: 0.4 },
+  { glyphs: "101CODE01101011", left: "84%", delay: "-0.5s", speed: "8.4s", opacity: 0.74 },
+  { glyphs: "0110EGP1010011", left: "93%", delay: "-9.6s", speed: "11.1s", opacity: 0.48 },
+] as const;
 
 type HeroProps = {
   identity: {
@@ -42,6 +57,10 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
   return (
     <section className="hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
       <div className="hero__topline">
+        <span className="hero__signal">
+          <i aria-hidden="true" />
+          Build signal / online
+        </span>
         <span className="hero__edition">Independent developer / Mindanao</span>
       </div>
 
@@ -70,6 +89,7 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
           {["Gabriel", "Paclibar"].map((name, index) => (
             <m.span
               className={index === 0 ? "hero__name hero__name--first" : "hero__name hero__name--last"}
+              data-text={name}
               aria-hidden="true"
               key={name}
               variants={{
@@ -107,6 +127,30 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
                 alt=""
                 sizes="(max-width: 760px) 72vw, 34vw"
               />
+            </div>
+            <div className="hero-matrix" aria-hidden="true">
+              <div className="hero-matrix__grid" />
+              {matrixStreams.map((stream) => (
+                <span
+                  className="hero-matrix__stream"
+                  key={`${stream.left}-${stream.glyphs}`}
+                  style={{
+                    "--stream-left": stream.left,
+                    "--stream-delay": stream.delay,
+                    "--stream-speed": stream.speed,
+                    "--stream-opacity": stream.opacity,
+                  } as CSSProperties}
+                >
+                  {stream.glyphs}
+                </span>
+              ))}
+              <span className="hero-matrix__scan" />
+              <span className="hero-matrix__readout hero-matrix__readout--top">
+                EGP://01
+              </span>
+              <span className="hero-matrix__readout hero-matrix__readout--bottom">
+                FULL STACK / ACTIVE
+              </span>
             </div>
           </div>
           <figcaption>
