@@ -3227,6 +3227,75 @@ svg {
   }
 }
 
+/* Pixel signal layer: a restrained digital counterpoint to the editorial hero. */
+.hero-pixels {
+  position: absolute;
+  inset: 1% -1% 4%;
+  z-index: 1;
+  width: 102%;
+  height: 95%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.hero-pixels__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hero-pixels__cell {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.hero-pixels__cell--ink {
+  fill: var(--ink);
+}
+
+.hero-pixels__cell--red {
+  fill: var(--red);
+}
+
+.hero-pixels__cell--signal {
+  fill: var(--signal-blue);
+}
+
+@media (max-width: 760px) {
+  .hero-pixels {
+    inset: 4% -5% 6%;
+    width: 110%;
+    height: 90%;
+    opacity: 0.78;
+  }
+
+  .hero-pixels__cell:nth-child(3n) {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-pixels {
+    inset: 10% -8% 12%;
+    width: 116%;
+    height: 78%;
+    opacity: 0.64;
+  }
+
+  .hero-pixels__cell:nth-child(n + 17) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-pixels,
+  .hero-pixels__cell {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 @keyframes opening-meter {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
@@ -3554,5 +3623,424 @@ svg {
   .hero__architecture,
   .hero__footer {
     animation: none !important;
+  }
+}
+
+/* Compact GitHub archive: the original five case studies remain the primary work. */
+.github-archive {
+  margin-top: clamp(96px, 11vw, 154px);
+  padding-top: 28px;
+  border-top: 2px solid var(--ink);
+}
+
+.github-archive__header {
+  display: grid;
+  grid-template-columns: minmax(110px, 1.3fr) minmax(0, 5fr) minmax(260px, 4fr) auto;
+  align-items: end;
+  margin-bottom: 42px;
+  gap: 24px 34px;
+}
+
+.github-archive__marker,
+.github-archive__count,
+.archive-poster__meta,
+.archive-poster__signal,
+.archive-card__heading,
+.archive-card__stack,
+.archive-card__links {
+  font-family: var(--font-geist-mono), monospace;
+  text-transform: uppercase;
+}
+
+.github-archive__marker {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 0.52rem;
+  font-weight: 700;
+}
+
+.github-archive__marker span {
+  color: var(--red);
+  font-size: 0.76rem;
+}
+
+.github-archive__title .eyebrow {
+  margin-bottom: 9px;
+}
+
+.github-archive__title h3 {
+  max-width: 670px;
+  margin: 0;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(3.2rem, 5.4vw, 5.4rem);
+  font-weight: 400;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.github-archive__intro {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.68;
+}
+
+.github-archive__count {
+  display: grid;
+  min-width: 92px;
+  padding-left: 18px;
+  gap: 4px;
+  border-left: 1px solid var(--line);
+}
+
+.github-archive__count strong {
+  color: var(--red);
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: 2.45rem;
+  font-weight: 400;
+  line-height: 0.8;
+}
+
+.github-archive__count span {
+  max-width: 74px;
+  color: var(--muted);
+  font-size: 0.45rem;
+  line-height: 1.35;
+}
+
+.github-archive__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  gap: 24px;
+  list-style: none;
+}
+
+.archive-card {
+  --archive-accent: var(--red);
+  --archive-contrast: var(--signal-blue);
+  min-width: 0;
+}
+
+.archive-card--ruby {
+  --archive-accent: #ee4c72;
+  --archive-contrast: #ffd5df;
+}
+
+.archive-card--research {
+  --archive-accent: #7bc7d4;
+  --archive-contrast: #d8f3f6;
+}
+
+.archive-card--field {
+  --archive-accent: #c9e26c;
+  --archive-contrast: #f2f7ce;
+}
+
+.archive-card--loyalty {
+  --archive-accent: #de9aff;
+  --archive-contrast: #f0d9ff;
+}
+
+.archive-card--local {
+  --archive-accent: #f0bb4d;
+  --archive-contrast: #fae6ae;
+}
+
+.archive-card--hardware {
+  --archive-accent: #47d3a3;
+  --archive-contrast: #c8f5e4;
+}
+
+.archive-card--hospitality {
+  --archive-accent: #ff725e;
+  --archive-contrast: #ffd9d2;
+}
+
+.archive-card > article {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  background: var(--paper-bright);
+  box-shadow: 6px 6px 0 var(--ink);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease;
+}
+
+.archive-card:nth-child(even) > article {
+  box-shadow: 6px 6px 0 var(--archive-accent);
+}
+
+.archive-card > article:hover {
+  box-shadow: 10px 10px 0 var(--archive-accent);
+  transform: translate(-4px, -4px);
+}
+
+.archive-poster {
+  position: relative;
+  min-height: 214px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--ink);
+  background:
+    linear-gradient(90deg, transparent 0 49.7%, rgb(255 255 255 / 0.08) 49.7% 50.3%, transparent 50.3%),
+    linear-gradient(transparent 0 49.7%, rgb(255 255 255 / 0.08) 49.7% 50.3%, transparent 50.3%),
+    var(--night);
+  color: var(--paper-bright);
+}
+
+.archive-poster__meta {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  left: 16px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  color: var(--archive-contrast);
+  font-size: 0.45rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.archive-poster__matrix {
+  position: absolute;
+  inset: 42px 20px 34px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 5px;
+  opacity: 0.88;
+}
+
+.archive-poster__matrix i {
+  min-width: 0;
+  background: transparent;
+}
+
+.archive-poster--pattern-1 .archive-poster__matrix i:nth-child(3n),
+.archive-poster--pattern-2 .archive-poster__matrix i:nth-child(4n + 1),
+.archive-poster--pattern-3 .archive-poster__matrix i:nth-child(5n + 2),
+.archive-poster--pattern-4 .archive-poster__matrix i:nth-child(3n + 1) {
+  background: var(--archive-accent);
+}
+
+.archive-poster--pattern-1 .archive-poster__matrix i:nth-child(7n + 1),
+.archive-poster--pattern-2 .archive-poster__matrix i:nth-child(6n),
+.archive-poster--pattern-3 .archive-poster__matrix i:nth-child(4n),
+.archive-poster--pattern-4 .archive-poster__matrix i:nth-child(7n + 3) {
+  background: var(--paper-bright);
+  opacity: 0.5;
+}
+
+.archive-poster > strong {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  z-index: 2;
+  color: var(--paper-bright);
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(5.4rem, 8vw, 8.5rem);
+  font-weight: 400;
+  line-height: 0.72;
+  text-shadow: 5px 5px 0 var(--archive-accent);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.archive-card > article:hover .archive-poster > strong {
+  transform: translate(-6px, -3px);
+}
+
+.archive-poster__signal {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  z-index: 3;
+  color: var(--archive-contrast);
+  font-size: 0.43rem;
+  letter-spacing: 0.08em;
+  writing-mode: vertical-rl;
+}
+
+.archive-card__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 24px;
+}
+
+.archive-card__heading {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+}
+
+.archive-card__number {
+  color: var(--red);
+  font-size: 0.56rem;
+  font-weight: 750;
+}
+
+.archive-card__heading p {
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-size: 0.48rem;
+  font-weight: 700;
+}
+
+.archive-card__heading h4 {
+  margin: 0;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(2.1rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 0.9;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.archive-card__summary {
+  margin: 24px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  line-height: 1.66;
+}
+
+.archive-card__note {
+  margin: 16px 0 0;
+  padding: 11px 0 0 12px;
+  border-top: 1px solid var(--line-soft);
+  border-left: 2px solid var(--archive-accent);
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.55;
+}
+
+.archive-card__stack {
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto 0 0;
+  padding: 24px 0 0;
+  gap: 7px;
+  list-style: none;
+}
+
+.archive-card__stack li {
+  padding: 7px 9px;
+  border: 1px solid var(--line-soft);
+  background: var(--paper);
+  font-size: 0.47rem;
+  font-weight: 700;
+}
+
+.archive-card__links {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  gap: 9px;
+}
+
+.archive-card__links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 12px;
+  gap: 7px;
+  border: 1px solid var(--ink);
+  font-size: 0.52rem;
+  font-weight: 750;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.archive-card__links a:first-child {
+  background: var(--ink);
+  color: var(--paper-bright);
+}
+
+.archive-card__links a:hover {
+  background: var(--archive-accent);
+  color: var(--night);
+  transform: translateY(-2px);
+}
+
+.archive-card__links svg {
+  width: 13px;
+  height: 13px;
+}
+
+@media (max-width: 1100px) {
+  .github-archive__header {
+    grid-template-columns: 100px minmax(0, 1fr) auto;
+  }
+
+  .github-archive__intro {
+    grid-column: 2 / -1;
+    max-width: 680px;
+  }
+
+  .github-archive__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .github-archive {
+    margin-top: 88px;
+  }
+
+  .github-archive__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    margin-bottom: 32px;
+  }
+
+  .github-archive__marker,
+  .github-archive__title,
+  .github-archive__intro {
+    grid-column: 1 / -1;
+  }
+
+  .github-archive__count {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .github-archive__title h3 {
+    font-size: clamp(3rem, 14vw, 4.5rem);
+  }
+
+  .github-archive__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-poster {
+    min-height: 196px;
+  }
+}
+
+@media (max-width: 420px) {
+  .archive-card__body {
+    padding: 21px 18px;
+  }
+
+  .archive-card__heading h4 {
+    font-size: 2.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-card > article,
+  .archive-poster > strong,
+  .archive-card__links a {
+    transition: none !important;
+  }
+
+  .archive-card > article:hover,
+  .archive-card > article:hover .archive-poster > strong,
+  .archive-card__links a:hover {
+    transform: none;
   }
 }

@@ -42,6 +42,18 @@ export type Project = {
   visual: ProjectVisual;
 };
 
+export type ArchiveProject = {
+  title: string;
+  code: string;
+  category: Exclude<ProjectCategory, "All">;
+  summary: string;
+  note?: string;
+  stack: readonly string[];
+  repo: string;
+  live?: string;
+  tone: "ruby" | "research" | "field" | "loyalty" | "local" | "hardware" | "hospitality";
+};
+
 export type SkillIcon =
   | "react"
   | "typescript"
@@ -194,6 +206,94 @@ export const portfolio = {
       },
     },
   ] satisfies readonly Project[],
+  archiveProjects: [
+    {
+      title: "Ruby / FLOW_RUBY",
+      code: "RB",
+      category: "Healthcare",
+      summary:
+        "An offline-first cycle-care companion with pill tracking, local Dexie storage, optional Supabase sync, a Capacitor mobile shell, and consent-controlled bring-your-own-key AI connections.",
+      note: "An educational companion, not a medical device or a substitute for professional care.",
+      stack: ["React", "TypeScript", "Capacitor", "Dexie", "Supabase"],
+      repo: "https://github.com/Gabbu69/FLOW_RUBY",
+      live: "https://flow-ruby-app.vercel.app/",
+      tone: "ruby",
+    },
+    {
+      title: "PACS",
+      code: "PX",
+      category: "Research",
+      summary:
+        "A localhost-only research desk for permitted thesis PDFs, evidence review, FTS5/BM25 and TF-IDF search, an auditable analytical data mart, and a validated PQL interpreter.",
+      stack: ["React", "TypeScript", "Express", "SQLite", "PQL"],
+      repo: "https://github.com/Gabbu69/PACS",
+      tone: "research",
+    },
+    {
+      title: "UGNAY",
+      code: "UG",
+      category: "Research",
+      summary:
+        "A Java and Spring research-continuity platform linking problems, studies, objectives, requirements, tests, and outputs through hybrid retrieval, warehouse snapshots, traceability, and RQL.",
+      note: "The source prototype is public; its documented Windows Lite v0.2 release assets are not yet published.",
+      stack: ["Java 21", "Spring Boot", "React", "MySQL", "ONNX"],
+      repo: "https://github.com/Gabbu69/UGNAY",
+      tone: "research",
+    },
+    {
+      title: "GABAY",
+      code: "GB",
+      category: "Research",
+      summary:
+        "A mobile-first palay-price thesis system for verified histories, comparisons across naive, moving-average, SES, and ARIMA forecasts, and explainable Sell, Wait, or Monitor guidance.",
+      note: "A decision-support research prototype; it does not guarantee a future price or profit.",
+      stack: ["Python", "Django", "statsmodels", "PostgreSQL", "PWA"],
+      repo: "https://github.com/Gabbu69/GABAY",
+      tone: "field",
+    },
+    {
+      title: "Loyalty Scan",
+      code: "LS",
+      category: "Community",
+      summary:
+        "A staff-first loyalty system for private QR IDs, fixed visit points, reward redemption, role controls, idempotent operations, row-level security, and an append-only audit ledger.",
+      stack: ["Next.js", "TypeScript", "Supabase", "QR", "Tailwind"],
+      repo: "https://github.com/Gabbu69/Loyalty-scanner",
+      live: "https://loyalty-scanner.vercel.app/",
+      tone: "loyalty",
+    },
+    {
+      title: "Kabacan PicklePlay",
+      code: "KP",
+      category: "Community",
+      summary:
+        "A local court-discovery and booking prototype with verified-listing gates, schedule-based availability, server-authoritative pricing, atomic double-booking protection, and owner and administrator workflows.",
+      stack: ["Laravel", "PHP", "Blade", "Alpine.js", "Leaflet"],
+      repo: "https://github.com/Gabbu69/Pickleball_Kabacan_court_access",
+      tone: "local",
+    },
+    {
+      title: "SiloGuard",
+      code: "SG",
+      category: "Community",
+      summary:
+        "A connected rice-storage monitoring prototype combining ESP32 telemetry with realtime temperature, humidity, air-quality, and moisture dashboards, mold-risk scoring, alerts, rollups, and actuator commands.",
+      stack: ["React", "TypeScript", "Supabase", "ESP32", "Realtime"],
+      repo: "https://github.com/Gabbu69/SiloGuard",
+      tone: "hardware",
+    },
+    {
+      title: "Yaelitos",
+      code: "YA",
+      category: "Community",
+      summary:
+        "A mobile-first restaurant experience with a Supabase Edge Function booking-request pipeline, private staff tools, rate limiting, idempotency, audit activity, CSV export, and customer-data anonymization.",
+      stack: ["HTML", "CSS", "JavaScript", "Supabase"],
+      repo: "https://github.com/Gabbu69/YAELITOS-",
+      live: "https://yaelitos.vercel.app/",
+      tone: "hospitality",
+    },
+  ] satisfies readonly ArchiveProject[],
   skills: [
     { name: "React", icon: "react", color: "#61dafb", note: "Interfaces and reusable systems" },
     { name: "TypeScript", icon: "typescript", color: "#4f9cf9", note: "Safer application code" },

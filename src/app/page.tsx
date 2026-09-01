@@ -1,6 +1,7 @@
 import { AboutSection } from "@/components/about-section";
 import { ContactSection } from "@/components/contact-section";
 import { ExperienceSection } from "@/components/experience-section";
+import { GithubArchive } from "@/components/github-archive";
 import { Hero } from "@/components/hero";
 import { MotionProvider } from "@/components/motion-provider";
 import { OpeningSequence } from "@/components/opening-sequence";
@@ -37,7 +38,7 @@ export default function Home() {
       <main id="main-content">
         <Hero
           identity={portfolio.identity}
-          projectCount={portfolio.projects.length}
+          projectCount={portfolio.projects.length + portfolio.archiveProjects.length}
           workflowCount={portfolio.experience.modules.length}
         />
 
@@ -63,9 +64,10 @@ export default function Home() {
             jpLabel="作品"
             eyebrow="Selected work"
             title="Built for real work."
-            description={`${portfolio.projects.length} practical projects across healthcare, disaster preparedness, agricultural information, and community tools. Each one started with a specific workflow to improve.`}
+            description={`${portfolio.projects.length} selected case studies plus ${portfolio.archiveProjects.length} recent GitHub builds across healthcare, research, agriculture, community tools, and connected systems.`}
           />
           <ProjectShowcase projects={portfolio.projects} categories={projectCategories} />
+          <GithubArchive projects={portfolio.archiveProjects} />
         </section>
 
         <ExperienceSection experience={portfolio.experience} />
