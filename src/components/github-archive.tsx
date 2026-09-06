@@ -3,11 +3,12 @@ import type { ArchiveProject } from "@/data/portfolio";
 
 type GithubArchiveProps = {
   projects: readonly ArchiveProject[];
+  allProjects: readonly ArchiveProject[];
 };
 
 const posterPixels = Array.from({ length: 28 }, (_, index) => index);
 
-export function GithubArchive({ projects }: GithubArchiveProps) {
+export function GithubArchive({ projects, allProjects }: GithubArchiveProps) {
   return (
     <section className="github-archive" aria-labelledby="github-archive-title">
       <header className="github-archive__header">
@@ -17,7 +18,7 @@ export function GithubArchive({ projects }: GithubArchiveProps) {
         </div>
         <div className="github-archive__title">
           <p className="eyebrow">More builds · recent systems</p>
-          <h3 id="github-archive-title">Eight more ways I build.</h3>
+          <h3 id="github-archive-title">More ways I build.</h3>
         </div>
         <p className="github-archive__intro">
           A compact archive of recent full-stack, research, mobile, local-business,
@@ -32,7 +33,7 @@ export function GithubArchive({ projects }: GithubArchiveProps) {
 
       <ol className="github-archive__grid">
         {projects.map((project, index) => {
-          const number = String(index + 1).padStart(2, "0");
+          const number = String(allProjects.findIndex((entry) => entry.repo === project.repo) + 1).padStart(2, "0");
 
           return (
             <li className={`archive-card archive-card--${project.tone}`} key={project.repo}>
@@ -69,13 +70,13 @@ export function GithubArchive({ projects }: GithubArchiveProps) {
                   </ul>
 
                   <div className="archive-card__links">
-                    <a href={project.repo} target="_blank" rel="noreferrer">
+                    <a href={project.repo} target="_blank" rel="noreferrer" aria-label={`View ${project.title} source on GitHub`}>
                       <Github aria-hidden="true" />
                       Source
                       <ArrowUpRight aria-hidden="true" />
                     </a>
                     {project.live ? (
-                      <a href={project.live} target="_blank" rel="noreferrer">
+                      <a href={project.live} target="_blank" rel="noreferrer" aria-label={`Open ${project.title} live project`}>
                         Live project
                         <ArrowUpRight aria-hidden="true" />
                       </a>

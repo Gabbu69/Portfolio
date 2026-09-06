@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
 import { portfolio } from "@/data/portfolio";
+import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,13 +33,9 @@ const roleTitle = portfolio.identity.role.replace(/\b\w/g, (letter) =>
 const title = `${portfolio.identity.fullName} | ${roleTitle}`;
 const description =
   `Portfolio of ${portfolio.identity.fullName}, a ${portfolio.identity.role} building practical applications for healthcare, agriculture, disaster preparedness, and community workflows.`;
-const publicSiteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000");
 export const metadata: Metadata = {
-  metadataBase: new URL(publicSiteUrl),
+  metadataBase: new URL(siteUrl),
+  alternates: { canonical: "/" },
   title: {
     default: title,
     template: "%s | Edgardo Gabriel Paclibar",
@@ -68,6 +65,7 @@ export const metadata: Metadata = {
     "software portfolio",
   ],
   openGraph: {
+    url: "/",
     type: "website",
     locale: "en_PH",
     title,

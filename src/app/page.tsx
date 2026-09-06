@@ -1,7 +1,6 @@
 import { AboutSection } from "@/components/about-section";
 import { ContactSection } from "@/components/contact-section";
 import { ExperienceSection } from "@/components/experience-section";
-import { GithubArchive } from "@/components/github-archive";
 import { Hero } from "@/components/hero";
 import { MotionProvider } from "@/components/motion-provider";
 import { OpeningSequence } from "@/components/opening-sequence";
@@ -66,8 +65,11 @@ export default function Home() {
             title="Built for real work."
             description={`${portfolio.projects.length} selected case studies plus ${portfolio.archiveProjects.length} recent GitHub builds across healthcare, research, agriculture, community tools, and connected systems.`}
           />
-          <ProjectShowcase projects={portfolio.projects} categories={projectCategories} />
-          <GithubArchive projects={portfolio.archiveProjects} />
+          <ProjectShowcase
+            projects={portfolio.projects}
+            archiveProjects={portfolio.archiveProjects}
+            categories={projectCategories}
+          />
         </section>
 
         <ExperienceSection experience={portfolio.experience} />

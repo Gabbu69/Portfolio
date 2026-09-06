@@ -1,4 +1,4 @@
-import { ArrowUpRight, Github, Mail } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Github, Mail } from "lucide-react";
 
 type ContactSectionProps = {
   identity: { fullName: string; email: string; location: string };
@@ -38,6 +38,7 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
           <a href={github} target="_blank" rel="noreferrer">
             <Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" />
           </a>
+          <a href="#top">Back to top <ArrowUp aria-hidden="true" /></a>
         </div>
       </div>
     </footer>

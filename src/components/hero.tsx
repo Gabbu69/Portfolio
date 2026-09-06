@@ -139,7 +139,7 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
           id="hero-title"
           aria-label={identity.fullName}
           style={{ y: reduceMotion ? 0 : titleY }}
-          initial={reduceMotion ? false : "hidden"}
+          initial={false}
           animate="visible"
           variants={{
             hidden: {},
@@ -167,7 +167,7 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
         <m.figure
           className="hero-portrait"
           style={{ y: reduceMotion ? 0 : portraitY }}
-          initial={reduceMotion ? false : { clipPath: "inset(0 0 100% 0)" }}
+          initial={false}
           animate={{ clipPath: "inset(0 0 0% 0)" }}
           transition={{ duration: reduceMotion ? 0 : 0.92, delay: reduceMotion ? 0 : 1.02, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -200,11 +200,11 @@ export function Hero({ identity, projectCount, workflowCount }: HeroProps) {
         </div>
 
         <div className="hero__actions">
-          <a className="button button--primary" href={`mailto:${identity.email}`}>
-            Start a conversation <ArrowUpRight aria-hidden="true" />
-          </a>
-          <a className="button button--quiet" href="#work">
+          <a className="button button--primary" href="#work">
             Explore my work <ArrowDown aria-hidden="true" />
+          </a>
+          <a className="button button--quiet" href={`mailto:${identity.email}`}>
+            Start a conversation <ArrowUpRight aria-hidden="true" />
           </a>
         </div>
 

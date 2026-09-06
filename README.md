@@ -6,10 +6,10 @@ The included development and build scripts use Next.js's Webpack mode so the pro
 
 ## Run locally
 
-Use Node.js 20.9 or newer.
+Use Node.js 24.x, matching the Vercel runtime pinned in `package.json`.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -74,6 +74,10 @@ npm run lint
 npm run build
 ```
 
-If the public URL is known, add it to the site metadata and use it when adding a sitemap or canonical URL. The repository intentionally does not guess a deployment domain.
+The production site is [portfolio-eta-inky-60.vercel.app](https://portfolio-eta-inky-60.vercel.app). The connected GitHub repository is `Gabbu69/Portfolio`, with production deployments from `main`.
 
-For correct absolute social metadata outside Vercel, set `NEXT_PUBLIC_SITE_URL` to the final URL (for example, `https://your-domain.com`). Vercel deployments automatically use `VERCEL_PROJECT_PRODUCTION_URL` when that variable is available.
+`vercel.json` selects the Next.js framework, `npm ci`, and `npm run build`. Leave Vercel's output directory at its Next.js default; `dist` belongs to the separate `build:sites` adapter. No database or secret environment variables are needed for this portfolio.
+
+Canonical links, social metadata, `robots.txt`, and `sitemap.xml` use the same production origin in `src/lib/site-url.ts`. To move to a custom domain, set `NEXT_PUBLIC_SITE_URL` to its complete HTTPS URL. Otherwise Vercel's `VERCEL_PROJECT_PRODUCTION_URL` is used, with the public production address as the fallback.
+
+After deploying, verify the Vercel success status belongs to the pushed commit. Open the public site and check search and category filters across both selected and archive projects, mobile navigation, toolkit selection, images, and contact links. Also request `/robots.txt`, `/sitemap.xml`, and a missing page (which should return HTTP 404).
