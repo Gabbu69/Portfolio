@@ -3,26 +3,16 @@ import { ContactSection } from "@/components/contact-section";
 import { ExperienceSection } from "@/components/experience-section";
 import { Hero } from "@/components/hero";
 import { MotionProvider } from "@/components/motion-provider";
-import { OpeningSequence } from "@/components/opening-sequence";
+import { ProcessRail } from "@/components/process-rail";
 import { ProjectShowcase } from "@/components/project-showcase";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteHeader } from "@/components/site-header";
 import { SkillKeyboard } from "@/components/skill-keyboard";
 import { portfolio, projectCategories } from "@/data/portfolio";
 
-const processSteps = [
-  { jpLabel: "観察", label: "Observe" },
-  { jpLabel: "設計", label: "Design" },
-  { jpLabel: "構築", label: "Build" },
-  { jpLabel: "検証", label: "Test" },
-  { jpLabel: "改善", label: "Refine" },
-] as const;
-
 export default function Home() {
   return (
     <MotionProvider>
-      <OpeningSequence initials={portfolio.identity.initials} name={portfolio.identity.fullName} />
-
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
@@ -38,24 +28,9 @@ export default function Home() {
         <Hero
           identity={portfolio.identity}
           projectCount={portfolio.projects.length + portfolio.archiveProjects.length}
-          workflowCount={portfolio.experience.modules.length}
         />
 
-        <div className="process-rail" aria-label="Gabriel's working process">
-          <div className="process-rail__track">
-            {[0, 1].map((copy) => (
-              <div className="process-rail__set" aria-hidden={copy === 1} key={copy}>
-                {processSteps.map((step, index) => (
-                  <span className="process-rail__step" key={step.label}>
-                    <span lang="ja">{step.jpLabel}</span>
-                    <b>{step.label}</b>
-                    <i>{String(index + 1).padStart(2, "0")}</i>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
+        <ProcessRail />
 
         <section className="page-section" id="work">
           <SectionHeading

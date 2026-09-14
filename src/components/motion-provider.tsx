@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import {
-  domAnimation,
+  domMax,
   LazyMotion,
   m,
   MotionConfig,
@@ -37,7 +37,7 @@ function ScrollProgress() {
 
 export function MotionProvider({ children }: MotionProviderProps) {
   return (
-    <LazyMotion features={domAnimation} strict>
+    <LazyMotion features={domMax} strict>
       <MotionConfig reducedMotion="user">
         <ScrollProgress />
         {children}

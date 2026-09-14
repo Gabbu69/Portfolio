@@ -149,6 +149,7 @@ export function ProjectShowcase({ projects, archiveProjects, categories }: Proje
                 key={category}
                 onClick={() => setActiveCategory(category)}
               >
+                {isActive ? <m.span className="project-filter__active" layoutId="project-filter-active" transition={{ duration: reduceMotion ? 0 : 0.25, ease: [0.16, 1, 0.3, 1] }} /> : null}
                 <span>{category}</span>
                 <small>{String(count).padStart(2, "0")}</small>
               </button>

@@ -25,6 +25,14 @@ npm start
 
 Run `npm start` only after `npm run build` completes.
 
+## Appearance and motion
+
+The Japanese editorial presentation is in `src/app/japanese.css`, with shared component foundations in `src/app/globals.css`. The hero uses the existing portrait, a vermilion sun, Japanese typography, and an opening paper-shutter animation. Its layout changes for phones rather than shrinking the desktop composition.
+
+The header's day/night button follows the system preference initially and saves an explicit choice under `gab-portfolio-theme`. An early initialization script applies it before hydration; changes also sync across tabs. Supporting browsers reveal the new palette from the button, while reduced-motion users get an immediate switch. The moving process strip includes a pause control and stops when offscreen or when the page is hidden.
+
+Keep responsive checks at 320px, 390px, 768px, and desktop width when changing the design. Check both themes, keyboard navigation, menu dismissal, project search/reset, toolkit selection, and reduced-motion styling. Browser viewport checks do not replace physical iOS/Android device testing.
+
 ## Edit portfolio content
 
 The main content source is [`src/data/portfolio.ts`](src/data/portfolio.ts). Edit its exported objects and arrays to change the profile, introduction, OJT details, projects, skills, links, and contact information. Keeping content in this file avoids having to rewrite the page components.
