@@ -1,6 +1,6 @@
 # Edgardo Gabriel Paclibar - Portfolio
 
-A responsive portfolio for full-stack developer Edgardo Gabriel Paclibar. It is built with Next.js, React, TypeScript, Tailwind CSS, and Motion.
+A responsive portfolio for aspiring software engineer Edgardo Gabriel Paclibar. It is built with Next.js, React, TypeScript, Tailwind CSS, and Motion.
 
 The included development and build scripts use Next.js's Webpack mode so the project also works reliably from OneDrive-synced Windows folders.
 
@@ -19,11 +19,31 @@ Available checks and production commands:
 
 ```bash
 npm run lint
+npm test
 npm run build
 npm start
 ```
 
 Run `npm start` only after `npm run build` completes.
+
+## GitHub contribution calendar
+
+The calendar loads the public contribution graph for `Gabbu69` through `GET /api/github-activity`. It needs no token, database, or third-party service. The server reads GitHub's public contribution HTML and returns only validated dates, daily counts, intensity levels, the annual total, and the successful fetch time. Project cards are curated separately; LabTrack QR is excluded from those cards, while the contribution calendar shows the account-wide totals visible on GitHub.
+
+The server caches successful normalized data for one hour, refreshing when a request arrives after that period. It does not cache unchecked upstream HTML. A failed or malformed refresh preserves the previous successful calendar. When no valid cached result exists, the API returns a generic HTTP 503 and the UI offers the GitHub profile link. The API response itself uses `Cache-Control: no-store`, so the persistent server cache controls freshness without a second browser/CDN cache layer.
+
+This uses GitHub's own public HTML rather than a documented calendar API, so markup changes may require a parser update. The parser joins each dated cell with its associated tooltip, validates a complete contiguous date range, and checks the annual total against daily counts. GitHub may take up to 24 hours to count a new qualifying contribution; hourly refresh does not make contribution processing instantaneous. The displayed `fetchedAt` means the data was checked at that time, and dates retain GitHub's calendar values. See [GitHub's contribution reference](https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference) and [contribution delays](https://docs.github.com/en/account-and-profile/how-tos/contribution-settings/troubleshooting-missing-contributions).
+
+`npm test` covers reordered cells/tooltips, counts, empty valid calendars, invalid dates and totals, malformed responses, and loader failures. To verify persistent cache behavior after a production build, run:
+
+```bash
+npm run build
+npm run test:github-cache
+```
+
+The cache check copies the production build into a disposable directory under ignored `work/`, excluding the original cache. A separate child server uses simulated upstream responses and a controlled clock to verify cold-cache HTTP 503, hourly refresh, preservation after malformed HTTP 200 and transport failure, and recovery. Its fixtures and cache never enter the actual preview's `.next/cache`; the application has no public test controls.
+
+For a browser check of the unavailable state, `npm run test:github-cache -- --preview-unavailable` keeps a separate isolated preview running and prints its local URL and control-file path. Set `shutdown` to `true` in that isolated control file when finished; the helper stops the server and removes its disposable files.
 
 ## Appearance and motion
 

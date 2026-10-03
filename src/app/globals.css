@@ -3142,7 +3142,7 @@ svg {
   padding: 7px 10px;
   background: var(--red);
   color: var(--white);
-  content: "FEATURED / 主作品";
+  content: "FEATURED";
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.45rem;
   font-weight: 700;

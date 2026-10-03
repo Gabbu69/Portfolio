@@ -59,7 +59,7 @@ export function ThemeToggle() {
   return (
     <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`} title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>
       <span className="theme-toggle__icons"><Sun className="theme-toggle__sun" aria-hidden="true" /><Moon className="theme-toggle__moon" aria-hidden="true" /></span>
-      <span className="theme-toggle__label"><span className="theme-toggle__day">Day <span lang="ja">昼</span></span><span className="theme-toggle__night">Night <span lang="ja">夜</span></span></span>
+      <span className="theme-toggle__label"><span className="theme-toggle__day">Day</span><span className="theme-toggle__night">Night</span></span>
     </button>
   );
 }

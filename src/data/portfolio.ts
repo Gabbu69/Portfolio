@@ -83,20 +83,20 @@ export const portfolio = {
     fullName: "Edgardo Gabriel Paclibar",
     shortName: "Gabriel Paclibar",
     initials: "EGP",
-    role: "Full-stack developer",
+    role: "Aspiring Software Engineer",
     email: "gabriellimjuco@gmail.com",
     location: "Kabacan, Cotabato, Philippines",
     headline: "Useful software, built around real work.",
     intro:
-      "I’m Gabriel, a full-stack developer from Cotabato. I turn repetitive or confusing workflows into straightforward web apps, desktop tools, and connected prototypes.",
+      "I’m Gabriel, an aspiring software engineer from Cotabato with hands-on experience in full-stack development. I build practical web apps, desktop tools, and connected prototypes around real workflows.",
     portrait: "/images/profile.webp",
   },
   navigation: [
-    { label: "Work", jpLabel: "作品", href: "#work" },
-    { label: "Experience", jpLabel: "経歴", href: "#experience" },
-    { label: "Skills", jpLabel: "技術", href: "#skills" },
-    { label: "About", jpLabel: "自己紹介", href: "#about" },
-    { label: "Contact", jpLabel: "連絡", href: "#contact" },
+    { label: "Work", href: "#work" },
+    { label: "Experience", href: "#experience" },
+    { label: "Skills", href: "#skills" },
+    { label: "About", href: "#about" },
+    { label: "Contact", href: "#contact" },
   ],
   socials: {
     github: "https://github.com/Gabbu69",
@@ -114,6 +114,24 @@ export const portfolio = {
     modules: ["YAKAP", "X-ray", "Laboratory", "Pharmacy"],
   },
   projects: [
+    {
+      title: "PaSiBudget",
+      eyebrow: "Rice-farm planning · offline prototype",
+      category: "Community",
+      featured: true,
+      summary:
+        "A bilingual offline rice-farm planner connecting budget assumptions, recorded expenses, harvest, sales, and break-even scenarios, with reports and validated backup/restore.",
+      note: "A planning research prototype using decimal arithmetic and local browser storage. Sample values are demonstrations, not verified farm costs or market prices.",
+      stack: ["React", "TypeScript", "Vite", "Dexie", "decimal.js", "PWA"],
+      repo: "https://github.com/Gabbu69/PaSiBudget",
+      live: "https://pasibudget.vercel.app",
+      visual: {
+        kind: "interface",
+        label: "PaSiBudget",
+        detail: "Offline · bilingual · break-even",
+        tone: "market",
+      },
+    },
     {
       title: "USM Hospital System",
       eyebrow: "Hospital operations · full stack",
@@ -141,7 +159,7 @@ export const portfolio = {
       summary:
         "A prototype label-screening tool that combines OCR, ingredient classification, and rule-based checks to explain its findings.",
       note: "Supports informed checking; it does not replace an authorized halal certifying body.",
-      stack: ["Next.js", "TypeScript", "Python", "OCR"],
+      stack: ["React", "TypeScript", "Flask", "OCR"],
       repo: "https://github.com/Gabbu69/HalalScan",
       live: "https://halal-scan-seven.vercel.app",
       visual: {
@@ -179,7 +197,6 @@ export const portfolio = {
       note: "Uses a simulated real-time trading experience to make agricultural price information easier to compare and understand.",
       stack: ["React", "TypeScript", "Tailwind", "Recharts"],
       repo: "https://github.com/Gabbu69/AgriPresyo",
-      live: "https://agripresyo-dusky.vercel.app",
       visual: {
         kind: "interface",
         label: "AgriPresyo",
@@ -208,12 +225,45 @@ export const portfolio = {
   ] satisfies readonly Project[],
   archiveProjects: [
     {
+      title: "AniTala",
+      code: "AT",
+      category: "Research",
+      summary:
+        "A Java application connecting harvest intake, produce sales, FEFO inventory, waste, and audit-safe sale voiding to repeatable warehouse ETL, Apriori rules, and K-means buyer segmentation.",
+      note: "A local classroom prototype with synthetic teaching data; its mining patterns are not findings about real agricultural behavior.",
+      stack: ["Java", "Javalin", "SQLite", "JavaScript", "JDBC", "JUnit"],
+      repo: "https://github.com/Gabbu69/AniTala_v2",
+      tone: "field",
+    },
+    {
+      title: "ScopeWatch",
+      code: "SW",
+      category: "Research",
+      summary:
+        "A requirements-traceability workspace linking problems, objectives, features, tests, evidence, and change decisions, with server-side membership checks and deterministic scope-risk findings.",
+      note: "A workspace prototype with private deployment access; the public source documents its authorization and audit behavior.",
+      stack: ["Next.js", "TypeScript", "Cloudflare D1", "R2", "Drizzle", "Supabase Auth"],
+      repo: "https://github.com/Gabbu69/ScopeWatch",
+      tone: "research",
+    },
+    {
+      title: "YAKAP Consulta",
+      code: "YK",
+      category: "Healthcare",
+      summary:
+        "A financial-monitoring prototype connecting beneficiary readiness, service costs, receivables, payments, co-payments, variances, and reports through role controls and traceable audit history.",
+      note: "The demo uses fictional records. It does not submit data to PhilHealth or claim accreditation or medical-system certification.",
+      stack: ["Laravel", "React", "TypeScript", "Inertia", "SQLite"],
+      repo: "https://github.com/Gabbu69/YAKAP-Consulta-Financial-Monitoring-System",
+      tone: "local",
+    },
+    {
       title: "Ruby / FLOW_RUBY",
       code: "RB",
       category: "Healthcare",
       summary:
-        "An offline-first cycle-care companion with pill tracking, local Dexie storage, optional Supabase sync, a Capacitor mobile shell, and consent-controlled bring-your-own-key AI connections.",
-      note: "An educational companion, not a medical device or a substitute for professional care.",
+        "An offline-first educational cycle-care prototype with pill tracking, local Dexie storage, a Capacitor mobile shell, optional single-tenant Supabase sync, and consent-controlled bring-your-own-key AI connections.",
+      note: "Cloud sync needs owner-scoped authentication before public multi-user use. Cycle estimates are informational and are not contraception or medical advice.",
       stack: ["React", "TypeScript", "Capacitor", "Dexie", "Supabase"],
       repo: "https://github.com/Gabbu69/FLOW_RUBY",
       live: "https://flow-ruby-app.vercel.app/",
@@ -287,8 +337,9 @@ export const portfolio = {
       code: "YA",
       category: "Community",
       summary:
-        "A mobile-first restaurant experience with a Supabase Edge Function booking-request pipeline, private staff tools, rate limiting, idempotency, audit activity, CSV export, and customer-data anonymization.",
-      stack: ["HTML", "CSS", "JavaScript", "Supabase"],
+        "A mobile-first restaurant website with a Supabase booking-request pipeline, Turnstile checks, private staff and owner tools, request-status updates, audit activity, CSV export, and customer-data anonymization.",
+      note: "Customers submit requests for staff review; the workflow does not automatically confirm bookings or process online payments.",
+      stack: ["HTML", "CSS", "JavaScript", "Supabase", "Turnstile"],
       repo: "https://github.com/Gabbu69/YAELITOS-",
       live: "https://yaelitos.vercel.app/",
       tone: "hospitality",
@@ -313,9 +364,11 @@ export const portfolio = {
   ] satisfies readonly Skill[],
   about: {
     body:
-      "I’m happiest when I can follow a feature all the way through—from the first rough screen to the API and database behind it. Most of my projects start with a workflow that feels slower or more confusing than it needs to be.",
+      "I like following a feature from its interface through the API and database, then testing that the pieces work together. Most of my projects start with a workflow that feels slower or more confusing than it needs to be.",
     closing:
-      "I’m early in my career and looking for a full-stack role where I can learn from a good team, contribute honestly, and keep building useful things.",
+      "I’m early in my career and looking for software engineering opportunities where I can learn from a team, contribute to interfaces, APIs, databases, and testing, and keep building useful things.",
+    designNote:
+      "The Japanese accents reflect my interest in Japanese typography and editorial design.",
     principles: [
       { number: "01", title: "Start with the workflow", text: "Understand what someone is already doing before changing the screen." },
       { number: "02", title: "Make the state obvious", text: "Use plain language, clear feedback, and data people can verify." },
@@ -326,6 +379,6 @@ export const portfolio = {
     eyebrow: "Get in touch",
     title: "Have something",
     titleAccent: "useful in mind?",
-    body: "I’m open to full-stack opportunities, collaborations, and straightforward conversations about practical software.",
+    body: "I’m open to early-career software engineering roles, collaborations, and conversations about practical software. I’m looking for a team where I can contribute and keep learning.",
   },
 } as const;

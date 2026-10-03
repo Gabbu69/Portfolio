@@ -4,6 +4,7 @@ import { portfolio } from "@/data/portfolio";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 import "./japanese.css";
+import "./github-activity.css";
 
 const themeScript = `(function(){var t;try{t=localStorage.getItem('gab-portfolio-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#181917':'#f4f0e7'})()`;
 
@@ -35,7 +36,7 @@ const roleTitle = portfolio.identity.role.replace(/\b\w/g, (letter) =>
 );
 const title = `${portfolio.identity.fullName} | ${roleTitle}`;
 const description =
-  `Portfolio of ${portfolio.identity.fullName}, a ${portfolio.identity.role} building practical applications for healthcare, agriculture, disaster preparedness, and community workflows.`;
+  `Portfolio of ${portfolio.identity.fullName}, an aspiring software engineer with hands-on full-stack development experience building practical applications for healthcare, agriculture, research, and community workflows.`;
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   alternates: { canonical: "/" },
@@ -59,7 +60,9 @@ export const metadata: Metadata = {
   },
   keywords: [
     "Edgardo Gabriel Paclibar",
-    "full-stack developer",
+    "aspiring software engineer",
+    "software engineering",
+    "full-stack development",
     "React developer",
     "TypeScript developer",
     "Next.js developer",
@@ -76,10 +79,10 @@ export const metadata: Metadata = {
     siteName: `${portfolio.identity.fullName} Portfolio`,
     images: [
       {
-        url: "/og.png",
-        width: 1744,
-        height: 900,
-        alt: `${portfolio.identity.fullName} — Full-stack developer portfolio`,
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `${portfolio.identity.fullName} — ${portfolio.identity.role} portfolio`,
       },
     ],
   },
@@ -87,7 +90,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/og.png"],
+    images: ["/opengraph-image"],
   },
   other: {
     "contact:email": portfolio.identity.email,

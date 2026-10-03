@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
+import { portfolio } from "@/data/portfolio";
 
 type OpeningSequenceProps = {
   initials: string;
@@ -30,8 +31,7 @@ export function OpeningSequence({ initials, name }: OpeningSequenceProps) {
 
       <div className="opening-sequence__seal">{initials}</div>
       <div className="opening-sequence__role">
-        <span lang="ja">開発者</span>
-        <small>Full-stack developer</small>
+        <small>{portfolio.identity.role}</small>
       </div>
       <strong className="opening-sequence__name">{name}</strong>
       <span className="opening-sequence__place">Kabacan / Cotabato</span>

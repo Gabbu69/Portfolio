@@ -146,11 +146,11 @@ h1, h2, h3 { text-wrap: balance; }
 .page-section { padding-block: 96px; }
 .section-heading { gap: 28px; margin-bottom: 48px; }
 .section-heading__marker { border-color: var(--line-soft); }
-.section-heading__marker > span:first-child, .section-heading__marker > strong { display: none; }
+.section-heading__marker > span:first-child, .section-heading__marker > strong { display: block; }
 .section-heading__jp { font-size: 1.15rem; color: var(--red); }
 .section-heading h2 { font-size: clamp(2.6rem, 4.6vw, 4.3rem); line-height: .98; }
 .section-heading__description { font-size: .95rem; line-height: 1.7; color: var(--muted); }
-.section-heading__copy .eyebrow { display: none; }
+.section-heading__copy .eyebrow { display: block; }
 .project-filter { border-color: var(--line-soft); }
 .project-filter__options { gap: 4px; }
 .project-filter button { position: relative; isolation: isolate; border-color: transparent; padding-inline: 20px; font-family: var(--font-geist-sans), sans-serif; font-size: .85rem; min-height: 46px; transition: color 180ms, background 180ms, transform 180ms; }
@@ -215,7 +215,7 @@ h1, h2, h3 { text-wrap: balance; }
 .contact-section h2 { font-size: clamp(3.3rem, 7vw, 6rem); line-height: .95; margin-block: 60px 40px; }
 .contact-section h2 strong { color: #ef8a70; }
 .contact-section__heading > p { font-size: .95rem; }
-.contact-section__label > span, .contact-section__label .eyebrow { display: none; }
+.contact-section__label > span, .contact-section__label .eyebrow { display: block; }
 .contact-section__jp { color: #ef8a70; }
 .contact-email { font-size: clamp(.9rem, 2.3vw, 1.6rem); }
 .footer-row a { color: var(--inverse-ink); }

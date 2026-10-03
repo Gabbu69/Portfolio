@@ -129,7 +129,7 @@ export function ProjectShowcase({ projects, archiveProjects, categories }: Proje
     <div className="project-showcase">
       <div className="project-filter" aria-label="Filter projects by category">
         <span className="project-filter__title">
-          <span lang="ja">作品</span>
+          <span>Projects</span>
           <small>Explore the work</small>
         </span>
         <div className="project-filter__options">

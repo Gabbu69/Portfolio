@@ -13,7 +13,7 @@ export function GithubArchive({ projects, allProjects }: GithubArchiveProps) {
     <section className="github-archive" aria-labelledby="github-archive-title">
       <header className="github-archive__header">
         <div className="github-archive__marker">
-          <span lang="ja">追加作品</span>
+          <span>More builds</span>
           <small>GitHub archive</small>
         </div>
         <div className="github-archive__title">
@@ -23,7 +23,7 @@ export function GithubArchive({ projects, allProjects }: GithubArchiveProps) {
         <p className="github-archive__intro">
           A compact archive of recent full-stack, research, mobile, local-business,
           and connected-device work. Every description follows the public source;
-          live links appear only where a working demo is available.
+          live links point to public demos where available.
         </p>
         <div className="github-archive__count" aria-label={`${projects.length} additional projects`}>
           <strong>{String(projects.length).padStart(2, "0")}</strong>

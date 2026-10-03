@@ -1,6 +1,7 @@
 import { AboutSection } from "@/components/about-section";
 import { ContactSection } from "@/components/contact-section";
 import { ExperienceSection } from "@/components/experience-section";
+import { GithubActivity } from "@/components/github-activity";
 import { Hero } from "@/components/hero";
 import { MotionProvider } from "@/components/motion-provider";
 import { ProcessRail } from "@/components/process-rail";
@@ -32,10 +33,11 @@ export default function Home() {
 
         <ProcessRail />
 
+        <GithubActivity github={portfolio.socials.github} />
+
         <section className="page-section" id="work">
           <SectionHeading
             index="01"
-            jpLabel="作品"
             eyebrow="Selected work"
             title="Built for real work."
             description={`${portfolio.projects.length} selected case studies plus ${portfolio.archiveProjects.length} recent GitHub builds across healthcare, research, agriculture, community tools, and connected systems.`}
@@ -52,7 +54,6 @@ export default function Home() {
         <section className="page-section skills-section" id="skills">
           <SectionHeading
             index="03"
-            jpLabel="技術"
             eyebrow="Toolkit"
             title="A stack with range."
             description="I choose the stack around the problem, but these are the technologies I keep coming back to."

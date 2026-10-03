@@ -6,7 +6,6 @@ import { ThemeToggle } from "@/components/theme-toggle";
 
 type NavigationItem = {
   label: string;
-  jpLabel: string;
   href: string;
 };
 
@@ -66,7 +65,6 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
           {navigation.map((item, index) => (
             <a key={item.href} href={item.href} aria-current={activeSection === item.href ? "location" : undefined}>
               <span className="nav-pill__index">{String(index + 1).padStart(2, "0")}</span>
-              <span className="nav-pill__jp" lang="ja">{item.jpLabel}</span>
               <strong>{item.label}</strong>
             </a>
           ))}
@@ -99,7 +97,6 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
                   target?.focus({ preventScroll: true });
                 }}>
                   <span className="mobile-menu__index">{String(index + 1).padStart(2, "0")}</span>
-                  <span className="mobile-menu__jp" lang="ja">{item.jpLabel}</span>
                   <strong>{item.label}</strong>
                 </a>
               ))}

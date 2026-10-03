@@ -21,7 +21,7 @@ export function Hero({ identity, projectCount }: HeroProps) {
   return (
     <section className="folio-hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
       <div className="folio-hero__edition">
-        <span><span lang="ja">ポートフォリオ</span> / Selected works</span>
+        <span>Portfolio / Selected works</span>
         <span>Mindanao, Philippines <span className="folio-hero__year">© 2026</span></span>
       </div>
       <div className="folio-hero__layout">
@@ -41,17 +41,17 @@ export function Hero({ identity, projectCount }: HeroProps) {
         </div>
         <div className="folio-art">
           <m.div className="folio-art__sun" style={{ y: reduceMotion ? 0 : sunY }} aria-hidden="true" />
-          <span className="folio-art__vertical" lang="ja" aria-hidden="true">丁寧につくる</span>
+          <span className="folio-art__vertical" aria-hidden="true">Built with care</span>
           <figure className="folio-art__portrait">
             <div className="folio-art__image-wrap">
               <Image src={profilePortrait} alt={`Portrait of ${identity.fullName}`} preload placeholder="blur" sizes="(max-width: 600px) 68vw, (max-width: 1000px) 38vw, 360px" />
               <span className="folio-art__shutter folio-art__shutter--left" aria-hidden="true" />
               <span className="folio-art__shutter folio-art__shutter--right" aria-hidden="true" />
             </div>
-            <figcaption><span>Gabriel Paclibar</span><span lang="ja">開発者 / Developer</span></figcaption>
+            <figcaption><span>Gabriel Paclibar</span><span>Developer</span></figcaption>
           </figure>
-          <span className="folio-art__seal" aria-hidden="true"><span lang="ja">創造</span><small>CREATE</small></span>
-          <div className="folio-art__caption"><span lang="ja">日々、改善。</span><span>Always learning.<br />Always building.</span></div>
+          <span className="folio-art__seal" aria-hidden="true"><span>EGP</span><small>CREATE</small></span>
+          <div className="folio-art__caption"><span>Keep refining.</span><span>Always learning.<br />Always building.</span></div>
         </div>
       </div>
       <div className="folio-hero__footer">

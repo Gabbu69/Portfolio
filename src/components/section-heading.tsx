@@ -5,7 +5,6 @@ import { m, useReducedMotion } from "motion/react";
 type SectionHeadingProps = {
   index: string;
   eyebrow: string;
-  jpLabel: string;
   title: string;
   description?: string;
 };
@@ -34,7 +33,6 @@ const copyVariants = {
 export function SectionHeading({
   index,
   eyebrow,
-  jpLabel,
   title,
   description,
 }: SectionHeadingProps) {
@@ -55,7 +53,6 @@ export function SectionHeading({
       >
         <span>Section</span>
         <strong>{index}</strong>
-        <span className="section-heading__jp" lang="ja">{jpLabel}</span>
       </m.div>
       <m.div
         className="section-heading__copy"

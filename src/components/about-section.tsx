@@ -6,16 +6,16 @@ type Principle = { number: string; title: string; text: string };
 type AboutSectionProps = {
   body: string;
   closing: string;
+  designNote?: string;
   principles: readonly Principle[];
 };
 
-export function AboutSection({ body, closing, principles }: AboutSectionProps) {
+export function AboutSection({ body, closing, designNote, principles }: AboutSectionProps) {
   return (
     <section className="page-section about-section" id="about">
       <SectionHeading
         index="04"
         eyebrow="About / approach"
-        jpLabel="自己紹介"
         title="The screen is only half the work."
       />
       <div className="about-grid">
@@ -23,6 +23,7 @@ export function AboutSection({ body, closing, principles }: AboutSectionProps) {
           <ArrowDownRight className="about-copy__arrow" aria-hidden="true" />
           <p className="about-copy__lead">{body}</p>
           <p className="about-copy__closing">{closing}</p>
+          {designNote ? <p className="about-copy__design-note">{designNote}</p> : null}
           <span className="about-copy__signature" aria-hidden="true">EGP / 2026</span>
         </div>
         <div className="principles-list" aria-label="Working principles">
