@@ -43,14 +43,16 @@ export function Hero({ identity, projectCount }: HeroProps) {
           <m.div className="folio-art__sun" style={{ y: reduceMotion ? 0 : sunY }} aria-hidden="true" />
           <span className="folio-art__vertical" aria-hidden="true">Built with care</span>
           <figure className="folio-art__portrait">
-            <div className="folio-art__image-wrap">
-              <Image src={profilePortrait} alt={`Portrait of ${identity.fullName}`} preload placeholder="blur" sizes="(max-width: 600px) 68vw, (max-width: 1000px) 38vw, 360px" />
-              <span className="folio-art__shutter folio-art__shutter--left" aria-hidden="true" />
-              <span className="folio-art__shutter folio-art__shutter--right" aria-hidden="true" />
+            <div className="folio-art__photo">
+              <div className="folio-art__image-wrap">
+                <Image src={profilePortrait} alt={`Portrait of ${identity.fullName}`} preload placeholder="blur" sizes="(max-width: 600px) 68vw, (max-width: 1000px) 38vw, 360px" />
+                <span className="folio-art__shutter folio-art__shutter--left" aria-hidden="true" />
+                <span className="folio-art__shutter folio-art__shutter--right" aria-hidden="true" />
+              </div>
+              <span className="folio-art__seal" aria-hidden="true"><span>EGP</span><small>CREATE</small></span>
             </div>
             <figcaption><span>Gabriel Paclibar</span><span>Developer</span></figcaption>
           </figure>
-          <span className="folio-art__seal" aria-hidden="true"><span>EGP</span><small>CREATE</small></span>
           <div className="folio-art__caption"><span>Keep refining.</span><span>Always learning.<br />Always building.</span></div>
         </div>
       </div>
