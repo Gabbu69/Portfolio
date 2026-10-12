@@ -1,0 +1,146 @@
+{
+  "pasibudget": {
+    "repo": "https://github.com/Gabbu69/PaSiBudget",
+    "commit": "53c7dd8a0fead8997c158312006261761c37f6ef",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "src/lib/db.ts"
+    ]
+  },
+  "halalscan": {
+    "repo": "https://github.com/Gabbu69/HalalScan",
+    "commit": "862a9a2c050bc4256057d786476ae14fc110e414",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "api/history.ts"
+    ]
+  },
+  "ligtas-ai": {
+    "repo": "https://github.com/Gabbu69/Ligtas_AI",
+    "commit": "2d88e87cb4dc9ad3d326aed68844a84deba5be86",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "app.py"
+    ]
+  },
+  "agripresyo": {
+    "repo": "https://github.com/Gabbu69/AgriPresyo",
+    "commit": "9a3cbeda8ee761ba3c2da7652e56cc3ca2362355",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "api/prices.ts"
+    ]
+  },
+  "rmais": {
+    "repo": "https://github.com/Gabbu69/RMAIS",
+    "commit": "d30f98e15232cafcf8938ab8c000ffb70412d207",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "routes/web.php"
+    ]
+  },
+  "anitala": {
+    "repo": "https://github.com/Gabbu69/AniTala_v2",
+    "commit": "a18168f34cc88b0361aa93ad1f3c0baa1fd92a8f",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "src/main/java/com/anitala/App.java"
+    ]
+  },
+  "scopewatch": {
+    "repo": "https://github.com/Gabbu69/ScopeWatch",
+    "commit": "22ed56da70a2077a4ce00a5d4bacfaba09f0a714",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "db/index.ts"
+    ]
+  },
+  "yakap-consulta": {
+    "repo": "https://github.com/Gabbu69/YAKAP-Consulta-Financial-Monitoring-System",
+    "commit": "090ec54d5ec81d5faf40543cb18d07ec149c0a0b",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "routes/web.php"
+    ]
+  },
+  "flow-ruby": {
+    "repo": "https://github.com/Gabbu69/FLOW_RUBY",
+    "commit": "32f2771a3e963b310c2e5867f34d2f7924d8ddba",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "app/src/db/schema.ts"
+    ]
+  },
+  "pacs": {
+    "repo": "https://github.com/Gabbu69/PACS",
+    "commit": "960a4e67de4ff7aa2ad4cecf427c99674dcbf24b",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "package.json"
+    ]
+  },
+  "ugnay": {
+    "repo": "https://github.com/Gabbu69/UGNAY",
+    "commit": "b9c6f3c820c4f087e97d52974119c445fef260a9",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "backend/pom.xml"
+    ]
+  },
+  "gabay": {
+    "repo": "https://github.com/Gabbu69/GABAY",
+    "commit": "5bf81cf139c55e810570e549a0a92982703dd91f",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "gabay/settings.py"
+    ]
+  },
+  "loyalty-scan": {
+    "repo": "https://github.com/Gabbu69/Loyalty-scanner",
+    "commit": "379b8a3927d63f6f456a77080f3bd212cb794cb6",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "package.json"
+    ]
+  },
+  "kabacan-pickleplay": {
+    "repo": "https://github.com/Gabbu69/Pickleball_Kabacan_court_access",
+    "commit": "c74e4c5db29f8b5ebda55b5ca8fdbc6b99185fe7",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "routes/web.php"
+    ]
+  },
+  "siloguard": {
+    "repo": "https://github.com/Gabbu69/SiloGuard",
+    "commit": "10314ecdb3342059b0e2b91b4978402136b8b5e7",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "supabase/schema.sql"
+    ]
+  },
+  "yaelitos": {
+    "repo": "https://github.com/Gabbu69/YAELITOS-",
+    "commit": "53fe167ad0a8254240e6af8927ba4b5f92fe89ce",
+    "checkedAt": "2026-10-12",
+    "documents": [
+      "README.md",
+      "supabase/functions/submit-booking/index.ts"
+    ]
+  }
+}

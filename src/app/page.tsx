@@ -4,7 +4,6 @@ import { ExperienceSection } from "@/components/experience-section";
 import { GithubActivity } from "@/components/github-activity";
 import { Hero } from "@/components/hero";
 import { MotionProvider } from "@/components/motion-provider";
-import { ProcessRail } from "@/components/process-rail";
 import { ProjectShowcase } from "@/components/project-showcase";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteHeader } from "@/components/site-header";
@@ -30,8 +29,6 @@ export default function Home() {
           identity={portfolio.identity}
           projectCount={portfolio.projects.length + portfolio.archiveProjects.length}
         />
-
-        <ProcessRail />
 
         <GithubActivity github={portfolio.socials.github} />
 

@@ -86,10 +86,6 @@ svg {
   outline-offset: 4px;
 }
 
-[lang="ja"] {
-  font-family: var(--font-noto-jp), var(--font-geist-sans), sans-serif;
-}
-
 .skip-link {
   position: fixed;
   top: 10px;
@@ -670,50 +666,6 @@ svg {
 .scroll-cue svg {
   width: 15px;
   animation: scroll-nudge 1.7s ease-in-out infinite;
-}
-
-.process-rail {
-  width: 100%;
-  overflow: hidden;
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper-bright);
-}
-
-.process-rail__track {
-  display: flex;
-  width: max-content;
-  animation: process-marquee 24s linear infinite;
-}
-
-.process-rail__set {
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-  min-height: 42px;
-}
-
-.process-rail__set span {
-  padding-inline: 28px;
-  font-family: var(--font-display), Impact, sans-serif;
-  font-size: 1rem;
-  line-height: 1;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
-.process-rail__set i {
-  display: grid;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: var(--red);
-  color: var(--white);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.45rem;
-  font-style: normal;
-  place-items: center;
 }
 
 .page-section {
@@ -1942,12 +1894,6 @@ svg {
   }
 }
 
-@keyframes process-marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 @keyframes scroll-nudge {
   0%,
   100% {
@@ -2230,10 +2176,6 @@ svg {
 
   .hero__facts strong {
     font-size: 1.2rem;
-  }
-
-  .process-rail__set {
-    min-height: 40px;
   }
 
   .page-section {
@@ -2649,10 +2591,6 @@ svg {
     transition-duration: 0.01ms !important;
   }
 
-  .process-rail__track {
-    animation: none;
-  }
-
 }
 
 /* Neo-Tokyo editorial system */
@@ -2847,12 +2785,6 @@ svg {
   font-size: 0.45rem !important;
 }
 
-.nav-pill__jp {
-  color: var(--muted) !important;
-  font-size: 0.56rem !important;
-  line-height: 1;
-}
-
 .nav-pill a strong {
   font-size: 0.63rem;
   line-height: 1;
@@ -2860,11 +2792,6 @@ svg {
 
 .nav-pill a::after {
   bottom: 12px;
-}
-
-.mobile-menu__jp {
-  color: var(--muted) !important;
-  font-size: 0.68rem !important;
 }
 
 .mobile-menu nav a strong {
@@ -3030,49 +2957,6 @@ svg {
   border-top-color: var(--ink);
 }
 
-.process-rail {
-  border-color: var(--night);
-  background: var(--night);
-}
-
-.process-rail__set {
-  min-height: 52px;
-}
-
-.process-rail__set > .process-rail__step {
-  display: grid;
-  grid-template-columns: 34px auto 28px;
-  align-items: center;
-  min-width: 182px;
-  padding: 0 20px;
-  gap: 8px;
-  border-right: 1px solid #39404a;
-}
-
-.process-rail__step > span {
-  padding: 0;
-  color: var(--signal-blue);
-  font-family: var(--font-noto-jp), sans-serif;
-  font-size: 0.78rem;
-  line-height: 1;
-  text-transform: none;
-}
-
-.process-rail__step b {
-  font-family: var(--font-display), Impact, sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
-.process-rail__set .process-rail__step i {
-  width: auto;
-  height: auto;
-  border: 0;
-  color: var(--red);
-  font-size: 0.43rem;
-}
-
 .page-section {
   padding-block: 128px;
 }
@@ -3092,16 +2976,6 @@ svg {
 .section-heading__marker span:first-child,
 .section-heading__marker strong {
   grid-column: 1;
-}
-
-.section-heading__jp {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
-  color: var(--muted);
-  font-size: 0.74rem;
-  text-transform: none;
-  writing-mode: vertical-rl;
 }
 
 .section-heading h2 {
@@ -3307,11 +3181,6 @@ svg {
   border-width: 72px;
 }
 
-.contact-section__jp {
-  color: var(--signal-blue) !important;
-  font-size: 0.8rem !important;
-}
-
 .contact-section__inner {
   padding-top: 108px;
 }
@@ -3471,10 +3340,6 @@ svg {
     padding-inline: 10px;
   }
 
-  .nav-pill__jp {
-    display: none;
-  }
-
   .nav-pill a {
     grid-template-columns: 16px auto;
   }
@@ -3618,15 +3483,9 @@ svg {
   }
 
   .section-heading__marker span:first-child,
-  .section-heading__marker strong,
-  .section-heading__jp {
+  .section-heading__marker strong {
     grid-column: auto;
     grid-row: auto;
-  }
-
-  .section-heading__jp {
-    justify-self: end;
-    writing-mode: horizontal-tb;
   }
 
   .project-entry--spotlight::before {
@@ -3679,11 +3538,6 @@ svg {
 
   .hero__architecture span:first-child {
     top: 8px;
-  }
-
-  .process-rail__set > .process-rail__step {
-    min-width: 158px;
-    padding-inline: 14px;
   }
 
   .section-heading {

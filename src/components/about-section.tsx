@@ -6,11 +6,10 @@ type Principle = { number: string; title: string; text: string };
 type AboutSectionProps = {
   body: string;
   closing: string;
-  designNote?: string;
   principles: readonly Principle[];
 };
 
-export function AboutSection({ body, closing, designNote, principles }: AboutSectionProps) {
+export function AboutSection({ body, closing, principles }: AboutSectionProps) {
   return (
     <section className="page-section about-section" id="about">
       <SectionHeading
@@ -23,7 +22,6 @@ export function AboutSection({ body, closing, designNote, principles }: AboutSec
           <ArrowDownRight className="about-copy__arrow" aria-hidden="true" />
           <p className="about-copy__lead">{body}</p>
           <p className="about-copy__closing">{closing}</p>
-          {designNote ? <p className="about-copy__design-note">{designNote}</p> : null}
           <span className="about-copy__signature" aria-hidden="true">EGP / 2026</span>
         </div>
         <div className="principles-list" aria-label="Working principles">

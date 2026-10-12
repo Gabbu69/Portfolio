@@ -1,7 +1,8 @@
-import { ArrowUp, ArrowUpRight, Github, Mail } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Github } from "lucide-react";
+import { ContactForm } from "@/components/contact-form";
 
 type ContactSectionProps = {
-  identity: { fullName: string; email: string; location: string };
+  identity: { fullName: string; email: string };
   contact: { eyebrow: string; title: string; titleAccent: string; body: string };
   github: string;
 };
@@ -25,15 +26,10 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
           <strong>{contact.titleAccent}</strong>
         </h2>
 
-        <a className="contact-email" href={`mailto:${identity.email}`}>
-          <Mail aria-hidden="true" />
-          <span>{identity.email}</span>
-          <ArrowUpRight aria-hidden="true" />
-        </a>
+        <ContactForm email={identity.email} formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim()} captchaSiteKey={process.env.NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY?.trim()} />
 
         <div className="footer-row">
           <span>© 2026 {identity.fullName}</span>
-          <span>{identity.location}</span>
           <a href={github} target="_blank" rel="noreferrer">
             <Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" />
           </a>

@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowDown, ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { m, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
 import profilePortrait from "../../public/images/profile.webp";
 
 type HeroProps = {
-  identity: { fullName: string; role: string; email: string; location: string; headline: string; intro: string };
+  identity: { fullName: string; role: string; email: string; headline: string; intro: string };
   projectCount: number;
 };
 
@@ -22,11 +22,11 @@ export function Hero({ identity, projectCount }: HeroProps) {
     <section className="folio-hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
       <div className="folio-hero__edition">
         <span>Portfolio / Selected works</span>
-        <span>Mindanao, Philippines <span className="folio-hero__year">© 2026</span></span>
+        <span className="folio-hero__year">© 2026</span>
       </div>
       <div className="folio-hero__layout">
         <div className="folio-hero__copy">
-          <div className="folio-hero__greeting"><span lang="ja">こんにちは。</span> Hello, I’m</div>
+          <div className="folio-hero__greeting">Hello, I’m</div>
           <h1 id="hero-title" aria-label={identity.fullName}>
             <span className="folio-hero__name" aria-hidden="true">Gabriel</span>
             <span className="folio-hero__name folio-hero__name--accent" aria-hidden="true">Paclibar<span className="folio-hero__period">.</span></span>
@@ -57,9 +57,8 @@ export function Hero({ identity, projectCount }: HeroProps) {
         </div>
       </div>
       <div className="folio-hero__footer">
-        <span><MapPin aria-hidden="true" /> {identity.location}</span>
         <a href="#work">{String(projectCount).padStart(2, "0")} projects to explore <ArrowDown aria-hidden="true" /></a>
-        <span className="folio-hero__craft"><span lang="ja">考える。つくる。磨く。</span> Think. Build. Refine.</span>
+        <span className="folio-hero__craft">Think. Build. Refine.</span>
       </div>
     </section>
   );

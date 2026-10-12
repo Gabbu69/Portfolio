@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Bebas_Neue, Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
+import { Bebas_Neue, Geist, Geist_Mono } from "next/font/google";
 import { portfolio } from "@/data/portfolio";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
-import "./japanese.css";
+import "./editorial.css";
 import "./github-activity.css";
+import "./case-study.css";
 
 const themeScript = `(function(){var t;try{t=localStorage.getItem('gab-portfolio-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#181917':'#f4f0e7'})()`;
 
@@ -22,13 +23,6 @@ const bebasNeue = Bebas_Neue({
   variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
-});
-
-const notoSansJp = Noto_Sans_JP({
-  variable: "--font-noto-jp",
-  weight: ["500", "700"],
-  display: "swap",
-  preload: false,
 });
 
 const roleTitle = portfolio.identity.role.replace(/\b\w/g, (letter) =>
@@ -115,7 +109,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} ${notoSansJp.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased`}
     >
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body className="min-h-full flex flex-col">{children}</body>

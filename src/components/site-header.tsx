@@ -14,9 +14,10 @@ type SiteHeaderProps = {
   name: string;
   navigation: readonly NavigationItem[];
   github: string;
+  homeHref?: string;
 };
 
-export function SiteHeader({ initials, name, navigation, github }: SiteHeaderProps) {
+export function SiteHeader({ initials, name, navigation, github, homeHref = "#top" }: SiteHeaderProps) {
   const mobileMenuRef = useRef<HTMLDetailsElement>(null);
   const [activeSection, setActiveSection] = useState("#top");
   const closeMobileMenu = () => mobileMenuRef.current?.removeAttribute("open");
@@ -38,6 +39,7 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
       }
     }, { rootMargin: "-15% 0px -65% 0px" });
     for (const href of ["#top", ...navigation.map((item) => item.href)]) {
+      if (!href.startsWith("#")) continue;
       const section = document.querySelector(href);
       if (section) observer.observe(section);
     }
@@ -53,7 +55,7 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
   return (
     <header className="site-header">
       <div className="site-header__inner">
-        <a className="brand-mark" href="#top" aria-label="Back to top">
+        <a className="brand-mark" href={homeHref} aria-label={homeHref.startsWith("/") ? "Portfolio home" : "Back to top"}>
           <span className="brand-mark__initials">{initials}</span>
           <span className="brand-mark__copy">
             <strong>{name}</strong>
@@ -92,6 +94,7 @@ export function SiteHeader({ initials, name, navigation, github }: SiteHeaderPro
               {navigation.map((item, index) => (
                 <a key={item.href} href={item.href} aria-current={activeSection === item.href ? "location" : undefined} onClick={(event) => {
                   closeMobileMenu();
+                  if (!item.href.startsWith("#")) return;
                   const target = document.querySelector<HTMLElement>(event.currentTarget.hash);
                   target?.setAttribute("tabindex", "-1");
                   target?.focus({ preventScroll: true });

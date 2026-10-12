@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowUpRight, Github, Search, X } from "lucide-react";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { useState } from "react";
@@ -229,9 +230,12 @@ export function ProjectShowcase({ projects, archiveProjects, categories }: Proje
                   </ul>
 
                   <div className="project-entry__links">
-                    <a href={project.repo} target="_blank" rel="noreferrer" aria-label={`View ${project.title} source on GitHub`}>
+                    <Link href={`/projects/${project.slug}`} aria-label={`View ${project.title} details`}>
+                      View details <ArrowUpRight aria-hidden="true" />
+                    </Link>
+                    <a href={project.repo} target="_blank" rel="noreferrer" aria-label={project.caseStudy.sourceAvailability === "private" ? `Open ${project.title} private repository (access required)` : `View ${project.title} source on GitHub`}>
                       <Github aria-hidden="true" />
-                      Source
+                      {project.caseStudy.sourceAvailability === "private" ? "Private repository" : "Source"}
                       <ArrowUpRight aria-hidden="true" />
                     </a>
                     {project.live ? (

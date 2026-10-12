@@ -1,4 +1,5 @@
 import { ArrowUpRight, Github } from "lucide-react";
+import Link from "next/link";
 import type { ArchiveProject } from "@/data/portfolio";
 
 type GithubArchiveProps = {
@@ -70,6 +71,9 @@ export function GithubArchive({ projects, allProjects }: GithubArchiveProps) {
                   </ul>
 
                   <div className="archive-card__links">
+                    <Link href={`/projects/${project.slug}`} aria-label={`View ${project.title} details`}>
+                      View details <ArrowUpRight aria-hidden="true" />
+                    </Link>
                     <a href={project.repo} target="_blank" rel="noreferrer" aria-label={`View ${project.title} source on GitHub`}>
                       <Github aria-hidden="true" />
                       Source

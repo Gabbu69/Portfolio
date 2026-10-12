@@ -47,9 +47,9 @@ For a browser check of the unavailable state, `npm run test:github-cache -- --pr
 
 ## Appearance and motion
 
-The Japanese editorial presentation is in `src/app/japanese.css`, with shared component foundations in `src/app/globals.css`. The hero uses the existing portrait, a vermilion sun, Japanese typography, and an opening paper-shutter animation. Its layout changes for phones rather than shrinking the desktop composition.
+The English editorial presentation is in `src/app/editorial.css`, with shared component foundations in `src/app/globals.css` and app details/contact styling in `src/app/case-study.css`. The hero keeps the existing portrait, a vermilion sun, and an opening paper-shutter animation. Its layout changes for phones rather than shrinking the desktop composition. Personal location labels and the moving process strip have been removed; geographical names describing actual projects and organizations remain.
 
-The header's day/night button follows the system preference initially and saves an explicit choice under `gab-portfolio-theme`. An early initialization script applies it before hydration; changes also sync across tabs. Supporting browsers reveal the new palette from the button, while reduced-motion users get an immediate switch. The moving process strip includes a pause control and stops when offscreen or when the page is hidden.
+The header's day/night button follows the system preference initially and saves an explicit choice under `gab-portfolio-theme`. An early initialization script applies it before hydration; changes also sync across tabs. Supporting browsers reveal the new palette from the button, while reduced-motion users get an immediate switch.
 
 Keep responsive checks at 320px, 390px, 768px, and desktop width when changing the design. Check both themes, keyboard navigation, menu dismissal, project search/reset, toolkit selection, and reduced-motion styling. Browser viewport checks do not replace physical iOS/Android device testing.
 
@@ -74,10 +74,35 @@ The search and social metadata also read the public name, role, email address, p
 2. In `src/data/portfolio.ts`, copy one existing item from the projects list.
 3. Replace its `title`, `eyebrow`, `category`, `featured`, `summary`, optional `note`, `stack`, `repo`, and optional `live` values.
 4. Configure `visual` as either an image with `src`, `alt`, and optional `fit`, or another visual kind already supported by the page.
-5. Use a public repository or demo URL, or omit the optional link instead of adding a placeholder.
-6. Run the lint and build commands before publishing.
+5. Add a stable `slug` and matching `caseStudy` entry. Use a public repository or demo URL, or omit the optional link instead of adding a placeholder.
+6. Run the lint, TypeScript, test, and build commands before publishing.
 
 Follow the exact shape of an existing project item. TypeScript will flag required fields that are missing or invalid.
+
+## App case studies
+
+All 17 selected/archive apps have shareable `/projects/[slug]` pages. The homepage retains search and categories and adds a **View details** link to every project. Each page covers purpose and audience, features, workflow, technical layers, limitations, and evidence. Unknown slugs return HTTP 404. Case-study URLs have individual metadata/canonical URLs and appear in the sitemap.
+
+Content is typed in `src/data/case-studies.ts` and connected to cards through `src/data/portfolio.ts`. `src/data/project-evidence.json` records public repository commits and documents reviewed on October 12, 2026. Evidence links use those snapshots, rather than fetching GitHub at runtime. Update the content and evidence together when capabilities change. The USM Hospital case study uses only the previously approved portfolio summary and assets because its source repository is private. LabTrack QR remains excluded.
+
+Keep local-first data, demo data, serverless storage, configured services, and physical-device acceptance distinct. A demo link does not establish current backend setup or production adoption.
+
+## On-page messages to Gmail
+
+Visitors write their **Name**, **Email**, and **Message** inside the portfolio. The `@formspree/react` integration submits asynchronously and keeps success/errors on the same page. Replies happen by email; the portfolio does not store an on-site conversation. The contact form preserves input after failure, prevents duplicate pending submission, and includes Formspree's `_gotcha` honeypot.
+
+The form is intentionally unavailable until an owner-controlled Formspree form is configured. A copy-email action remains available, including an address-selection fallback when clipboard access is denied. Never use a fake form ID or show successful delivery for an unconfigured form.
+
+Owner setup:
+
+1. Sign in to [Formspree](https://formspree.io/) and create a portfolio contact form. Configure **gabriellimjuco@gmail.com** as the notification recipient and complete recipient verification in your own inbox.
+2. Set the public form ID (the final part of `https://formspree.io/f/FORM_ID`) as `NEXT_PUBLIC_FORMSPREE_FORM_ID` in an ignored `.env.local` for local use and in Vercel for the intended deployment. `.env.example` contains placeholders. This form ID is public; Gmail passwords or Google account access are unnecessary.
+3. Keep Formspree's provider spam filtering enabled. If the form requires a CAPTCHA, configure custom **reCAPTCHA v3** in Formspree using its [React integration guide](https://help.formspree.io/articles/working-with-react/using-a-custom-recaptcha-with-formspree-react). Configure its secret only in Formspree, its allowed local/production hostnames in Google, and its public key as `NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY` in the website. The form obtains a fresh token at submit time and reports script/token failures without losing input. Do not disable a required CAPTCHA to bypass a failed check.
+4. Redeploy after changing public environment values. Verify a real submission arrives in Gmail and that **Reply** addresses the visitor's `email` field; adjust the Formspree notification settings if needed. Check spam folders and provider quota/status if a submission does not arrive.
+
+The privacy notice links Formspree's policy, with Google's policy/terms also shown when custom reCAPTCHA is enabled. Formspree handles submission processing; the portfolio adds no message database or logging of form contents.
+
+Validation covers missing configuration and simulated provider success, errors, pending requests, and retries. Live inbox delivery and reply routing require the owner setup above and must be reported separately.
 
 ## Add or update skills
 
@@ -102,10 +127,10 @@ npm run lint
 npm run build
 ```
 
-The production site is [portfolio-eta-inky-60.vercel.app](https://portfolio-eta-inky-60.vercel.app). The connected GitHub repository is `Gabbu69/Portfolio`, with production deployments from `main`.
+The preferred production address is [gabrielpaclibar.vercel.app](https://gabrielpaclibar.vercel.app). The original [portfolio-eta-inky-60.vercel.app](https://portfolio-eta-inky-60.vercel.app) address remains available for existing links. The connected GitHub repository is `Gabbu69/Portfolio`, with production deployments from `main`. Adding a domain does not publish local source changes; push/deployment verification is separate.
 
-`vercel.json` selects the Next.js framework, `npm ci`, and `npm run build`. Leave Vercel's output directory at its Next.js default; `dist` belongs to the separate `build:sites` adapter. No database or secret environment variables are needed for this portfolio.
+`vercel.json` selects the Next.js framework, `npm ci`, and `npm run build`. Leave Vercel's output directory at its Next.js default; `dist` belongs to the separate `build:sites` adapter. No database or secret environment variables are needed for this portfolio. On-page delivery requires the public Formspree form ID and, when custom reCAPTCHA is enabled, its public site key.
 
-Canonical links, social metadata, `robots.txt`, and `sitemap.xml` use the same production origin in `src/lib/site-url.ts`. To move to a custom domain, set `NEXT_PUBLIC_SITE_URL` to its complete HTTPS URL. Otherwise Vercel's `VERCEL_PROJECT_PRODUCTION_URL` is used, with the public production address as the fallback.
+Canonical links, social metadata, `robots.txt`, and `sitemap.xml` use the same production origin in `src/lib/site-url.ts`. The default is `https://gabrielpaclibar.vercel.app`; an explicit `NEXT_PUBLIC_SITE_URL` overrides it. The platform's generated project hostname does not override the chosen preferred address. Update any previously configured `NEXT_PUBLIC_SITE_URL` and redeploy when moving to a different production origin.
 
-After deploying, verify the Vercel success status belongs to the pushed commit. Open the public site and check search and category filters across both selected and archive projects, mobile navigation, toolkit selection, images, and contact links. Also request `/robots.txt`, `/sitemap.xml`, and a missing page (which should return HTTP 404).
+After deploying, verify the Vercel success status belongs to the pushed commit. Open the public site and check search and category filters across both selected and archive projects, mobile navigation, toolkit selection, images, all case-study links, and the contact form. Also request `/robots.txt`, `/sitemap.xml`, and a missing page (which should return HTTP 404). For a shorter free address, add an available name-based `.vercel.app` domain to the existing project's production domain settings; preserve the old link for existing visitors. Update `NEXT_PUBLIC_SITE_URL` to the assigned preferred origin and redeploy so metadata and sitemap use it.

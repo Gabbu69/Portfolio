@@ -20,7 +20,7 @@ export default function SocialImage() {
         <span style={{ fontSize: 25, marginTop: 16, color: "#494b43" }}>{portfolio.identity.headline}</span>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid #b2b1a4", paddingTop: 20, fontSize: 19, color: "#494b43" }}>
-        <span>Cotabato, Philippines</span><span>github.com/Gabbu69</span>
+        <span>Selected applications & research</span><span>github.com/Gabbu69</span>
       </div>
     </div>,
     size,

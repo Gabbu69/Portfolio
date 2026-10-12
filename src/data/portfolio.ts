@@ -1,3 +1,5 @@
+import { caseStudies, type ProjectCaseStudy } from "./case-studies";
+
 /**
  * Portfolio content lives here on purpose.
  * Edit these values, duplicate a project/skill object, or swap an image path
@@ -29,6 +31,8 @@ export type ProjectVisual =
     };
 
 export type Project = {
+  slug: string;
+  caseStudy: ProjectCaseStudy;
   title: string;
   eyebrow: string;
   category: Exclude<ProjectCategory, "All">;
@@ -43,6 +47,8 @@ export type Project = {
 };
 
 export type ArchiveProject = {
+  slug: string;
+  caseStudy: ProjectCaseStudy;
   title: string;
   code: string;
   category: Exclude<ProjectCategory, "All">;
@@ -85,10 +91,9 @@ export const portfolio = {
     initials: "EGP",
     role: "Aspiring Software Engineer",
     email: "gabriellimjuco@gmail.com",
-    location: "Kabacan, Cotabato, Philippines",
     headline: "Useful software, built around real work.",
     intro:
-      "I’m Gabriel, an aspiring software engineer from Cotabato with hands-on experience in full-stack development. I build practical web apps, desktop tools, and connected prototypes around real workflows.",
+      "I’m Gabriel, an aspiring software engineer with hands-on experience in full-stack development. I build practical web apps, desktop tools, and connected prototypes around real workflows.",
     portrait: "/images/profile.webp",
   },
   navigation: [
@@ -116,6 +121,8 @@ export const portfolio = {
   projects: [
     {
       title: "PaSiBudget",
+      slug: "pasibudget",
+      caseStudy: caseStudies["pasibudget"],
       eyebrow: "Rice-farm planning · offline prototype",
       category: "Community",
       featured: true,
@@ -134,6 +141,8 @@ export const portfolio = {
     },
     {
       title: "USM Hospital System",
+      slug: "usm-hospital",
+      caseStudy: caseStudies["usm-hospital"],
       eyebrow: "Hospital operations · full stack",
       category: "Healthcare",
       featured: true,
@@ -153,6 +162,8 @@ export const portfolio = {
     },
     {
       title: "HalalScan",
+      slug: "halalscan",
+      caseStudy: caseStudies["halalscan"],
       eyebrow: "Label screening · web app",
       category: "Community",
       featured: true,
@@ -172,6 +183,8 @@ export const portfolio = {
     },
     {
       title: "LIGTAS-AI",
+      slug: "ligtas-ai",
+      caseStudy: caseStudies["ligtas-ai"],
       eyebrow: "Thesis research · offline AI",
       category: "Research",
       featured: false,
@@ -189,6 +202,8 @@ export const portfolio = {
     },
     {
       title: "AgriPresyo",
+      slug: "agripresyo",
+      caseStudy: caseStudies["agripresyo"],
       eyebrow: "Market intelligence · bilingual",
       category: "Community",
       featured: false,
@@ -206,6 +221,8 @@ export const portfolio = {
     },
     {
       title: "RMAIS",
+      slug: "rmais",
+      caseStudy: caseStudies["rmais"],
       eyebrow: "Thesis prototype · mobile first",
       category: "Community",
       featured: false,
@@ -226,6 +243,8 @@ export const portfolio = {
   archiveProjects: [
     {
       title: "AniTala",
+      slug: "anitala",
+      caseStudy: caseStudies["anitala"],
       code: "AT",
       category: "Research",
       summary:
@@ -237,6 +256,8 @@ export const portfolio = {
     },
     {
       title: "ScopeWatch",
+      slug: "scopewatch",
+      caseStudy: caseStudies["scopewatch"],
       code: "SW",
       category: "Research",
       summary:
@@ -248,6 +269,8 @@ export const portfolio = {
     },
     {
       title: "YAKAP Consulta",
+      slug: "yakap-consulta",
+      caseStudy: caseStudies["yakap-consulta"],
       code: "YK",
       category: "Healthcare",
       summary:
@@ -259,6 +282,8 @@ export const portfolio = {
     },
     {
       title: "Ruby / FLOW_RUBY",
+      slug: "flow-ruby",
+      caseStudy: caseStudies["flow-ruby"],
       code: "RB",
       category: "Healthcare",
       summary:
@@ -271,6 +296,8 @@ export const portfolio = {
     },
     {
       title: "PACS",
+      slug: "pacs",
+      caseStudy: caseStudies["pacs"],
       code: "PX",
       category: "Research",
       summary:
@@ -281,6 +308,8 @@ export const portfolio = {
     },
     {
       title: "UGNAY",
+      slug: "ugnay",
+      caseStudy: caseStudies["ugnay"],
       code: "UG",
       category: "Research",
       summary:
@@ -292,6 +321,8 @@ export const portfolio = {
     },
     {
       title: "GABAY",
+      slug: "gabay",
+      caseStudy: caseStudies["gabay"],
       code: "GB",
       category: "Research",
       summary:
@@ -303,6 +334,8 @@ export const portfolio = {
     },
     {
       title: "Loyalty Scan",
+      slug: "loyalty-scan",
+      caseStudy: caseStudies["loyalty-scan"],
       code: "LS",
       category: "Community",
       summary:
@@ -314,6 +347,8 @@ export const portfolio = {
     },
     {
       title: "Kabacan PicklePlay",
+      slug: "kabacan-pickleplay",
+      caseStudy: caseStudies["kabacan-pickleplay"],
       code: "KP",
       category: "Community",
       summary:
@@ -324,6 +359,8 @@ export const portfolio = {
     },
     {
       title: "SiloGuard",
+      slug: "siloguard",
+      caseStudy: caseStudies["siloguard"],
       code: "SG",
       category: "Community",
       summary:
@@ -334,6 +371,8 @@ export const portfolio = {
     },
     {
       title: "Yaelitos",
+      slug: "yaelitos",
+      caseStudy: caseStudies["yaelitos"],
       code: "YA",
       category: "Community",
       summary:
@@ -367,8 +406,6 @@ export const portfolio = {
       "I like following a feature from its interface through the API and database, then testing that the pieces work together. Most of my projects start with a workflow that feels slower or more confusing than it needs to be.",
     closing:
       "I’m early in my career and looking for software engineering opportunities where I can learn from a team, contribute to interfaces, APIs, databases, and testing, and keep building useful things.",
-    designNote:
-      "The Japanese accents reflect my interest in Japanese typography and editorial design.",
     principles: [
       { number: "01", title: "Start with the workflow", text: "Understand what someone is already doing before changing the screen." },
       { number: "02", title: "Make the state obvious", text: "Use plain language, clear feedback, and data people can verify." },
@@ -382,3 +419,9 @@ export const portfolio = {
     body: "I’m open to early-career software engineering roles, collaborations, and conversations about practical software. I’m looking for a team where I can contribute and keep learning.",
   },
 } as const;
+
+export const allProjects = [...portfolio.projects, ...portfolio.archiveProjects];
+
+export function getProjectBySlug(slug: string) {
+  return allProjects.find(project => project.slug === slug);
+}
