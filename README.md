@@ -26,6 +26,12 @@ npm start
 
 Run `npm start` only after `npm run build` completes.
 
+## Project index
+
+Open **Project index** in the header, or press **Ctrl+K** on Windows/Linux and **Command+K** on macOS. The index searches all 17 existing selected and archive projects by name, category, summary, and technology. Use the arrow keys to browse, Enter to open a case study, or click a project. Desktop visitors get an animated poster preview, the documented summary, technology tags, and case-study/source links; smaller screens use a compact project list.
+
+The native modal dialog keeps keyboard focus inside, closes with Escape or a backdrop click, restores focus and page scrolling, and respects reduced motion. It is available on the homepage and case-study pages. It reads the same approved content as the existing project collection and adds no dependency or external service. Research references and the design choice are documented in `docs/portfolio-inspiration.md`.
+
 ## GitHub contribution calendar
 
 The calendar loads the public contribution graph for `Gabbu69` through `GET /api/github-activity`. It needs no token, database, or third-party service. The server reads GitHub's public contribution HTML and returns only validated dates, daily counts, intensity levels, the annual total, and the successful fetch time. Project cards are curated separately; LabTrack QR is excluded from those cards, while the contribution calendar shows the account-wide totals visible on GitHub.

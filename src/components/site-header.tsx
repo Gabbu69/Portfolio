@@ -3,6 +3,7 @@
 import { Github, Menu, MoveUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ProjectIndex } from "@/components/project-index";
 
 type NavigationItem = {
   label: string;
@@ -73,6 +74,7 @@ export function SiteHeader({ initials, name, navigation, github, homeHref = "#to
         </nav>
 
         <div className="header-actions">
+          <ProjectIndex />
           <ThemeToggle />
           <a
             className="header-github"
