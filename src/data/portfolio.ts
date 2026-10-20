@@ -100,6 +100,7 @@ export const portfolio = {
     { label: "Work", href: "#work" },
     { label: "Experience", href: "#experience" },
     { label: "Skills", href: "#skills" },
+    { label: "Certificates", href: "#credentials" },
     { label: "About", href: "#about" },
     { label: "Contact", href: "#contact" },
   ],

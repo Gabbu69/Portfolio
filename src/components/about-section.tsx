@@ -13,7 +13,7 @@ export function AboutSection({ body, closing, principles }: AboutSectionProps) {
   return (
     <section className="page-section about-section" id="about">
       <SectionHeading
-        index="04"
+        index="05"
         eyebrow="About / approach"
         title="The screen is only half the work."
       />

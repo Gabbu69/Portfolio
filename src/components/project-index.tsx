@@ -95,6 +95,7 @@ export function ProjectIndex() {
   useEffect(() => {
     function handleShortcut(event: globalThis.KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === "k") {
+        if (document.querySelector("dialog[open]") && !dialogRef.current?.open) return;
         event.preventDefault();
         if (event.repeat) return;
         if (dialogRef.current?.open) closeIndex();

@@ -1,4 +1,5 @@
 import { AboutSection } from "@/components/about-section";
+import { CredentialsSection } from "@/components/credentials-section";
 import { ContactSection } from "@/components/contact-section";
 import { ExperienceSection } from "@/components/experience-section";
 import { GithubActivity } from "@/components/github-activity";
@@ -57,6 +58,8 @@ export default function Home() {
           />
           <SkillKeyboard skills={portfolio.skills} />
         </section>
+
+        <CredentialsSection />
 
         <AboutSection {...portfolio.about} />
       </main>

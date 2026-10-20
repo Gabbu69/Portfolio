@@ -13,7 +13,7 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
       <div className="contact-section__inner">
         <div className="contact-section__heading">
           <div className="contact-section__label">
-            <span>05</span>
+            <span>06</span>
             <div>
               <p className="eyebrow">{contact.eyebrow}</p>
             </div>
