@@ -28,7 +28,7 @@ Run `npm start` only after `npm run build` completes.
 
 ## Project index
 
-Open **Project index** in the header, or press **Ctrl+K** on Windows/Linux and **Command+K** on macOS. The index searches all 17 existing selected and archive projects by name, category, summary, and technology. Use the arrow keys to browse, Enter to open a case study, or click a project. Desktop visitors get an animated poster preview, the documented summary, technology tags, and case-study/source links; smaller screens use a compact project list.
+Open **Project index** in the header, or press **Ctrl+K** on Windows/Linux and **Command+K** on macOS. The index searches all selected and archive projects by name, category, summary, and technology. Use the arrow keys to browse, Enter to open a case study, or click a project. Desktop visitors get an animated poster preview, the documented summary, technology tags, and case-study/source links; smaller screens use a compact project list.
 
 The native modal dialog keeps keyboard focus inside, closes with Escape or a backdrop click, restores focus and page scrolling, and respects reduced motion. It is available on the homepage and case-study pages. It reads the same approved content as the existing project collection and adds no dependency or external service. Research references and the design choice are documented in `docs/portfolio-inspiration.md`.
 
@@ -87,7 +87,7 @@ Follow the exact shape of an existing project item. TypeScript will flag require
 
 ## App case studies
 
-All 17 selected/archive apps have shareable `/projects/[slug]` pages. The homepage retains search and categories and adds a **View details** link to every project. Each page covers purpose and audience, features, workflow, technical layers, limitations, and evidence. Unknown slugs return HTTP 404. Case-study URLs have individual metadata/canonical URLs and appear in the sitemap.
+All selected/archive apps have shareable `/projects/[slug]` pages. The homepage retains search and categories and adds a **View details** link to every project. Each page covers purpose and audience, features, workflow, technical layers, limitations, and evidence. Unknown slugs return HTTP 404. Case-study URLs have individual metadata/canonical URLs and appear in the sitemap.
 
 Content is typed in `src/data/case-studies.ts` and connected to cards through `src/data/portfolio.ts`. `src/data/project-evidence.json` records public repository commits and documents reviewed on October 12, 2026. Evidence links use those snapshots, rather than fetching GitHub at runtime. Update the content and evidence together when capabilities change. The USM Hospital case study uses only the previously approved portfolio summary and assets because its source repository is private. LabTrack QR remains excluded.
 
@@ -146,3 +146,9 @@ After deploying, verify the Vercel success status belongs to the pushed commit. 
 The homepage certificate collection is driven by `src/data/credentials.ts`. Add a record with a unique `id`, the document-backed title, issuer, kind, ISO certificate date, readable date, description, preview image, original file path, and format. Set `featured: true` on one recognition to place it in the spotlight. An optional `distinction` object supplies the featured award’s value, ordinal suffix, and label. Keep other records in the desired display order, usually newest first; the count and year range update automatically.
 
 Place optimized WebP previews in `public/certificates/` and preserve original images/PDFs in `public/certificates/originals/`. The gallery shows complete images without cropping certificate text, opens a keyboard-accessible preview, and provides original-file viewing and downloads. No layout changes are needed to add a standard entry. Label course completion, workshop completion, appreciation, participation, and competition recognition accurately; these records do not imply professional certification.
+
+## Recent project additions
+
+The collection includes Thesis Defense Scheduler, ThesisFlow, Sinolinding Honesty Store, M’lang Go (formerly M’lang Pocket), and PresyoGo (formerly Presyo M’lang). Their summaries and case studies link to reviewed GitHub snapshots in `src/data/project-evidence.json`. Each public case study displays its own source-review date.
+
+Add legacy names and alternative spellings through a project’s optional `searchTerms` collection. Both homepage search and the Project Index include these terms; counts, route generation, and the sitemap derive from the project data.

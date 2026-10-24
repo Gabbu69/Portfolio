@@ -39,6 +39,7 @@ export type Project = {
   featured: boolean;
   spotlight?: boolean;
   summary: string;
+  searchTerms?: readonly string[];
   note?: string;
   stack: readonly string[];
   repo: string;
@@ -53,6 +54,7 @@ export type ArchiveProject = {
   code: string;
   category: Exclude<ProjectCategory, "All">;
   summary: string;
+  searchTerms?: readonly string[];
   note?: string;
   stack: readonly string[];
   repo: string;
@@ -242,6 +244,76 @@ export const portfolio = {
     },
   ] satisfies readonly Project[],
   archiveProjects: [
+    {
+      title: "Thesis Defense Scheduler",
+      slug: "thesis-defense-scheduler",
+      searchTerms: ["thesis_scheduler", "PSITS_thesis_scheduler", "Thesis Scheduler", "PSITS"],
+      caseStudy: caseStudies["thesis-defense-scheduler"],
+      code: "TS",
+      category: "Research",
+      summary:
+        "A local-first thesis defense scheduling app for one college, connecting student and faculty availability, readiness review, conflict-checked drafts, coordinator publication, and PDF/CSV reports.",
+      note: "Uses fictional demonstration records and editable example limits. The bounded first-fit scheduler supports coordinator decisions; it does not claim an optimal schedule or a public hosted deployment.",
+      stack: ["Next.js", "TypeScript", "Tailwind", "PostgreSQL", "Prisma", "Better Auth", "React PDF"],
+      repo: "https://github.com/Gabbu69/PSITS_thesis_scheduler",
+      tone: "research",
+    },
+    {
+      title: "M’lang Go",
+      slug: "mlang-go",
+      searchTerms: ["Mlang Pocket", "M’lang Pocket", "mlang-pocket", "Mlang Go"],
+      caseStudy: caseStudies["mlang-go"],
+      code: "MG",
+      category: "Community",
+      summary:
+        "A local-first M’lang directory and personal errands pocket for searching provisional services, saving places, checking documents, and keeping source notes close at hand.",
+      note: "M’lang Go is the visible rebrand of M’lang Pocket. Its directory is a provisional starter dataset, not an official LGU service or live office-availability feed.",
+      stack: ["React", "TypeScript", "Vite", "Tailwind", "Capacitor", "PWA"],
+      repo: "https://github.com/Gabbu69/Mlang-Go",
+      tone: "local",
+    },
+    {
+      title: "PresyoGo",
+      slug: "presyogo",
+      searchTerms: ["Mlang Presyo", "Presyo Mlang", "Presyo Go", "mlang-presyo"],
+      caseStudy: caseStudies["presyogo"],
+      code: "PG",
+      category: "Community",
+      summary:
+        "An offline price notebook and shopping planner for dated observations, like-for-like comparisons, budgets, purchases, spending, and validated backups anywhere in the Philippines.",
+      note: "Previously Presyo M’lang; the app keeps its internal identity for update compatibility while presenting the PresyoGo name.",
+      stack: ["Flutter", "Dart", "Drift", "SQLite", "Riverpod", "Android"],
+      repo: "https://github.com/Gabbu69/Mlang-Presyo",
+      tone: "local",
+    },
+    {
+      title: "Sinolinding Honesty Store",
+      slug: "honesty-store",
+      searchTerms: ["Honesty Store", "Sinolinding"],
+      caseStudy: caseStudies["honesty-store"],
+      code: "HS",
+      category: "Community",
+      summary:
+        "A small-store operations app connecting a photo menu, cash or utang checkout, water payments, shared-key handovers, notebook encoding, repayments, stock, and reconciliation.",
+      note: "Designed for one boarding-house honesty store; practice data is separate from real records and hosted operations require their own configuration and checks.",
+      stack: ["React", "TypeScript", "Vite", "Supabase", "IndexedDB", "Capacitor"],
+      repo: "https://github.com/Gabbu69/Honesty-Store",
+      tone: "local",
+    },
+    {
+      title: "ThesisFlow",
+      slug: "thesisflow",
+      searchTerms: ["Thesis Flow", "Thesis-Flow"],
+      caseStudy: caseStudies["thesisflow"],
+      code: "TF",
+      category: "Research",
+      summary:
+        "A private offline Android companion for chapters, adviser corrections, consultations, document versions, submissions, deadlines, defense preparation, reports, and backups.",
+      note: "A one-user offline companion with a USM preparation guide. The public Android download is an evaluation build; it does not certify adviser approval or submission delivery.",
+      stack: ["Flutter", "Dart", "Drift", "SQLite", "Android", "PDF"],
+      repo: "https://github.com/Gabbu69/Thesis-Flow",
+      tone: "research",
+    },
     {
       title: "AniTala",
       slug: "anitala",

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Github, Layers, LockKeyhole } from "lucide-react";
 import { allProjects, getProjectBySlug, portfolio } from "@/data/portfolio";
 import { SiteHeader } from "@/components/site-header";
+import type { ProjectCaseStudy } from "@/data/case-studies";
 
 const navigation = portfolio.navigation.map(item => ({ ...item, href: `/${item.href}` }));
 type Props = { params: Promise<{ slug: string }> };
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProjectPage({ params }: Props) {
   const project = getProjectBySlug((await params).slug);
   if (!project) notFound();
-  const study = project.caseStudy;
+  const study: ProjectCaseStudy = project.caseStudy;
   const image = "visual" in project && project.visual.kind === "image" ? project.visual : undefined;
   const sections = ["Overview", "Features", "Workflow", "Technical layers", "Limitations", "Evidence"];
   return (
@@ -84,7 +85,7 @@ export default async function ProjectPage({ params }: Props) {
             </section>
             <section id="evidence" aria-labelledby="evidence-title">
               <p className="eyebrow">06 / Evidence</p><h2 id="evidence-title">Follow the source.</h2>
-              {study.sources.length ? <><p>These descriptions were reviewed against the linked source snapshot on October 12, 2026. Repository code and documentation may evolve after this review.</p><ul className="case-study__sources">{study.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.label}<ArrowUpRight aria-hidden="true" /></a></li>)}</ul></> : <p>This repository is private. This case study uses the portfolio’s approved project summary and assets; private code and implementation details are not published here.</p>}
+              {study.sources.length ? <><p>These descriptions were reviewed against the linked source snapshot on {study.reviewedAt ? new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${study.reviewedAt}T00:00:00Z`)) : "the recorded review date"}. Repository code and documentation may evolve after this review.</p><ul className="case-study__sources">{study.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.label}<ArrowUpRight aria-hidden="true" /></a></li>)}</ul></> : <p>This repository is private. This case study uses the portfolio’s approved project summary and assets; private code and implementation details are not published here.</p>}
             </section>
           </div>
         </div>

@@ -142,5 +142,53 @@
       "README.md",
       "supabase/functions/submit-booking/index.ts"
     ]
+  },
+  "mlang-go": {
+    "repo": "https://github.com/Gabbu69/Mlang-Go",
+    "commit": "c7dbe70f97df0b7bbe08a61431e0b64c0489833b",
+    "checkedAt": "2026-10-24",
+    "documents": [
+      "README.md",
+      "package.json",
+      "src/data/mlangDirectory.ts"
+    ]
+  },
+  "presyogo": {
+    "repo": "https://github.com/Gabbu69/Mlang-Presyo",
+    "commit": "e10f9a2aa8eab9505342b7e045abe0214246599a",
+    "checkedAt": "2026-10-24",
+    "documents": [
+      "README.md",
+      "pubspec.yaml"
+    ]
+  },
+  "honesty-store": {
+    "repo": "https://github.com/Gabbu69/Honesty-Store",
+    "commit": "40723ba305a15d4f2f2bfa5effd07b89355c188a",
+    "checkedAt": "2026-10-24",
+    "documents": [
+      "README.md",
+      "package.json"
+    ]
+  },
+  "thesisflow": {
+    "repo": "https://github.com/Gabbu69/Thesis-Flow",
+    "commit": "1fc88cddedf1b1d91c4c137ed19f2af234008bcc",
+    "checkedAt": "2026-10-24",
+    "documents": [
+      "README.md",
+      "pubspec.yaml"
+    ]
+  },
+  "thesis-defense-scheduler": {
+    "repo": "https://github.com/Gabbu69/PSITS_thesis_scheduler",
+    "commit": "a9bac65e972afe67047fdaa00356861b68b5b228",
+    "checkedAt": "2026-10-24",
+    "documents": [
+      "README.md",
+      "docs/ARCHITECTURE.md",
+      "docs/VERIFICATION.md",
+      "package.json"
+    ]
   }
 }

@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import { ArrowUpRight, CornerDownLeft, Github, Search, X } from "lucide-react";
 import { m, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import { portfolio } from "@/data/portfolio";
+import { portfolio, type ArchiveProject, type Project } from "@/data/portfolio";
 import styles from "./project-index.module.css";
 
-const projects = [...portfolio.projects, ...portfolio.archiveProjects];
+const projects: readonly (Project | ArchiveProject)[] = [...portfolio.projects, ...portfolio.archiveProjects];
 
 export function ProjectIndex() {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -22,7 +22,7 @@ export function ProjectIndex() {
   const reduceMotion = useReducedMotion();
   const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const results = projects.filter((project) => {
-    const text = [project.title, project.category, project.summary, ...project.stack].join(" ").toLowerCase();
+    const text = [project.title, project.category, project.summary, ...(project.searchTerms ?? []), ...project.stack].join(" ").toLowerCase();
     return terms.every((term) => text.includes(term));
   });
   const selected = results.find((project) => project.slug === selectedSlug) ?? results[0];
@@ -145,7 +145,7 @@ export function ProjectIndex() {
                 </button>
               ))}
             </div>
-            {!results.length ? <div className={styles.empty}><strong>No projects found.</strong><p>Try React, healthcare, or a project name.</p><button type="button" onClick={() => { updateQuery(""); inputRef.current?.focus(); }}>Show all 17 projects <ArrowUpRight aria-hidden="true" /></button></div> : null}
+            {!results.length ? <div className={styles.empty}><strong>No projects found.</strong><p>Try React, healthcare, or a project name.</p><button type="button" onClick={() => { updateQuery(""); inputRef.current?.focus(); }}>Show all {projects.length} projects <ArrowUpRight aria-hidden="true" /></button></div> : null}
           </div>
 
           {selected ? <aside className={styles.preview} aria-label={`${selected.title} preview`}>

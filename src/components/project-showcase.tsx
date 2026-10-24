@@ -106,7 +106,7 @@ export function ProjectShowcase({ projects, archiveProjects, categories }: Proje
   const allProjects = [...projects, ...archiveProjects];
   const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const matchesSearch = (project: Project | ArchiveProject) => {
-    const text = [project.title, project.category, project.summary, ...project.stack].join(" ").toLowerCase();
+    const text = [project.title, project.category, project.summary, ...(project.searchTerms ?? []), ...project.stack].join(" ").toLowerCase();
     return terms.every((term) => text.includes(term));
   };
   const matchesFilter = (project: Project | ArchiveProject) =>
