@@ -28,7 +28,7 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
           <strong>{contact.titleAccent}</strong>
         </h2>
 
-        <ContactForm email={identity.email} formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim()} captchaSiteKey={process.env.NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY?.trim()} />
+        <ContactForm email={identity.email} formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim() || "myeepglw"} captchaSiteKey={process.env.NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY?.trim()} />
 
         <div className="footer-row">
           <span>© 2026 {identity.fullName}</span>
