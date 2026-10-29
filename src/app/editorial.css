@@ -75,7 +75,9 @@ h1, h2, h3 { text-wrap: balance; }
 ::view-transition-new(root) { z-index: 2; animation: ink-wash 560ms var(--ease-folio) both; }
 @keyframes ink-wash { from { clip-path: circle(0 at var(--theme-x, 90%) var(--theme-y, 40px)); } to { clip-path: circle(150vmax at var(--theme-x, 90%) var(--theme-y, 40px)); } }
 
-.folio-hero { width: var(--shell); margin-inline: auto; }
+.folio-hero { --grid-secondary: #6e8365; position: relative; isolation: isolate; width: var(--shell); margin-inline: auto; }
+[data-theme="dark"] .folio-hero { --grid-secondary: #b8c79f; }
+.folio-hero__grid { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
 .folio-hero__edition { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding-block: 24px 0; font-size: .65rem; color: var(--muted); }
 .folio-hero__year { margin-left: 20px; }
 .folio-hero__layout { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 48px; padding-block: 48px 52px; }
@@ -171,8 +173,18 @@ h1, h2, h3 { text-wrap: balance; }
 .archive-card__heading p { font-family: var(--font-geist-sans), sans-serif; font-size: .65rem; }
 
 .experience-section, .contact-section { background: var(--inverse-bg); color: var(--inverse-ink); }
-.contact-section { --signal-blue: #ef8a70; }
+.contact-section { --signal-blue: #ef8a70; --grid-resting: var(--inverse-muted); --grid-accent: #ef8a70; --grid-secondary: #b8c79f; isolation: isolate; }
 .contact-section::before { top: -340px; right: -250px; width: 620px; height: 620px; border: 1px solid #ef8a7040; pointer-events: none; }
+/* Keep the cursor response gentler around the form than in the hero. */
+.contact-section__grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at 50% 45%, #0008 28%, #000 100%);
+}
 .experience-section { box-shadow: 0 0 0 100vmax var(--inverse-bg); }
 .experience-section .section-heading__description, .experience-section .section-heading__marker, .experience-meta, .privacy-note, .contact-section__heading > p, .footer-row { color: var(--inverse-muted); }
 .experience-section .section-heading { border-color: #62665a; }

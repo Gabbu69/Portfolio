@@ -29,6 +29,8 @@ const roleTitle = portfolio.identity.role.replace(/\b\w/g, (letter) =>
   letter.toUpperCase(),
 );
 const title = `${portfolio.identity.fullName} | ${roleTitle}`;
+const socialTitle = `${portfolio.identity.shortName} | Portfolio`;
+const socialDescription = `${portfolio.identity.headline} Explore my selected software projects and research.`;
 const description =
   `Portfolio of ${portfolio.identity.fullName}, an aspiring software engineer with hands-on full-stack development experience building practical applications for healthcare, agriculture, research, and community workflows.`;
 export const metadata: Metadata = {
@@ -68,9 +70,9 @@ export const metadata: Metadata = {
     url: "/",
     type: "website",
     locale: "en_PH",
-    title,
-    description,
-    siteName: `${portfolio.identity.fullName} Portfolio`,
+    title: socialTitle,
+    description: socialDescription,
+    siteName: `${portfolio.identity.shortName} Portfolio`,
     images: [
       {
         url: "/opengraph-image",
@@ -82,8 +84,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title,
-    description,
+    title: socialTitle,
+    description: socialDescription,
     images: ["/opengraph-image"],
   },
   other: {

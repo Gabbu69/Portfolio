@@ -1,5 +1,6 @@
 import { ArrowUp, ArrowUpRight, Github } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
+import { GeometricGrid } from "@/components/geometric-grid";
 
 type ContactSectionProps = {
   identity: { fullName: string; email: string };
@@ -10,6 +11,7 @@ type ContactSectionProps = {
 export function ContactSection({ identity, contact, github }: ContactSectionProps) {
   return (
     <footer className="contact-section" id="contact">
+      <GeometricGrid className="contact-section__grid" textSelector=".contact-section__inner" intensity={0.65} />
       <div className="contact-section__inner">
         <div className="contact-section__heading">
           <div className="contact-section__label">

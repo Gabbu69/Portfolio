@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { m, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
+import { GeometricGrid } from "@/components/geometric-grid";
 import profilePortrait from "../../public/images/profile.webp";
 
 type HeroProps = {
@@ -20,6 +21,7 @@ export function Hero({ identity, projectCount }: HeroProps) {
 
   return (
     <section className="folio-hero" id="top" aria-labelledby="hero-title" ref={heroRef}>
+      <GeometricGrid className="folio-hero__grid" textSelector=".folio-hero__copy > :not(h1)" />
       <div className="folio-hero__edition">
         <span>Portfolio / Selected works</span>
         <span className="folio-hero__year">© 2026</span>
