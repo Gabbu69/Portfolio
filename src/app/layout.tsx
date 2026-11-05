@@ -2,10 +2,14 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Geist, Geist_Mono } from "next/font/google";
 import { portfolio } from "@/data/portfolio";
 import { siteUrl } from "@/lib/site-url";
+import { virusBootstrap, virusRuntimeScript } from "@/lib/virus-bootstrap";
+import { VirusReveal } from "@/components/virus-reveal";
+import { effectsBootstrap } from "@/lib/effects-preference";
 import "./globals.css";
 import "./editorial.css";
 import "./github-activity.css";
 import "./case-study.css";
+import "./virus-reveal.css";
 
 const themeScript = `(function(){var t;try{t=localStorage.getItem('gab-portfolio-theme')}catch(e){}if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==='dark'?'#181917':'#f4f0e7'})()`;
 
@@ -113,8 +117,17 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased`}
     >
-      <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: effectsBootstrap }} />
+        <link rel="preload" as="image" href="/images/virus-spider.webp" />
+        <script dangerouslySetInnerHTML={{ __html: virusBootstrap }} />
+        <script dangerouslySetInnerHTML={{ __html: virusRuntimeScript }} />
+      </head>
+      <body className="min-h-full flex flex-col">
+        <VirusReveal />
+        {children}
+      </body>
     </html>
   );
 }

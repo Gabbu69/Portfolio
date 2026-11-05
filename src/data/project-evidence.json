@@ -182,12 +182,12 @@
   },
   "thesis-defense-scheduler": {
     "repo": "https://github.com/Gabbu69/PSITS_thesis_scheduler",
-    "commit": "a9bac65e972afe67047fdaa00356861b68b5b228",
-    "checkedAt": "2026-10-24",
+    "commit": "b63d7094079a901f3eae7f6bf521bc09ee0ea0c1",
+    "checkedAt": "2026-10-28",
     "documents": [
       "README.md",
       "docs/ARCHITECTURE.md",
-      "docs/VERIFICATION.md",
+      "docs/TURNSTILE_AND_RECOVERY.md",
       "package.json"
     ]
   }

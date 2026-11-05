@@ -4,6 +4,7 @@ import { Github, Menu, MoveUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ProjectIndex } from "@/components/project-index";
+import { EffectsToggle } from "@/components/effects-toggle";
 
 type NavigationItem = {
   label: string;
@@ -76,6 +77,7 @@ export function SiteHeader({ initials, name, navigation, github, homeHref = "#to
         <div className="header-actions">
           <ProjectIndex />
           <ThemeToggle />
+          <EffectsToggle />
           <a
             className="header-github"
             href={github}
@@ -93,6 +95,7 @@ export function SiteHeader({ initials, name, navigation, github, homeHref = "#to
               <Menu aria-hidden="true" />
             </summary>
             <nav aria-label="Mobile navigation">
+              <EffectsToggle mobile />
               {navigation.map((item, index) => (
                 <a key={item.href} href={item.href} aria-current={activeSection === item.href ? "location" : undefined} onClick={(event) => {
                   closeMobileMenu();

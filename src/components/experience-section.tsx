@@ -26,7 +26,7 @@ export function ExperienceSection({ experience }: ExperienceSectionProps) {
       />
 
       <div className="experience-layout">
-        <div className="experience-identity">
+        <div className="experience-identity" data-virus-reveal="experience-identity">
           <div className="experience-identity__logo">
             <Image
               src={experience.logo}
@@ -46,7 +46,7 @@ export function ExperienceSection({ experience }: ExperienceSectionProps) {
           </div>
         </div>
 
-        <div className="experience-body">
+        <div className="experience-body" data-virus-reveal="experience-body">
           <p className="experience-body__summary">{experience.summary}</p>
           <ol className="module-list" aria-label="OJT workflow areas">
             {experience.modules.map((module, index) => (

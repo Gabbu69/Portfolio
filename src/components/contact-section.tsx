@@ -13,7 +13,7 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
     <footer className="contact-section" id="contact">
       <GeometricGrid className="contact-section__grid" textSelector=".contact-section__inner" intensity={0.65} />
       <div className="contact-section__inner">
-        <div className="contact-section__heading">
+        <div className="contact-section__heading" data-virus-reveal="contact-heading">
           <div className="contact-section__label">
             <span>06</span>
             <div>
@@ -23,12 +23,14 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
           <p>{contact.body}</p>
         </div>
 
-        <h2>
+        <h2 data-virus-reveal="contact-title">
           <span>{contact.title}</span>
           <strong>{contact.titleAccent}</strong>
         </h2>
 
-        <ContactForm email={identity.email} formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim() || "myeepglw"} captchaSiteKey={process.env.NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY?.trim()} />
+        <div data-virus-reveal="contact-form">
+          <ContactForm email={identity.email} formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim() || "myeepglw"} captchaSiteKey={process.env.NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY?.trim()} />
+        </div>
 
         <div className="footer-row">
           <span>© 2026 {identity.fullName}</span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { m, useReducedMotion } from "motion/react";
+import { m } from "motion/react";
 
 type SectionHeadingProps = {
   index: string;
@@ -36,12 +36,11 @@ export function SectionHeading({
   title,
   description,
 }: SectionHeadingProps) {
-  const reduceMotion = useReducedMotion();
-
   return (
     <m.header
       className="section-heading"
-      initial={reduceMotion ? false : "hidden"}
+      data-virus-reveal={`heading-${index}`}
+      initial={false}
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}
       variants={headingVariants}

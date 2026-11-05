@@ -72,7 +72,7 @@ export function CredentialsSection() {
       </div>
 
       {featured ? (
-        <article className={styles.featured}>
+        <article className={styles.featured} data-virus-reveal={`credential-${featured.id}`}>
           <div className={styles.featuredCopy}>
             <p className={styles.featuredLabel}><Trophy aria-hidden="true" /> {featured.kind}</p>
             {featured.distinction ? <div className={styles.place} aria-hidden="true">{featured.distinction.value}<span>{featured.distinction.suffix}</span><small>{featured.distinction.label}</small></div> : null}
@@ -95,7 +95,7 @@ export function CredentialsSection() {
 
       <div className={styles.grid}>
         {collection.map((credential, index) => (
-          <article className={styles.card} key={credential.id}>
+          <article className={styles.card} key={credential.id} data-virus-reveal={`credential-${credential.id}`}>
             <button className={styles.thumbnail} type="button" onClick={(event) => openCredential(credential, event.currentTarget)} aria-label={`Preview certificate: ${credential.title}`} aria-haspopup="dialog" aria-controls={`${id}-dialog`}>
               <Image src={credential.image} alt={credential.imageAlt} fill sizes="(max-width: 700px) 90vw, (max-width: 1100px) 44vw, 570px" />
               <span className={styles.expand}><Expand aria-hidden="true" /><span className="sr-only">Enlarge</span></span>

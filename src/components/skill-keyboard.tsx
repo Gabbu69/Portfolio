@@ -73,7 +73,7 @@ export function SkillKeyboard({ skills }: SkillKeyboardProps) {
   const ActiveIcon = skillIcons[activeSkill.icon];
 
   return (
-    <div className="skill-explorer">
+    <div className="skill-explorer" data-virus-reveal="skills">
       <AnimatePresence mode="wait" initial={false}>
         <m.aside
           className="skill-readout"

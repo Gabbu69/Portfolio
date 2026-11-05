@@ -196,6 +196,7 @@ export function ProjectShowcase({ projects, archiveProjects, categories }: Proje
 
             return (
               <m.article
+                data-virus-reveal={`project-${project.slug}`}
                 className={`project-entry${project.spotlight ? " project-entry--spotlight" : ""}${
                   index % 2 ? " project-entry--reverse" : ""
                 }`}

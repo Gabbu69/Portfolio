@@ -18,7 +18,7 @@ export function AboutSection({ body, closing, principles }: AboutSectionProps) {
         title="The screen is only half the work."
       />
       <div className="about-grid">
-        <div className="about-copy">
+        <div className="about-copy" data-virus-reveal="about-copy">
           <ArrowDownRight className="about-copy__arrow" aria-hidden="true" />
           <p className="about-copy__lead">{body}</p>
           <p className="about-copy__closing">{closing}</p>
@@ -26,7 +26,7 @@ export function AboutSection({ body, closing, principles }: AboutSectionProps) {
         </div>
         <div className="principles-list" aria-label="Working principles">
           {principles.map((principle) => (
-            <article key={principle.number}>
+            <article key={principle.number} data-virus-reveal={`principle-${principle.number}`}>
               <span className="principles-list__number">{principle.number}</span>
               <div>
                 <h3>{principle.title}</h3>

@@ -2582,9 +2582,9 @@ svg {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
+  html:not([data-effects="on"]) *,
+  html:not([data-effects="on"]) *::before,
+  html:not([data-effects="on"]) *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

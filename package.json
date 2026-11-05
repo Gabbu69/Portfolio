@@ -11,7 +11,7 @@
     "build:sites": "vinext build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test tests/github-calendar.test.ts",
+    "test": "tsx --test tests/*.test.ts",
     "test:github-cache": "node scripts/test-github-cache.mjs"
   },
   "dependencies": {

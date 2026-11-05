@@ -1,0 +1,83 @@
+:root {
+  --virus-night: #050b07;
+  --virus-green: #93ff62;
+}
+
+.virus-canvas,
+.virus-boot {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.virus-canvas { z-index: 240; }
+.virus-canvas[data-virus-stage="intro"] {
+  animation: virus-cover-expire var(--virus-time-left, 3.6s) step-end forwards;
+}
+.virus-boot { display: none; z-index: 241; color: var(--virus-green); }
+
+html[data-virus-intro] .virus-boot {
+  display: block;
+  background: var(--virus-night);
+  /* Fail open even when the client bundle never hydrates. */
+  animation: virus-cover-expire 3.6s step-end forwards;
+}
+
+html[data-virus-intro="drawing"] .virus-boot { background: transparent; }
+
+/* The assembled hero must already be settled when its pixels are exposed. */
+html:is([data-virus-intro], [data-virus-assembled]) .folio-hero__name,
+html:is([data-virus-intro], [data-virus-assembled]) .folio-hero__dash,
+html:is([data-virus-intro], [data-virus-assembled]) .folio-art__shutter,
+html:is([data-virus-intro], [data-virus-assembled]) .folio-art__seal { animation: none; }
+html:is([data-virus-intro], [data-virus-assembled]) .folio-art__shutter { display: none; }
+
+html[data-virus-enabled] .project-visual { animation: none; }
+
+@keyframes virus-cover-expire {
+  to { visibility: hidden; opacity: 0; }
+}
+
+@keyframes virus-section-expire-a {
+  to { visibility: hidden; opacity: 0; }
+}
+
+@keyframes virus-section-expire-b {
+  to { visibility: hidden; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-effects="on"])[data-virus-intro] .virus-boot,
+  html:not([data-effects="on"]) .virus-canvas { display: none !important; }
+}
+
+.effects-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  background: transparent;
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.effects-toggle svg { width: 17px; height: 17px; }
+.effects-toggle:hover { background: var(--paper-deep); border-color: var(--red); }
+.effects-toggle[aria-pressed="true"] svg { color: var(--red); }
+.effects-toggle--mobile { display: none; }
+@media (max-width: 1100px) and (min-width: 851px) {
+  .effects-toggle { padding-inline: 10px; }
+  .effects-toggle > span { display: none; }
+}
+@media (max-width: 850px) {
+  .header-actions > .effects-toggle { display: none; }
+  .effects-toggle--mobile { display: flex; width: 100%; justify-content: flex-start; min-height: 52px; margin-bottom: 8px; }
+}
+html[data-effects="off"] .virus-canvas,
+html[data-effects="off"] .virus-boot { display: none !important; }

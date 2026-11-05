@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { getEffectsEnabled } from "@/lib/effects-preference";
 
 type Cell = { x: number; y: number; energy: number; variant: number; quiet: number };
 type GeometricGridProps = { className: string; textSelector: string; intensity?: number };
@@ -23,7 +24,6 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
     if (!canvas || !container || !context) return;
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const finePointer = window.matchMedia("(any-hover: hover) and (any-pointer: fine)");
     let cells: Cell[] = [];
     let width = 0;
     let height = 0;
@@ -36,7 +36,7 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
     let secondaryColor = "";
     const pointer = { x: 0, y: 0, active: false };
 
-    const canAnimate = () => !motion.matches && finePointer.matches && visible && !document.hidden;
+    const canAnimate = () => getEffectsEnabled() && visible && !document.hidden;
 
     function draw(time: number) {
       frame = null;
@@ -192,7 +192,7 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
     const resizeObserver = new ResizeObserver(measure);
     resizeObserver.observe(container);
     const themeObserver = new MutationObserver(measure);
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-effects"] });
     const intersectionObserver = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       reset();
@@ -206,7 +206,6 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
     window.addEventListener("scroll", leave, { passive: true });
     document.addEventListener("visibilitychange", reset);
     motion.addEventListener("change", reset);
-    finePointer.addEventListener("change", reset);
     // Remeasure the text protection after web fonts have settled.
     void document.fonts.ready.then(() => { if (!disposed) measure(); });
     measure();
@@ -225,7 +224,6 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
       window.removeEventListener("scroll", leave);
       document.removeEventListener("visibilitychange", reset);
       motion.removeEventListener("change", reset);
-      finePointer.removeEventListener("change", reset);
     };
   }, [textSelector, intensity]);
 

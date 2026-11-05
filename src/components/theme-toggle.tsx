@@ -1,7 +1,9 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useRef, useSyncExternalStore, type MouseEvent } from "react";
+import { useEffect, useRef, useSyncExternalStore, type MouseEvent } from "react";
+import { EFFECTS_CHANGE_EVENT, getEffectsEnabled } from "@/lib/effects-preference";
+import { themeReveal, THEME_TRANSITION_DURATION } from "@/lib/theme-transition";
 
 const storageKey = "gab-portfolio-theme";
 type Theme = "light" | "dark";
@@ -38,23 +40,79 @@ function subscribe(callback: () => void) {
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, () => document.documentElement.dataset.theme ?? "light", () => "light");
   const transitionRef = useRef<ViewTransition | null>(null);
+  const animationsRef = useRef<Animation[]>([]);
+  const requestRef = useRef(0);
+  const requestedThemeRef = useRef<Theme | null>(null);
+
+  useEffect(() => {
+    const stop = () => {
+      transitionRef.current?.skipTransition();
+      animationsRef.current.forEach(animation => animation.cancel());
+      animationsRef.current = [];
+    };
+    const effectsChanged = () => { if (!getEffectsEnabled()) stop(); };
+    window.addEventListener(EFFECTS_CHANGE_EVENT, effectsChanged);
+    return () => { window.removeEventListener(EFFECTS_CHANGE_EVENT, effectsChanged); stop(); };
+  }, []);
+
   const toggleTheme = (event: MouseEvent<HTMLButtonElement>) => {
-    const nextTheme: Theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    const root = document.documentElement;
+    const current = requestedThemeRef.current ?? (root.dataset.theme === "dark" ? "dark" : "light");
+    const nextTheme: Theme = current === "dark" ? "light" : "dark";
+    const request = ++requestRef.current;
+    requestedThemeRef.current = nextTheme;
+    let applied = false;
     const update = () => {
+      if (request !== requestRef.current || applied) return;
+      applied = true;
       applyTheme(nextTheme);
       try { localStorage.setItem(storageKey, nextTheme); } catch { /* Keep the selected theme without storage. */ }
     };
-    const bounds = event.currentTarget.getBoundingClientRect();
-    document.documentElement.style.setProperty("--theme-x", `${bounds.x + bounds.width / 2}px`);
-    document.documentElement.style.setProperty("--theme-y", `${bounds.y + bounds.height / 2}px`);
+    const clear = () => {
+      if (request !== requestRef.current) return;
+      delete root.dataset.themeSwitch;
+      requestedThemeRef.current = null;
+      transitionRef.current = null;
+      animationsRef.current = [];
+    };
     transitionRef.current?.skipTransition();
-    if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    animationsRef.current.forEach(animation => animation.cancel());
+    animationsRef.current = [];
+    if (!document.startViewTransition || !getEffectsEnabled() || document.hidden) {
+      update();
+      clear();
+      return;
+    }
+    const bounds = (event.currentTarget.querySelector(".theme-toggle__icons") ?? event.currentTarget).getBoundingClientRect();
+    const x = bounds.x + bounds.width / 2;
+    const y = bounds.y + bounds.height / 2;
+    root.style.setProperty("--theme-x", `${x}px`);
+    root.style.setProperty("--theme-y", `${y}px`);
+    root.dataset.themeSwitch = nextTheme;
+    try {
       const transition = document.startViewTransition(update);
       transitionRef.current = transition;
+      void transition.ready.then(() => {
+        if (request !== requestRef.current) return;
+        const { frames } = themeReveal(x, y, innerWidth, innerHeight, nextTheme === "dark");
+        const reveal = root.animate(frames, {
+          duration: THEME_TRANSITION_DURATION,
+          easing: "cubic-bezier(.22,.8,.25,1)",
+          pseudoElement: "::view-transition-new(root)",
+          fill: "both",
+        });
+        animationsRef.current.push(reveal);
+        void reveal.finished.catch(() => {});
+      }).catch(() => { transition.skipTransition(); });
+      void transition.updateCallbackDone.catch(() => { update(); });
       void transition.finished.catch(() => {}).finally(() => {
-        if (transitionRef.current === transition) transitionRef.current = null;
+        update();
+        clear();
       });
-    } else update();
+    } catch {
+      update();
+      clear();
+    }
   };
   return (
     <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`} title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>

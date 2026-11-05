@@ -335,7 +335,7 @@ export const caseStudies = {
     limitations: ["Requests require staff review and do not automatically confirm a booking.", "Online ordering, payments, automatic capacity decisions, and automated customer notifications are outside the documented scope.", "End-to-end business acceptance requires the configured backend and staff walkthrough."],
   }),
   "thesis-defense-scheduler": study("thesis-defense-scheduler", {
-    status: "Local-first single-college defense scheduling application",
+    status: "Hosted single-college defense scheduling application",
     audience: "College coordinators, faculty advisers and panelists, and students preparing thesis defenses.",
     purpose: "Coordinate availability and readiness in one workspace so a coordinator can generate, review, adjust, and publish a defense schedule against current participant, room, and workload constraints.",
     features: [
@@ -347,11 +347,11 @@ export const caseStudies = {
     workflow: ["Set up the college term, groups, committee assignments, rooms, and editable workload rules.", "Collect student, faculty, and room availability, then review each group's readiness request.", "Generate a draft for a term, stage, date range, and room set; inspect conflicts, adjust sessions, and lock placements to retain.", "Publish after server revalidation, then review personal schedules, reports, notifications, and versioned rescheduling history."],
     layers: [
       { name: "Interface", technology: "Next.js · TypeScript · Tailwind", description: "Role-specific dashboards, availability, drafts, waiting lists, and reports support light, dark, and system themes with responsive navigation." },
-      { name: "Identity and access", technology: "Better Auth · Server authorization", description: "Coordinator-created accounts use credential sessions. Student and faculty records and report scopes are checked on the server." },
+      { name: "Identity and access", technology: "Better Auth · Cloudflare Turnstile", description: "Coordinator-created accounts use email/password sign-in with Turnstile. An authenticator supports password recovery, while student, faculty, and report access is checked on the server." },
       { name: "Scheduling and integrity", technology: "Deterministic first-fit · PostgreSQL advisory locks", description: "The shared validator checks availability, room capacity, turnover, and participant workload; transactional locking serializes scheduling mutations for one college." },
       { name: "Records and exports", technology: "Prisma · PostgreSQL · React PDF", description: "Published participant snapshots, audit events, and session versions preserve report history. PDFs wrap long titles and rosters; CSV exports neutralize formula prefixes." },
     ],
-    limitations: ["The public repository is source publication; no public hosted application or actual college adoption is claimed. Demonstration names, groups, and limits are fictional examples.", "The bounded first-fit heuristic does not optimize fairness or prove infeasibility. A missing slot can require more availability, a wider date range, or coordinator adjustment.", "Committee selection remains manual. Grading, manuscript storage, plagiarism checking, automatic panel matching, and external email/SMS/calendar integrations are outside this version.", "Repository verification reports local application and concurrency checks; actual faculty usability acceptance and operational college approval remain separate."],
+    limitations: ["The hosted application requires coordinator-created accounts; public sign-up and shared demo accounts are disabled. College adoption and institutional approval are not established by deployment.", "The bounded first-fit heuristic does not optimize fairness or prove infeasibility. A missing slot can require more availability, a wider date range, or coordinator adjustment.", "Committee selection remains manual. Grading, manuscript storage, plagiarism checking, automatic panel matching, and external email/SMS/calendar integrations are outside this version.", "College rules and workload limits must be configured for actual requirements. Faculty usability acceptance and operational college approval remain separate checks."],
   }),
   "mlang-go": study("mlang-go", {
     status: "Local-first community directory and errands prototype",

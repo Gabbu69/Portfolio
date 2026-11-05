@@ -123,6 +123,28 @@ export const portfolio = {
   },
   projects: [
     {
+      title: "PSITS Thesis Scheduler",
+      slug: "thesis-defense-scheduler",
+      searchTerms: ["thesis_scheduler", "PSITS_thesis_scheduler", "Thesis Scheduler", "PSITS", "Thesis Defense Scheduler"],
+      caseStudy: caseStudies["thesis-defense-scheduler"],
+      eyebrow: "Defense scheduling · full stack",
+      category: "Research",
+      featured: true,
+      summary:
+        "A college thesis defense scheduler connecting student and faculty availability, readiness review, conflict-checked drafts, coordinator publication, and personal schedules with PDF/CSV reports.",
+      note: "Role-specific workflows for coordinators, teachers, and students. The coordinator reviews and publishes schedules against the college’s configured availability, room, and workload rules.",
+      stack: ["Next.js", "TypeScript", "Tailwind", "PostgreSQL", "Prisma", "Better Auth", "React PDF"],
+      repo: "https://github.com/Gabbu69/PSITS_thesis_scheduler",
+      live: "https://psits-thesis-scheduler.vercel.app",
+      visual: {
+        kind: "image",
+        src: "/images/psits-thesis-scheduler.webp",
+        alt: "PSITS Thesis Scheduler public sign-in page",
+        fit: "cover",
+        tone: "product",
+      },
+    },
+    {
       title: "PaSiBudget",
       slug: "pasibudget",
       caseStudy: caseStudies["pasibudget"],
@@ -244,20 +266,6 @@ export const portfolio = {
     },
   ] satisfies readonly Project[],
   archiveProjects: [
-    {
-      title: "Thesis Defense Scheduler",
-      slug: "thesis-defense-scheduler",
-      searchTerms: ["thesis_scheduler", "PSITS_thesis_scheduler", "Thesis Scheduler", "PSITS"],
-      caseStudy: caseStudies["thesis-defense-scheduler"],
-      code: "TS",
-      category: "Research",
-      summary:
-        "A local-first thesis defense scheduling app for one college, connecting student and faculty availability, readiness review, conflict-checked drafts, coordinator publication, and PDF/CSV reports.",
-      note: "Uses fictional demonstration records and editable example limits. The bounded first-fit scheduler supports coordinator decisions; it does not claim an optimal schedule or a public hosted deployment.",
-      stack: ["Next.js", "TypeScript", "Tailwind", "PostgreSQL", "Prisma", "Better Auth", "React PDF"],
-      repo: "https://github.com/Gabbu69/PSITS_thesis_scheduler",
-      tone: "research",
-    },
     {
       title: "M’lang Go",
       slug: "mlang-go",

@@ -145,7 +145,7 @@ export function GithubActivity({ github }: { github: string }) {
   }, []);
 
   return (
-    <section className="github-activity" aria-labelledby="github-activity-title">
+    <section className="github-activity" aria-labelledby="github-activity-title" data-virus-reveal="github-activity">
       <header className="github-activity__heading">
         <div>
           <p className="eyebrow"><Github aria-hidden="true" /> Building, one contribution at a time</p>

@@ -2,7 +2,8 @@
 
 import { useForm, ValidationError } from "@formspree/react";
 import Script from "next/script";
-import { ArrowUpRight, Check, Copy, Mail } from "lucide-react";
+import { ArrowUpRight, Check, Copy } from "lucide-react";
+import { DirectMessageForm } from "@/components/direct-message-form";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 declare global {
@@ -122,18 +123,8 @@ export function ContactForm({ email, formId, captchaSiteKey }: { email: string; 
   }
   return (
     <div className="contact-panel">
-      {formId ? (
-        <>
-          <p className="contact-panel__intro">Your message will reach my inbox. I’ll reply to the email address you provide.</p>
-          <MessageForm formId={formId} captchaSiteKey={captchaSiteKey} />
-        </>
-      ) : (
-        <div className="contact-panel__unavailable" role="status">
-          <Mail aria-hidden="true" />
-          <h3>The contact form is currently unavailable.</h3>
-          <p>You can still reach me by email. Copy the address below to write your message.</p>
-        </div>
-      )}
+      <p className="contact-panel__intro">Send me a message right here—no need to open another app. I’ll reply to the email address you provide.</p>
+      {formId ? <MessageForm formId={formId} captchaSiteKey={captchaSiteKey} /> : <DirectMessageForm email={email} />}
       <div className="contact-address">
         <label className="sr-only" htmlFor="contact-address">Gabriel’s email address</label>
         <input ref={addressRef} id="contact-address" value={email} readOnly />

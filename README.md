@@ -95,20 +95,26 @@ Keep local-first data, demo data, serverless storage, configured services, and p
 
 ## On-page messages to Gmail
 
-Visitors write their **Name**, **Email**, and **Message** inside the portfolio. The `@formspree/react` integration submits asynchronously and keeps success/errors on the same page. Replies happen by email; the portfolio does not store an on-site conversation. The contact form preserves input after failure, prevents duplicate pending submission, and includes Formspree's `_gotcha` honeypot.
+Visitors write their **Name**, **Email**, and **Message** inside the portfolio and submit without opening another app or leaving the page. The default [FormSubmit AJAX integration](https://formsubmit.co/ajax-documentation) delivers to the email in `src/data/portfolio.ts`; it needs no API key or account. Replies happen by email; the portfolio does not store an on-site conversation.
 
-The form is intentionally unavailable until an owner-controlled Formspree form is configured. A copy-email action remains available, including an address-selection fallback when clipboard access is denied. Never use a fake form ID or show successful delivery for an unconfigured form.
+The form stays visible when `NEXT_PUBLIC_FORMSPREE_FORM_ID` is absent. Input validation, a `_honey` honeypot, provider spam filtering, duplicate-submit protection, and a 20-second timeout protect the default delivery path. Failure preserves the draft. Only an explicit successful provider response shows the confirmation; activation acknowledgements, HTTP errors, and malformed responses do not. The privacy notice identifies the active provider. The portfolio adds no message database or logging of form contents.
 
-Owner setup:
+One-time default setup:
+
+1. Submit a test from the deployed portfolio. FormSubmit sends an activation email to **gabriellimjuco@gmail.com**. The owner must click **Activate Form** in that inbox (check Spam as well). See [FormSubmit's setup instructions](https://formsubmit.co/) and [activation help](https://formsubmit.co/help). This owner step is separate from the visitor's on-page workflow.
+2. Submit another test after activation and confirm its arrival and Reply-To address in Gmail. Provider acceptance alone does not establish inbox delivery. Retest after changing the recipient or deployment origin.
+3. FormSubmit documents a 30-day submission archive. The form links its privacy policy before submission. Do not request passwords, confidential files, or sensitive records through this public contact form.
+
+Optional Formspree override (retains the existing integration):
 
 1. Sign in to [Formspree](https://formspree.io/) and create a portfolio contact form. Configure **gabriellimjuco@gmail.com** as the notification recipient and complete recipient verification in your own inbox.
 2. Set the public form ID (the final part of `https://formspree.io/f/FORM_ID`) as `NEXT_PUBLIC_FORMSPREE_FORM_ID` in an ignored `.env.local` for local use and in Vercel for the intended deployment. `.env.example` contains placeholders. This form ID is public; Gmail passwords or Google account access are unnecessary.
 3. Keep Formspree's provider spam filtering enabled. If the form requires a CAPTCHA, configure custom **reCAPTCHA v3** in Formspree using its [React integration guide](https://help.formspree.io/articles/working-with-react/using-a-custom-recaptcha-with-formspree-react). Configure its secret only in Formspree, its allowed local/production hostnames in Google, and its public key as `NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY` in the website. The form obtains a fresh token at submit time and reports script/token failures without losing input. Do not disable a required CAPTCHA to bypass a failed check.
 4. Redeploy after changing public environment values. Verify a real submission arrives in Gmail and that **Reply** addresses the visitor's `email` field; adjust the Formspree notification settings if needed. Check spam folders and provider quota/status if a submission does not arrive.
 
-The privacy notice links Formspree's policy, with Google's policy/terms also shown when custom reCAPTCHA is enabled. Formspree handles submission processing; the portfolio adds no message database or logging of form contents.
+When Formspree is configured, the privacy notice links its policy, with Google's policy/terms also shown when custom reCAPTCHA is enabled. A copy-email action remains available as an optional convenience, including an address-selection fallback when clipboard access is denied.
 
-Validation covers missing configuration and simulated provider success, errors, pending requests, and retries. Live inbox delivery and reply routing require the owner setup above and must be reported separately.
+`npm test` covers provider request payloads, validation, honeypots, activation responses, HTTP failures, malformed responses, and network failures. Live inbox delivery and reply routing require the owner setup above and must be reported separately.
 
 ## Add or update skills
 
@@ -135,7 +141,7 @@ npm run build
 
 The preferred production address is [gabrielpaclibar.vercel.app](https://gabrielpaclibar.vercel.app). The original [portfolio-eta-inky-60.vercel.app](https://portfolio-eta-inky-60.vercel.app) address remains available for existing links. The connected GitHub repository is `Gabbu69/Portfolio`, with production deployments from `main`. Adding a domain does not publish local source changes; push/deployment verification is separate.
 
-`vercel.json` selects the Next.js framework, `npm ci`, and `npm run build`. Leave Vercel's output directory at its Next.js default; `dist` belongs to the separate `build:sites` adapter. No database or secret environment variables are needed for this portfolio. On-page delivery requires the public Formspree form ID and, when custom reCAPTCHA is enabled, its public site key.
+`vercel.json` selects the Next.js framework, `npm ci`, and `npm run build`. Leave Vercel's output directory at its Next.js default; `dist` belongs to the separate `build:sites` adapter. No database or secret environment variables are needed for this portfolio. Default on-page delivery uses FormSubmit and requires one-time recipient activation. The optional Formspree override uses its public form ID and, when custom reCAPTCHA is enabled, its public site key.
 
 Canonical links, social metadata, `robots.txt`, and `sitemap.xml` use the same production origin in `src/lib/site-url.ts`. The default is `https://gabrielpaclibar.vercel.app`; an explicit `NEXT_PUBLIC_SITE_URL` overrides it. The platform's generated project hostname does not override the chosen preferred address. Update any previously configured `NEXT_PUBLIC_SITE_URL` and redeploy when moving to a different production origin.
 

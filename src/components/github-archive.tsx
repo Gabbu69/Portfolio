@@ -12,7 +12,7 @@ const posterPixels = Array.from({ length: 28 }, (_, index) => index);
 export function GithubArchive({ projects, allProjects }: GithubArchiveProps) {
   return (
     <section className="github-archive" aria-labelledby="github-archive-title">
-      <header className="github-archive__header">
+      <header className="github-archive__header" data-virus-reveal="archive-heading">
         <div className="github-archive__marker">
           <span>More builds</span>
           <small>GitHub archive</small>
@@ -38,7 +38,7 @@ export function GithubArchive({ projects, allProjects }: GithubArchiveProps) {
 
           return (
             <li className={`archive-card archive-card--${project.tone}`} key={project.repo}>
-              <article>
+              <article data-virus-reveal={`project-${project.slug}`}>
                 <div
                   className={`archive-poster archive-poster--pattern-${(index % 4) + 1}`}
                   aria-hidden="true"

@@ -39,7 +39,7 @@ export default async function ProjectPage({ params }: Props) {
       <SiteHeader initials={portfolio.identity.initials} name={portfolio.identity.shortName} navigation={navigation} github={portfolio.socials.github} homeHref="/#top" />
       <main className="case-study" id="main-content">
         <Link className="case-study__back" href="/#work"><ArrowLeft aria-hidden="true" />Back to all projects</Link>
-        <header className="case-study__hero">
+        <header className="case-study__hero" data-virus-reveal={`${project.slug}-hero`}>
           <p className="eyebrow">{project.category} / App case study</p>
           <h1>{project.title}</h1>
           <p className="case-study__summary">{project.summary}</p>
@@ -51,7 +51,7 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </header>
         {image ? (
-          <figure className={`case-study__image case-study__image--${image.fit ?? "cover"}`}>
+          <figure className={`case-study__image case-study__image--${image.fit ?? "cover"}`} data-virus-reveal={`${project.slug}-image`}>
             <div><Image src={image.src} alt={image.alt} fill sizes="(max-width: 768px) 92vw, 1040px" /></div>
             <figcaption>{image.alt}</figcaption>
           </figure>
@@ -62,28 +62,28 @@ export default async function ProjectPage({ params }: Props) {
             {sections.map((title, index) => <a href={`#${title.toLowerCase().replaceAll(" ", "-")}`} key={title}><small>{String(index + 1).padStart(2, "0")}</small>{title}</a>)}
           </nav>
           <div className="case-study__sections">
-            <section id="overview" aria-labelledby="overview-title">
+            <section id="overview" aria-labelledby="overview-title" data-virus-reveal={`${project.slug}-overview`}>
               <p className="eyebrow">01 / Overview</p><h2 id="overview-title">What it’s built for.</h2>
               <p>{study.purpose}</p>
               <div className="case-study__audience"><strong>Who it serves</strong><p>{study.audience}</p></div>
             </section>
-            <section id="features" aria-labelledby="features-title">
+            <section id="features" aria-labelledby="features-title" data-virus-reveal={`${project.slug}-features`}>
               <p className="eyebrow">02 / Features</p><h2 id="features-title">Inside the app.</h2>
               <div className="case-study__features">{study.features.map(feature => <article key={feature.title}><h3>{feature.title}</h3><p>{feature.description}</p></article>)}</div>
             </section>
-            <section id="workflow" aria-labelledby="workflow-title">
+            <section id="workflow" aria-labelledby="workflow-title" data-virus-reveal={`${project.slug}-workflow`}>
               <p className="eyebrow">03 / Workflow</p><h2 id="workflow-title">From task to outcome.</h2>
               <ol className="case-study__workflow">{study.workflow.map((step, index) => <li key={step}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><p>{step}</p></li>)}</ol>
             </section>
-            <section id="technical-layers" aria-labelledby="layers-title">
+            <section id="technical-layers" aria-labelledby="layers-title" data-virus-reveal={`${project.slug}-technical-layers`}>
               <p className="eyebrow">04 / Technical layers</p><h2 id="layers-title">How the pieces work.</h2>
               <div className="case-study__layers">{study.layers.map(layer => <article key={layer.name}><Layers aria-hidden="true" /><span className="eyebrow">{layer.name}</span><h3>{layer.technology}</h3><p>{layer.description}</p></article>)}</div>
             </section>
-            <section id="limitations" aria-labelledby="limitations-title">
+            <section id="limitations" aria-labelledby="limitations-title" data-virus-reveal={`${project.slug}-limitations`}>
               <p className="eyebrow">05 / Limitations</p><h2 id="limitations-title">What to keep in mind.</h2>
               <ul className="case-study__limitations">{study.limitations.map(item => <li key={item}>{item}</li>)}</ul>
             </section>
-            <section id="evidence" aria-labelledby="evidence-title">
+            <section id="evidence" aria-labelledby="evidence-title" data-virus-reveal={`${project.slug}-evidence`}>
               <p className="eyebrow">06 / Evidence</p><h2 id="evidence-title">Follow the source.</h2>
               {study.sources.length ? <><p>These descriptions were reviewed against the linked source snapshot on {study.reviewedAt ? new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(`${study.reviewedAt}T00:00:00Z`)) : "the recorded review date"}. Repository code and documentation may evolve after this review.</p><ul className="case-study__sources">{study.sources.map(source => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.label}<ArrowUpRight aria-hidden="true" /></a></li>)}</ul></> : <p>This repository is private. This case study uses the portfolio’s approved project summary and assets; private code and implementation details are not published here.</p>}
             </section>
