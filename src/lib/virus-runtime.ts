@@ -62,6 +62,8 @@ export function installVirusRuntime(
     let height = innerHeight;
     let intro = false;
     let batch = 0;
+    let scrolling = false;
+    let scrollIdle = 0;
     const pending = new Set<HTMLElement>();
     const observed = new WeakSet<HTMLElement>();
 
@@ -266,7 +268,7 @@ export function installVirusRuntime(
 
     function startPending(now: number) {
       // Start groups in pairs so one CSS deadline protects the entire batch.
-      if (intro || scenes.length) return;
+      if (scrolling || intro || scenes.length) return;
       for (const element of pending) {
         const key = keyFor(element);
         if (!element.isConnected || completed.has(key)) { pending.delete(element); continue; }
@@ -459,6 +461,17 @@ export function installVirusRuntime(
     }
 
     function onVisibility() { if (document.hidden) dismiss(); }
+    function onScroll() {
+      // A fixed canvas must never retain masks from the previous scroll
+      // position. Clear on input too, before compositor scrolling begins.
+      scrolling = true;
+      clear();
+      window.clearTimeout(scrollIdle);
+      scrollIdle = window.setTimeout(() => {
+        scrolling = false;
+        queue();
+      }, 180);
+    }
     function onMotion() {
       if (!effectsEnabled()) { dismiss(); observer?.disconnect(); mutations?.disconnect(); }
     }
@@ -523,7 +536,9 @@ export function installVirusRuntime(
       queue();
     }).catch(() => { if (!disposed) clear(); });
 
-    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    window.addEventListener("wheel", onScroll, { passive: true });
+    window.addEventListener("touchmove", onScroll, { passive: true });
     window.addEventListener("resize", resize, { passive: true });
     window.addEventListener("keydown", dismiss);
     window.addEventListener("pointerdown", dismiss, { passive: true });
@@ -534,9 +549,12 @@ export function installVirusRuntime(
       disposed = true;
       clear();
       window.clearTimeout(deadline);
+      window.clearTimeout(scrollIdle);
       observer?.disconnect();
       mutations?.disconnect();
-      window.removeEventListener("scroll", queue);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("wheel", onScroll);
+      window.removeEventListener("touchmove", onScroll);
       window.removeEventListener("resize", resize);
       window.removeEventListener("keydown", dismiss);
       window.removeEventListener("pointerdown", dismiss);

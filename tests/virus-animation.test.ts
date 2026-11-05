@@ -163,8 +163,8 @@ test("the virus honors explicit site opt-in on a reduced-motion system and expli
   assert.equal(bootstrap({ reduced: false, effects: "off", reload: true }).dataset.virusIntro, undefined);
 });
 
-test("keyboard interaction and page lifecycle events immediately dismiss the startup cover", () => {
-  for (const event of ["keydown", "pagehide", "pageshow"]) {
+test("keyboard, scroll input and page lifecycle events immediately dismiss the startup cover", () => {
+  for (const event of ["keydown", "wheel", "touchmove", "scroll", "pagehide", "pageshow"]) {
     const { dataset, events } = bootstrap();
     events[event]({ persisted: true });
     assert.equal(dataset.virusIntro, undefined);
