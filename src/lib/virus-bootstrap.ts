@@ -8,4 +8,13 @@ export const virusRuntimeScript = `(function(){const __name=(fn)=>fn;(${installV
 
 // Runs before paint, just like the theme bootstrap. Both CSS and a timer expire
 // the cover independently: hydration and the image are never required to exit.
-export const virusBootstrap = `(function(){try{var r=document.documentElement,n=performance.getEntriesByType('navigation')[0],reload=n&&n.type==='reload',p=location.pathname,allowed=r.dataset.effects?r.dataset.effects==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;if((p!=='/'&&!(reload&&p.indexOf('/projects/')===0))||(!reload&&(location.hash||scrollY>0))||(n&&n.type==='back_forward')||document.hidden||!allowed)return;r.dataset.virusStart=String(performance.now());r.dataset.virusIntro='pending';var clear=function(){delete r.dataset.virusIntro;delete r.dataset.virusStart};setTimeout(clear,${INTRO_LIMIT});addEventListener('keydown',clear,{once:true});addEventListener('pagehide',clear,{once:true});['wheel','touchmove','scroll'].forEach(function(event){addEventListener(event,clear,{once:true,passive:true,capture:true})});addEventListener('pageshow',function(e){if(e.persisted)clear()},{once:true})}catch(e){}})()`;
+export const virusBootstrap = `(function(){try{
+var r=document.documentElement,n=performance.getEntriesByType('navigation')[0],reload=n&&n.type==='reload',p=location.pathname,allowed=r.dataset.effects?r.dataset.effects==='on':!matchMedia('(prefers-reduced-motion: reduce)').matches;
+if((p!=='/'&&!(reload&&p.indexOf('/projects/')===0))||(!reload&&(location.hash||scrollY>0))||(n&&n.type==='back_forward')||document.hidden||!allowed)return;
+r.dataset.virusStart=String(performance.now());r.dataset.virusIntro='pending';
+var clear=function(){delete r.dataset.virusIntro;delete r.dataset.virusStart};
+setTimeout(clear,${INTRO_LIMIT});
+addEventListener('keydown',function(e){if(['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','PageDown','PageUp','Home','End',' '].indexOf(e.key)!==-1)return;clear()});
+addEventListener('pagehide',clear,{once:true});
+addEventListener('pageshow',function(e){if(e.persisted)clear()},{once:true});
+}catch(e){}})()`;

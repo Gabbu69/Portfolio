@@ -109,7 +109,7 @@ function bootstrap(options: { seen?: boolean; brokenStorage?: boolean; reduced?:
   const dataset: Record<string, string> = {};
   if (options.effects) dataset.effects = options.effects;
   const timers: { callback: () => void; ms: number }[] = [];
-  const events: Record<string, (event: { persisted?: boolean }) => void> = {};
+  const events: Record<string, (event: { persisted?: boolean; key?: string }) => void> = {};
   runInNewContext(virusBootstrap, {
     document: { documentElement: { dataset }, hidden: options.hidden ?? false },
     location: { pathname: options.path ?? "/", hash: options.hash ?? "" },
@@ -121,7 +121,7 @@ function bootstrap(options: { seen?: boolean; brokenStorage?: boolean; reduced?:
     matchMedia: () => ({ matches: options.reduced ?? false }),
     scrollY: options.scrollY ?? 0,
     setTimeout: (callback: () => void, ms: number) => { timers.push({ callback, ms }); },
-    addEventListener: (name: string, callback: (event: { persisted?: boolean }) => void) => { events[name] = callback; },
+    addEventListener: (name: string, callback: (event: { persisted?: boolean; key?: string }) => void) => { events[name] = callback; },
   });
   return { dataset, timers, events };
 }
@@ -163,12 +163,26 @@ test("the virus honors explicit site opt-in on a reduced-motion system and expli
   assert.equal(bootstrap({ reduced: false, effects: "off", reload: true }).dataset.virusIntro, undefined);
 });
 
-test("keyboard, scroll input and page lifecycle events immediately dismiss the startup cover", () => {
-  for (const event of ["keydown", "wheel", "touchmove", "scroll", "pagehide", "pageshow"]) {
+test("focus navigation and page lifecycle events dismiss the startup cover", () => {
+  for (const event of ["keydown", "pagehide", "pageshow"]) {
     const { dataset, events } = bootstrap();
     events[event]({ persisted: true });
     assert.equal(dataset.virusIntro, undefined);
   }
+});
+
+test("scroll input preserves the intro, including keyboard scrolling before focus navigation", () => {
+  const {dataset,events}=bootstrap();
+  for(const event of ["wheel","touchmove","scroll"]) {
+    events[event]?.({});
+    assert.equal(dataset.virusIntro,"pending");
+  }
+  for(const key of ["ArrowDown","PageDown","Home","End"," "]) {
+    events.keydown({key});
+    assert.equal(dataset.virusIntro,"pending");
+  }
+  events.keydown({key:"Tab"});
+  assert.equal(dataset.virusIntro,undefined);
 });
 
 test("serialized early engine is self-contained and fails open without a canvas context", () => {

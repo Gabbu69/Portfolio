@@ -13,7 +13,8 @@
   user-select: none;
 }
 
-.virus-canvas { z-index: 240; }
+.virus-canvas { display: none; position: absolute; inset: auto; top: 0; left: 0; height: 100vh; z-index: 90; }
+.virus-canvas[data-virus-stage] { display: block; }
 .virus-canvas[data-virus-stage="intro"] {
   animation: virus-cover-expire var(--virus-time-left, 3.6s) step-end forwards;
 }

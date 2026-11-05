@@ -44,6 +44,9 @@ export function installVirusRuntime(
     width: number;
     height: number;
     intro: boolean;
+    anchorX?: number;
+    anchorY?: number;
+    coveredKeys?: string[];
   };
 
   function mount(pathname: string) {
@@ -62,8 +65,6 @@ export function installVirusRuntime(
     let height = innerHeight;
     let intro = false;
     let batch = 0;
-    let scrolling = false;
-    let scrollIdle = 0;
     const pending = new Set<HTMLElement>();
     const observed = new WeakSet<HTMLElement>();
 
@@ -125,6 +126,7 @@ export function installVirusRuntime(
       // image remains underneath, so newly painted pixels retain its true colors.
       const images = scope.matches("img") ? [scope as HTMLImageElement] : Array.from(scope.querySelectorAll<HTMLImageElement>("img"));
       for (const picture of images) {
+        if (picture.closest(".site-header")) continue;
         const bounds = picture.getBoundingClientRect();
         if (!inView(bounds) || bounds.width < 40 || bounds.height < 40 || styleOf(picture).visibility === "hidden") continue;
         const columns = bounds.width > 180 ? 4 : 2;
@@ -149,7 +151,7 @@ export function installVirusRuntime(
       const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
       for (let node = walker.nextNode(); node; node = walker.nextNode()) {
         const element = node.parentElement;
-        if (!element || !node.textContent?.trim() || element.closest("script,style,svg,textarea,input,select,option,.virus-boot,dialog")) continue;
+        if (!element || !node.textContent?.trim() || element.closest("script,style,svg,textarea,input,select,option,.virus-boot,dialog,.site-header")) continue;
         const bounds = element.getBoundingClientRect();
         if (!inView(bounds) || styleOf(element).visibility === "hidden" || styleOf(element).display === "none") continue;
         nodes.push({ node: node as Text, element, priority: element.closest("h1,h2,h3") ? 0 : 2 });
@@ -233,9 +235,8 @@ export function installVirusRuntime(
         clearIntro();
         window.clearTimeout(deadline);
         performance.measure("virus:intro", { start: scene.start, end: now });
-        for (const element of document.querySelectorAll<HTMLElement>("[data-virus-reveal]")) {
-          if (visible(element)) { remember(keyFor(element)); pending.delete(element); }
-        }
+        for (const key of scene.coveredKeys ?? []) remember(key);
+        for (const element of pending) if (scene.coveredKeys?.includes(keyFor(element))) pending.delete(element);
       } else performance.measure("virus:section", { start: scene.start, end: now });
     }
 
@@ -253,22 +254,37 @@ export function installVirusRuntime(
     }
 
     function resize() {
-      clear();
+      // Mobile browser chrome changes viewport height while scrolling.
+      // Preserve the timeline for those changes; orientation/layout changes
+      // still finish the old scene because its measured content has moved.
+      const preserve = Math.abs(innerWidth - width) < 2 && Math.abs(innerHeight - height) < height * .3;
+      if (!preserve) clear();
       width = innerWidth;
       height = innerHeight;
       const dpr = Math.min(devicePixelRatio || 1, 1.5);
       surface.width = Math.round(width * dpr);
       surface.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      anchorSurface();
+      queue();
     }
 
     function queue() {
       if (!disposed && !frame && !document.hidden && effectsEnabled()) frame = requestAnimationFrame(draw);
     }
 
+    function anchorSurface() {
+      // A viewport-sized document layer scrolls with the compositor between
+      // frames. Rebase and repaint together, without a document-sized bitmap.
+      surface.style.top = `${scrollY}px`;
+      surface.style.left = `${scrollX}px`;
+      surface.style.width = `${width}px`;
+      surface.style.height = `${height}px`;
+    }
+
     function startPending(now: number) {
       // Start groups in pairs so one CSS deadline protects the entire batch.
-      if (scrolling || intro || scenes.length) return;
+      if (intro || scenes.length) return;
       for (const element of pending) {
         const key = keyFor(element);
         if (!element.isConnected || completed.has(key)) { pending.delete(element); continue; }
@@ -294,13 +310,13 @@ export function installVirusRuntime(
     function paint(scene: Scene, now: number) {
       const elapsed = now - scene.start;
       const rect = scene.element?.getBoundingClientRect();
-      const x = rect?.left ?? 0;
-      const y = rect?.top ?? 0;
-      const headerBottom = rect ? (document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0) : 0;
+      const x = rect?.left ?? (scene.anchorX ?? 0) - scrollX;
+      const y = rect?.top ?? (scene.anchorY ?? 0) - scrollY;
+      const headerBottom = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 0;
       const left = Math.max(0, x);
       const top = Math.max(0, y, headerBottom);
-      const right = Math.min(width, rect?.right ?? width);
-      const bottom = Math.min(height, rect?.bottom ?? height);
+      const right = Math.min(width, rect?.right ?? x + scene.width);
+      const bottom = Math.min(height, rect?.bottom ?? y + scene.height);
       if (right <= left || bottom <= top) return;
       const fade = clamp((scene.duration - elapsed) / (scene.intro ? 350 : 180));
       ctx.save();
@@ -422,10 +438,12 @@ export function installVirusRuntime(
     function draw(now: number) {
       frame = 0;
       try {
+        anchorSurface();
         ctx.clearRect(0, 0, width, height);
         const alive: Scene[] = [];
         for (const scene of scenes) {
-          if (now - scene.start >= scene.duration || (scene.element && (!scene.element.isConnected || !visible(scene.element)))) finish(scene, now);
+          const introOffscreen = scene.intro && ((scene.anchorY ?? 0) - scrollY + scene.height <= 0 || (scene.anchorY ?? 0) - scrollY >= height);
+          if (now - scene.start >= scene.duration || introOffscreen || (scene.element && (!scene.element.isConnected || !visible(scene.element)))) finish(scene, now);
           else alive.push(scene);
         }
         scenes = alive;
@@ -461,16 +479,14 @@ export function installVirusRuntime(
     }
 
     function onVisibility() { if (document.hidden) dismiss(); }
-    function onScroll() {
-      // A fixed canvas must never retain masks from the previous scroll
-      // position. Clear on input too, before compositor scrolling begins.
-      scrolling = true;
-      clear();
-      window.clearTimeout(scrollIdle);
-      scrollIdle = window.setTimeout(() => {
-        scrolling = false;
-        queue();
-      }, 180);
+    function onScroll() { queue(); }
+    function onKeydown(event: KeyboardEvent) {
+      const control = (event.target as Element | null)?.closest?.("input,textarea,select,button,[role=button]");
+      if (!control && ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) return;
+      dismiss();
+    }
+    function onClick(event: MouseEvent) {
+      if ((event.target as Element | null)?.closest?.("a,button,input,textarea,select,[role=button]")) dismiss();
     }
     function onMotion() {
       if (!effectsEnabled()) { dismiss(); observer?.disconnect(); mutations?.disconnect(); }
@@ -481,6 +497,7 @@ export function installVirusRuntime(
     surface.width = Math.round(width * dpr);
     surface.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    anchorSurface();
 
     // Trace the settled web-font shapes, so a late font swap cannot move a
     // letter away from the virus painting it. The cover still expires on time.
@@ -495,14 +512,15 @@ export function installVirusRuntime(
       const bootAt = Number(root.dataset.virusStart);
       const now = performance.now();
       intro = Boolean(root.dataset.virusIntro) && Number.isFinite(bootAt) && now - bootAt < 850 &&
-        canPlayIntro({ path: pathname, hash: location.hash, restored: scrollY > 0,
+        canPlayIntro({ path: pathname, hash: location.hash, restored: false,
           reduced: !effectsEnabled(), seen: introConsumed, reload: isReload });
       if (intro) {
         introConsumed = true;
         root.dataset.virusAssembled = "true";
         const artwork = choreography(null, true);
         if (!artwork.paths.length) { intro = false; clearIntro(); return; }
-        scenes.push({ ...artwork, element: null, key: "intro", start: bootAt, intro: true });
+        const coveredKeys = Array.from(document.querySelectorAll<HTMLElement>("[data-virus-reveal]")).filter(visible).map(keyFor);
+        scenes.push({ ...artwork, element: null, key: "intro", start: bootAt, intro: true, anchorX: scrollX, anchorY: scrollY, coveredKeys });
         surface.dataset.virusLetters = String(artwork.masks.filter(mask => mask.kind === "letter").length);
         surface.dataset.virusImagePatches = String(artwork.masks.filter(mask => mask.kind === "image").length);
         const readyAt = performance.now();
@@ -511,6 +529,7 @@ export function installVirusRuntime(
         surface.style.setProperty("--virus-time-left", `${Math.max(0, INTRO_LIMIT - (readyAt - bootAt) - 32)}ms`);
         surface.dataset.virusStage = "intro";
         // Paint the canvas before making the independent CSS cover transparent.
+        anchorSurface();
         paint(scenes[0], readyAt);
         root.dataset.virusIntro = "drawing";
         deadline = window.setTimeout(dismiss, Math.max(0, INTRO_LIMIT - (readyAt - bootAt)));
@@ -537,11 +556,9 @@ export function installVirusRuntime(
     }).catch(() => { if (!disposed) clear(); });
 
     window.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    window.addEventListener("wheel", onScroll, { passive: true });
-    window.addEventListener("touchmove", onScroll, { passive: true });
     window.addEventListener("resize", resize, { passive: true });
-    window.addEventListener("keydown", dismiss);
-    window.addEventListener("pointerdown", dismiss, { passive: true });
+    window.addEventListener("keydown", onKeydown);
+    window.addEventListener("click", onClick, { passive: true });
     window.addEventListener("pagehide", dismiss);
     document.addEventListener("visibilitychange", onVisibility);
     motion.addEventListener("change", onMotion);
@@ -549,15 +566,12 @@ export function installVirusRuntime(
       disposed = true;
       clear();
       window.clearTimeout(deadline);
-      window.clearTimeout(scrollIdle);
       observer?.disconnect();
       mutations?.disconnect();
       window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("wheel", onScroll);
-      window.removeEventListener("touchmove", onScroll);
       window.removeEventListener("resize", resize);
-      window.removeEventListener("keydown", dismiss);
-      window.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("keydown", onKeydown);
+      window.removeEventListener("click", onClick);
       window.removeEventListener("pagehide", dismiss);
       document.removeEventListener("visibilitychange", onVisibility);
       motion.removeEventListener("change", onMotion);
