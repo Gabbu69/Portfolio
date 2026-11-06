@@ -11,7 +11,7 @@ const smoothstep = (value: number) => {
   return clamped * clamped * (3 - 2 * clamped);
 };
 
-/** A decorative ink grid; pointer movement never updates React state. */
+/** A reactive ASCII field; pointer movement never updates React state. */
 export function GeometricGrid({ className, textSelector, intensity = 1 }: GeometricGridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -58,50 +58,26 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
         else unsettled = true;
 
         const energy = cell.energy;
-        const size = 1.05 + energy * 3.05;
         const edge = smoothstep(Math.min(cell.y / 60, (height - cell.y) / 80));
-        const opacity = (0.17 + energy * 0.6) * cell.quiet * edge * intensity;
+        const opacity = (0.19 + energy * 0.55) * cell.quiet * edge * intensity;
         if (opacity < 0.004) continue;
-
+        const alphabet = ".:+01/\\#@*";
+        const index = energy > .08
+          ? Math.floor(time / 180 + cell.variant * 3 + energy * 9) % alphabet.length
+          : cell.variant % 3;
+        const direction = Math.atan2(cell.y-pointer.y,cell.x-pointer.x);
         context!.save();
-        context!.translate(cell.x, cell.y);
-        context!.rotate(energy * (cell.variant % 2 === 0 ? Math.PI / 4 : -Math.PI / 4));
+        context!.translate(cell.x+Math.cos(direction)*energy*7,cell.y+Math.sin(direction)*energy*7);
         context!.globalAlpha = opacity;
-        context!.lineWidth = 0.65 + energy * 0.2;
-        context!.strokeStyle = restingColor;
-        context!.beginPath();
-
-        // Most of the denser grid stays at rest: draw those circles directly.
-        if (energy === 0) {
-          context!.arc(0, 0, size, 0, Math.PI * 2);
-        } else for (let point = 0; point < 32; point++) {
-          const angle = (point / 32) * Math.PI * 2;
-          const cos = Math.cos(angle);
-          const sin = Math.sin(angle);
-          const shapeRadius = cell.variant % 3 === 0
-            ? 1 / Math.max(Math.abs(cos), Math.abs(sin))
-            : cell.variant % 3 === 1
-              ? 1 / (Math.abs(cos) + Math.abs(sin))
-              : 0.72 + 0.28 * Math.cos(4 * angle);
-          const r = size * (1 + (shapeRadius - 1) * energy);
-          if (point === 0) context!.moveTo(cos * r, sin * r);
-          else context!.lineTo(cos * r, sin * r);
-        }
-
-        context!.closePath();
-        context!.stroke();
-        if (energy > 0) {
-          context!.globalAlpha = opacity * energy;
-          context!.strokeStyle = cell.variant % 3 === 0 ? secondaryColor : accentColor;
-          context!.stroke();
-          context!.globalAlpha = opacity * energy * 0.15;
-          context!.fillStyle = context!.strokeStyle;
-          context!.fill();
-        }
+        context!.font = `${9 + energy * 5}px monospace`;
+        context!.textAlign = "center";
+        context!.textBaseline = "middle";
+        context!.fillStyle = energy > .1 ? (cell.variant % 2 ? secondaryColor : accentColor) : restingColor;
+        context!.fillText(alphabet[index],0,0);
         context!.restore();
       }
 
-      // No perpetual idle loop: render again only while shapes are settling.
+      // No perpetual idle loop: redraw only while the character field settles.
       if (unsettled && interactive) frame = requestAnimationFrame(draw);
     }
 
@@ -123,8 +99,8 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
 
       const styles = getComputedStyle(container!);
       restingColor = styles.getPropertyValue("--grid-resting").trim() || styles.getPropertyValue("--muted").trim();
-      accentColor = styles.getPropertyValue("--grid-accent").trim() || styles.getPropertyValue("--red").trim();
-      secondaryColor = styles.getPropertyValue("--grid-secondary").trim();
+      accentColor = document.documentElement.dataset.theme === "dark" ? "#93ff62" : "#34764a";
+      secondaryColor = document.documentElement.dataset.theme === "dark" ? "#62e8d4" : "#286d77";
 
       const textRects: { left: number; right: number; top: number; bottom: number }[] = [];
       for (const copy of container!.querySelectorAll<HTMLElement>(textSelector)) {

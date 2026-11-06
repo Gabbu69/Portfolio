@@ -4,7 +4,7 @@ import { createVirusPainter, virusLimbPose } from "./virus-creature";
 
 // tsx preserves function names with __name; the identity helper also keeps the
 // serialized engine independent of that development-only transpiler closure.
-export const virusRuntimeScript = `(function(){const __name=(fn)=>fn;(${installVirusRuntime.toString()})(${createChoreography.toString()},${clamp.toString()},${sampleVirusCrawl.toString()},(image)=>(${createVirusPainter.toString()})(image,${virusLimbPose.toString()}),${JSON.stringify({ INTRO_LIMIT, REVEAL_SESSION_KEY })})})()`;
+export const virusRuntimeScript = `(function(){const __name=(fn)=>fn;(${installVirusRuntime.toString()})(${createChoreography.toString()},${clamp.toString()},${sampleVirusCrawl.toString()},()=>(${createVirusPainter.toString()})(${virusLimbPose.toString()}),${JSON.stringify({ INTRO_LIMIT, REVEAL_SESSION_KEY })})})()`;
 
 // Runs before paint, just like the theme bootstrap. Both CSS and a timer expire
 // the cover independently: hydration and the image are never required to exit.

@@ -120,7 +120,6 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script dangerouslySetInnerHTML={{ __html: effectsBootstrap }} />
-        <link rel="preload" as="image" href="/images/virus-spider.webp" />
         <script dangerouslySetInnerHTML={{ __html: virusBootstrap }} />
         <script dangerouslySetInnerHTML={{ __html: virusRuntimeScript }} />
       </head>

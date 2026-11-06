@@ -13,7 +13,7 @@ export function installVirusRuntime(
   createChoreography: typeof choreograph,
   clamp: typeof clampValue,
   sampleCrawl: typeof sampleVirusCrawl,
-  makeCreature: (image: HTMLImageElement) => ReturnType<typeof createVirusPainter>,
+  makeCreature: () => ReturnType<typeof createVirusPainter>,
   config: { INTRO_LIMIT: number; REVEAL_SESSION_KEY: string },
 ) {
   const { INTRO_LIMIT, REVEAL_SESSION_KEY } = config;
@@ -23,19 +23,8 @@ export function installVirusRuntime(
     (reload || (!hash && !restored)) && !reduced && !seen;
   const completed = new Set<string>();
   let introConsumed = false;
-  let spritePromise: Promise<HTMLImageElement> | undefined;
   let creature: ReturnType<typeof createVirusPainter> | undefined;
 
-  function loadSprite() {
-    return spritePromise ??= new Promise<HTMLImageElement>((resolve, reject) => {
-      const image = new Image();
-      // This 320px sprite is ready for drawImage after load. Waiting for decode()
-      // can defer startup behind a whole React hydration task on slower CPUs.
-      image.onload = () => resolve(image);
-      image.onerror = reject;
-      image.src = "/images/virus-spider.webp";
-    });
-  }
 
   type Scene = ReturnType<typeof createChoreography> & {
     element: HTMLElement | null;
@@ -385,44 +374,22 @@ export function installVirusRuntime(
         const bend = Math.sin(elapsed / 180 + worker) * 2.4;
         const controlX = (emitterX + px) / 2 - Math.sin(angle) * bend;
         const controlY = (emitterY + py) / 2 + Math.cos(angle) * bend;
-        const energy = .92 + Math.sin(elapsed / 240 + worker * 1.9) * .08;
-        ctx.lineCap = "round";
-        ctx.beginPath(); ctx.moveTo(emitterX, emitterY); ctx.quadraticCurveTo(controlX, controlY, px, py);
-        ctx.strokeStyle = "#51ef38";
-        ctx.globalAlpha = opacity * .12 * energy;
-        ctx.lineWidth = 9;
-        ctx.stroke();
-        ctx.globalAlpha = opacity * .55 * energy;
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.strokeStyle = "#e5ffd7";
-        ctx.globalAlpha = opacity * .95;
-        ctx.lineWidth = 1;
-        ctx.setLineDash([5, 8]);
-        ctx.lineDashOffset = -(elapsed * .065 + worker * 3);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        for (let packet = 0; packet < 3; packet++) {
-          const t = (elapsed / 420 + worker * .137 + packet / 3) % 1;
-          const inverse = 1 - t;
-          const bx = inverse * inverse * emitterX + 2 * inverse * t * controlX + t * t * px;
-          const by = inverse * inverse * emitterY + 2 * inverse * t * controlY + t * t * py;
-          ctx.globalAlpha = opacity * .85;
-          ctx.fillStyle = "#efffe7";
-          ctx.beginPath(); ctx.arc(bx, by, 1.25, 0, Math.PI * 2); ctx.fill();
+        const count = Math.min(12, Math.max(3, Math.ceil(Math.hypot(px-emitterX,py-emitterY)/18)));
+        ctx.font = "10px monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        for (let packet=0; packet<count; packet++) {
+          const t=(elapsed/900+worker*.137+packet/count)%1, inverse=1-t;
+          const bx=inverse*inverse*emitterX+2*inverse*t*controlX+t*t*px;
+          const by=inverse*inverse*emitterY+2*inverse*t*controlY+t*t*py;
+          ctx.globalAlpha=opacity*(.25+.55*Math.sin(t*Math.PI));
+          ctx.fillStyle=packet%3===0?"#62e8d4":"#70cb50";
+          ctx.fillText(packet%3===0?"+":packet%3===1?":":".",bx,by);
         }
-        ctx.globalAlpha = opacity * .18;
-        ctx.fillStyle = "#93ff62";
-        ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2); ctx.fill();
         creature!.draw(ctx, vx, vy, path.size, angle, crawl.travelled, worker, opacity);
-        ctx.globalAlpha = opacity * .6;
-        ctx.strokeStyle = "#93ff62";
-        ctx.lineWidth = 1.2;
-        const scan = elapsed / 160 + worker;
-        ctx.beginPath(); ctx.arc(px, py, 4.5, scan, scan + Math.PI * 1.35); ctx.stroke();
         ctx.globalAlpha = opacity;
-        ctx.fillStyle = "#dfffcd";
-        ctx.fillRect(px - 1.25, py - 1.25, 2.5, 2.5);
+        ctx.fillStyle = "#70cb50";
+        ctx.fillText("+",px,py);
         ctx.fillStyle = "#93ff62";
         for (let speck = 1; speck <= 3; speck++) {
           const life = (elapsed / 340 + speck / 3 + worker * .17) % 1;
@@ -501,11 +468,11 @@ export function installVirusRuntime(
 
     // Trace the settled web-font shapes, so a late font swap cannot move a
     // letter away from the virus painting it. The cover still expires on time.
-    loadSprite().then(decoded => document.fonts.ready.then(() => decoded)).then((decoded) => {
+    document.fonts.ready.then(() => {
       if (disposed) return;
       if (!effectsEnabled() || document.hidden) { clearIntro(); return; }
       performance.mark("virus:creature-start");
-      creature ??= makeCreature(decoded);
+      creature ??= makeCreature();
       performance.measure("virus:prepare-creature", "virus:creature-start");
       surface.dataset.virusRigFrames = String(creature.frames);
       root.dataset.virusEnabled = "true";
