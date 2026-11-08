@@ -4,6 +4,7 @@ import { portfolio } from "@/data/portfolio";
 import { siteUrl } from "@/lib/site-url";
 import { virusBootstrap, virusRuntimeScript } from "@/lib/virus-bootstrap";
 import { VirusReveal } from "@/components/virus-reveal";
+import { IdleScroll } from "@/components/idle-scroll";
 import { effectsBootstrap } from "@/lib/effects-preference";
 import "./globals.css";
 import "./editorial.css";
@@ -125,6 +126,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <VirusReveal />
+        <IdleScroll />
         {children}
       </body>
     </html>

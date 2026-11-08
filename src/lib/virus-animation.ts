@@ -26,10 +26,10 @@ export type VirusPath = {
   travel: number;
 };
 
-export function createChoreography(width: number, height: number, intro: boolean, mobile: boolean, input: PaintTarget[] = []) {
+export function createChoreography(width: number, height: number, intro: boolean, mobile: boolean, input: PaintTarget[] = [], viewportHeight = height) {
   // Self-contained for the early inline engine: no imported runtime bindings.
   const duration = intro ? 3200 : 1200;
-  const budget = mobile ? 4200 : 6400;
+  const budget = mobile ? 12000 : 24000;
   let used = 0;
   const targets = input.filter(target => {
     if (!target.points.length || used + target.points.length > budget) return false;
@@ -101,7 +101,7 @@ export function createChoreography(width: number, height: number, intro: boolean
     const padX = Math.min(path.size * .4, width / 3), padY = Math.min(path.size * .4, height / 3);
     const bounded = (x: number, y: number) => ({ x: Math.max(padX, Math.min(width - padX, x)), y: Math.max(padY, Math.min(height - padY, y)) });
     const start = intro
-      ? bounded(width*.5+Math.cos(worker*2.4)*path.size*.3,height*.42+Math.sin(worker*2.4)*path.size*.3)
+      ? bounded(width*.5+Math.cos(worker*2.4)*path.size*.3,Math.min(height,viewportHeight)*.42+Math.sin(worker*2.4)*path.size*.3)
       : bounded(first.x - dx * path.size * 1.4 - dy * path.size * .3 * side, first.y - dy * path.size * 1.4 + dx * path.size * .3 * side);
     const end = bounded(last.x - dx * path.size * .45 - dy * path.size * .3 * side, last.y - dy * path.size * .45 + dx * path.size * .3 * side);
     const middle = bounded((start.x + end.x) / 2 - dy * path.size * .65 * side, (start.y + end.y) / 2 + dx * path.size * .65 * side);

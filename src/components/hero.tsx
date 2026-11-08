@@ -34,9 +34,9 @@ export function Hero({ identity, projectCount }: HeroProps) {
             <span className="folio-hero__name folio-hero__name--accent" aria-hidden="true">Paclibar<span className="folio-hero__period">.</span></span>
           </h1>
           <p className="folio-hero__role"><span className="folio-hero__dash" aria-hidden="true" /> {identity.role}</p>
-          <p className="folio-hero__headline">{identity.headline}</p>
-          <p className="folio-hero__intro">{identity.intro}</p>
-          <div className="folio-hero__actions">
+          <p className="folio-hero__headline" data-virus-reveal="hero-headline">{identity.headline}</p>
+          <p className="folio-hero__intro" data-virus-reveal="hero-intro">{identity.intro}</p>
+          <div className="folio-hero__actions" data-virus-reveal="hero-actions">
             <a className="button button--primary" href="#work">Explore my work <ArrowDown aria-hidden="true" /></a>
             <a className="button button--quiet" href="#contact">Let’s talk <ArrowUpRight aria-hidden="true" /></a>
           </div>
@@ -58,7 +58,7 @@ export function Hero({ identity, projectCount }: HeroProps) {
           <div className="folio-art__caption"><span>Keep refining.</span><span>Always learning.<br />Always building.</span></div>
         </div>
       </div>
-      <div className="folio-hero__footer">
+      <div className="folio-hero__footer" data-virus-reveal="hero-footer">
         <a href="#work">{String(projectCount).padStart(2, "0")} projects to explore <ArrowDown aria-hidden="true" /></a>
         <span className="folio-hero__craft">Think. Build. Refine.</span>
       </div>

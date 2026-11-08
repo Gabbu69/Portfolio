@@ -26,7 +26,7 @@ test("swarm and cell work stay bounded on phones, desktops and very large screen
       }));
       const scene = createChoreography(width, height, intro, mobile, targets);
       assert.equal(scene.paths.length, intro ? (mobile ? 18 : 40) : (mobile ? 5 : 8));
-      assert.ok(scene.tiles.length <= (mobile ? 4200 : 6400), "cell count must not grow without a budget");
+      assert.ok(scene.tiles.length <= (mobile ? 12000 : 24000), "cell count must not grow without a budget");
       assert.ok(scene.tiles.every(tile => tile.at >= 0 && tile.at + 65 < scene.duration), "every tile clears before the scene deadline");
       assert.ok(scene.paths.every(path => path.delay + path.travel < scene.duration), "spiders leave before the scene deadline");
       assert.equal(scene.duration, intro ? INTRO_DURATION : REVEAL_DURATION);

@@ -18,7 +18,7 @@ export function EffectsToggle({ mobile = false }: { mobile?: boolean }) {
       type="button"
       aria-label={`Turn ${enabled ? "off" : "on"} visual effects`}
       aria-pressed={enabled}
-      title="Interactive background and virus intro on refresh"
+      title="Matrix background, virus intro, and gentle scrolling after 15 seconds idle"
       onClick={() => setEffectsEnabled(!enabled)}
     >
       <Sparkles aria-hidden="true" />

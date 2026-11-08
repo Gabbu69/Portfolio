@@ -23,12 +23,16 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
     const context = canvas?.getContext("2d");
     if (!canvas || !container || !context) return;
 
+    const field=document.createElement("canvas");
+    const fieldInk=field.getContext("2d");
+    if(!fieldInk)return;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let cells: Cell[] = [];
     let width = 0;
     let height = 0;
     let frame: number | null = null;
     let lastTime = 0;
+    let lastPaint = 0;
     let visible = true;
     let disposed = false;
     let restingColor = "";
@@ -39,46 +43,38 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
     const canAnimate = () => getEffectsEnabled() && visible && !document.hidden;
 
     function draw(time: number) {
-      frame = null;
-      // Time-based easing keeps the same feel on 60 Hz and high-refresh displays.
-      // https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
-      const delta = Math.min(time - lastTime || 16, 64);
-      lastTime = time;
-      const interactive = canAnimate();
-      const radius = Math.min(200, width * 0.3);
-      let unsettled = false;
-      context!.clearRect(0, 0, width, height);
-
-      for (const cell of cells) {
-        const distance = Math.hypot(cell.x - pointer.x, cell.y - pointer.y);
-        const target = interactive && pointer.active ? smoothstep(1 - distance / radius) : 0;
-        const difference = target - cell.energy;
-        cell.energy += difference * (1 - Math.exp(-delta / (difference > 0 ? 95 : 260)));
-        if (Math.abs(target - cell.energy) < 0.001) cell.energy = target;
-        else unsettled = true;
-
-        const energy = cell.energy;
-        const edge = smoothstep(Math.min(cell.y / 60, (height - cell.y) / 80));
-        const opacity = (0.19 + energy * 0.55) * cell.quiet * edge * intensity;
-        if (opacity < 0.004) continue;
-        const alphabet = ".:+01/\\#@*";
-        const index = energy > .08
-          ? Math.floor(time / 180 + cell.variant * 3 + energy * 9) % alphabet.length
-          : cell.variant % 3;
-        const direction = Math.atan2(cell.y-pointer.y,cell.x-pointer.x);
-        context!.save();
-        context!.translate(cell.x+Math.cos(direction)*energy*7,cell.y+Math.sin(direction)*energy*7);
-        context!.globalAlpha = opacity;
-        context!.font = `${9 + energy * 5}px monospace`;
-        context!.textAlign = "center";
-        context!.textBaseline = "middle";
-        context!.fillStyle = energy > .1 ? (cell.variant % 2 ? secondaryColor : accentColor) : restingColor;
-        context!.fillText(alphabet[index],0,0);
-        context!.restore();
+      frame=null;
+      const interactive=canAnimate();
+      if(interactive&&time-lastPaint<45){frame=requestAnimationFrame(draw);return;}
+      lastPaint=time;
+      const delta=Math.min(time-lastTime||45,90);lastTime=time;
+      const radius=Math.min(210,width*.4);
+      context!.clearRect(0,0,width,height);
+      context!.globalAlpha=1;context!.drawImage(field,0,0,width,height);
+      context!.textAlign="center";context!.textBaseline="middle";
+      const alphabet="01:<>/\\+*#@";
+      for(const cell of cells){
+        const distance=Math.hypot(cell.x-pointer.x,cell.y-pointer.y);
+        const target=interactive&&pointer.active?smoothstep(1-distance/radius):0;
+        cell.energy+=(target-cell.energy)*(1-Math.exp(-delta/(target>cell.energy?90:300)));
+        if(Math.abs(target-cell.energy)<.002)cell.energy=target;
+        const column=Math.round(cell.x/20);
+        const head=(time*(.028+(column%5)*.006)+column*97)%height;
+        const trail=(cell.y-head+height)%height;
+        const rain=interactive&&column%3!==1?Math.max(0,1-trail/(width<600?90:130)):0;
+        const energy=cell.energy;
+        if(energy<.005&&rain<=0)continue;
+        const edge=smoothstep(Math.min(cell.y/40,(height-cell.y)/55));
+        context!.globalAlpha=Math.min(.85,energy*.72+rain*.52)*cell.quiet*edge*intensity;
+        const index=Math.floor(time/145+column*7+cell.variant+energy*9)%alphabet.length;
+        const direction=Math.atan2(cell.y-pointer.y,cell.x-pointer.x);
+        context!.font=`${Math.round((10+energy*4+rain*2)*2)/2}px monospace`;
+        context!.fillStyle=rain>.8||energy>.75?secondaryColor:accentColor;
+        context!.fillText(alphabet[index],cell.x+Math.cos(direction)*energy*11,cell.y+Math.sin(direction)*energy*11);
       }
-
-      // No perpetual idle loop: redraw only while the character field settles.
-      if (unsettled && interactive) frame = requestAnimationFrame(draw);
+      // Ambient code streams are capped near 22 fps; offscreen, hidden and
+      // reduced-motion surfaces stop completely. The quiet grid is cached.
+      if(interactive)frame=requestAnimationFrame(draw);
     }
 
     function requestDraw() {
@@ -92,7 +88,7 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
       const bounds = container!.getBoundingClientRect();
       width = bounds.width;
       height = bounds.height;
-      const scale = Math.min(window.devicePixelRatio || 1, 2);
+      const scale = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas!.width = Math.round(width * scale);
       canvas!.height = Math.round(height * scale);
       context!.setTransform(scale, 0, 0, scale, 0, 0);
@@ -139,6 +135,15 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
           }
           cells.push({ x, y, energy: 0, variant: (col * 7 + row * 11) % 6, quiet });
         }
+      }
+      field.width=canvas!.width;field.height=canvas!.height;
+      fieldInk!.setTransform(scale,0,0,scale,0,0);
+      fieldInk!.font="9px monospace";fieldInk!.textAlign="center";fieldInk!.textBaseline="middle";
+      fieldInk!.fillStyle=restingColor;
+      for(const cell of cells){
+        const edge=smoothstep(Math.min(cell.y/60,(height-cell.y)/80));
+        fieldInk!.globalAlpha=.17*cell.quiet*edge*intensity;
+        fieldInk!.fillText(".:+01"[cell.variant%5],cell.x,cell.y);
       }
       requestDraw();
     }
@@ -191,6 +196,7 @@ export function GeometricGrid({ className, textSelector, intensity = 1 }: Geomet
       if (frame !== null) cancelAnimationFrame(frame);
       resizeObserver.disconnect();
       themeObserver.disconnect();
+      field.width=0;field.height=0;
       intersectionObserver.disconnect();
       container.removeEventListener("pointermove", move);
       container.removeEventListener("pointerleave", leave);

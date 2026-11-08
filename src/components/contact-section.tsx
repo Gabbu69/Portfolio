@@ -32,7 +32,7 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
           <ContactForm email={identity.email} formId={process.env.NEXT_PUBLIC_FORMSPREE_FORM_ID?.trim() || "myeepglw"} captchaSiteKey={process.env.NEXT_PUBLIC_FORMSPREE_RECAPTCHA_SITE_KEY?.trim()} />
         </div>
 
-        <div className="footer-row">
+        <div className="footer-row" data-virus-reveal="footer-details">
           <span>© 2026 {identity.fullName}</span>
           <a href={github} target="_blank" rel="noreferrer">
             <Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" />

@@ -36,15 +36,27 @@ export function installVirusRuntime(
     anchorX?: number;
     anchorY?: number;
     coveredKeys?: string[];
+    decorative?: boolean;
+    ordered?: ReturnType<typeof createChoreography>["tiles"];
+    cursor?: number;
+    wetCursor?: number;
+    cover?: HTMLCanvasElement;
+    buffer?: CanvasRenderingContext2D;
+    coverBounds?: PaintPoint;
   };
 
   function mount(pathname: string) {
     const root = document.documentElement;
+    const startupRequested=Boolean(root.dataset.virusIntro);
+    const startupAt=Number(root.dataset.virusStart);
+    const replayRequested=root.dataset.virusReplay==="true";
+    let startupCanceled=false;
     const isReload = (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type === "reload";
     const canvas = document.querySelector<HTMLCanvasElement>(".virus-canvas");
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
     const effectsEnabled = () => root.dataset.effects ? root.dataset.effects === "on" : !motion.matches;
     let disposed = false;
+    let initialized = false;
     let frame = 0;
     let observer: IntersectionObserver | undefined;
     let mutations: MutationObserver | undefined;
@@ -60,6 +72,7 @@ export function installVirusRuntime(
     function clearIntro() {
       delete root.dataset.virusIntro;
       delete root.dataset.virusStart;
+      delete root.dataset.virusReplay;
     }
 
     if (pathname !== "/" && !(isReload && pathname.startsWith("/projects/"))) clearIntro();
@@ -91,125 +104,61 @@ export function installVirusRuntime(
       return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < height && rect.right > 0 && rect.left < width;
     }
 
-    function paintTargets(scope: HTMLElement, originX: number, originY: number): PaintTarget[] {
-      const targets: PaintTarget[] = [];
-      const backgrounds = new Map<Element, string>();
-      const styles = new Map<Element, CSSStyleDeclaration>();
-      const styleOf = (element: Element) => {
-        let style = styles.get(element);
-        if (!style) { style = getComputedStyle(element); styles.set(element, style); }
-        return style;
-      };
-      const backgroundOf = (element: Element): string => {
-        const cached = backgrounds.get(element);
-        if (cached) return cached;
-        const color = styleOf(element).backgroundColor;
-        const result = color && color !== "transparent" && color !== "rgba(0, 0, 0, 0)"
-          ? color : element.parentElement ? backgroundOf(element.parentElement) : getComputedStyle(root).getPropertyValue("--paper").trim() || "#181917";
-        backgrounds.set(element, result);
-        return result;
-      };
-      const inView = (rect: DOMRect) => rect.width > .5 && rect.height > 2 && rect.right > 0 && rect.left < width && rect.bottom > 0 && rect.top < height;
-
-      // Different workers paint different patches of each real image. The DOM
-      // image remains underneath, so newly painted pixels retain its true colors.
-      const images = scope.matches("img") ? [scope as HTMLImageElement] : Array.from(scope.querySelectorAll<HTMLImageElement>("img"));
-      for (const picture of images) {
-        if (picture.closest(".site-header")) continue;
-        const bounds = picture.getBoundingClientRect();
-        if (!inView(bounds) || bounds.width < 40 || bounds.height < 40 || styleOf(picture).visibility === "hidden") continue;
-        const columns = bounds.width > 180 ? 4 : 2;
-        const rows = bounds.height > 180 ? 3 : 2;
-        const cell = Math.max(5, Math.ceil(Math.sqrt(bounds.width * bounds.height / 1150)));
-        for (let row = 0; row < rows; row++) for (let column = 0; column < columns; column++) {
-          const patchWidth = bounds.width / columns;
-          const patchHeight = bounds.height / rows;
-          const points: PaintPoint[] = [];
-          let line = 0;
-          for (let y = 0; y < patchHeight; y += cell, line++) {
-            const cells: PaintPoint[] = [];
-            for (let x = 0; x < patchWidth; x += cell) cells.push({ x, y, width: Math.min(cell, patchWidth - x), height: Math.min(cell, patchHeight - y) });
-            points.push(...(line % 2 ? cells.reverse() : cells));
-          }
-          targets.push({ x: bounds.left - originX + column * patchWidth, y: bounds.top - originY + row * patchHeight,
-            width: patchWidth, height: patchHeight, kind: "image", background: backgroundOf(picture), priority: 0, points });
+    function paintTargets(scope: HTMLElement, fullIntro: boolean): PaintTarget[] {
+      const bounds=scope.getBoundingClientRect();
+      const top=fullIntro?(document.querySelector(".site-header")?.getBoundingClientRect().bottom??0):0;
+      const introHeight=Math.max(height,(document.querySelector(".folio-hero")?.getBoundingClientRect().bottom??height)+80);
+      const areaWidth=fullIntro?width:bounds.width, areaHeight=fullIntro?introHeight-top:bounds.height;
+      if(areaWidth<=0||areaHeight<=0)return [];
+      let element:Element|null=scope, background="";
+      while(element){const color=getComputedStyle(element).backgroundColor;if(color&&color!=="transparent"&&color!=="rgba(0, 0, 0, 0)"){background=color;break;}element=element.parentElement;}
+      background ||= getComputedStyle(root).getPropertyValue("--paper").trim();
+      const columns=fullIntro?(mobile?6:8):(mobile?5:4),rows=fullIntro?(mobile?3:5):(mobile?1:2);
+      const cell=Math.max(mobile?6:8,Math.ceil(Math.sqrt(areaWidth*areaHeight/(mobile?9000:18000))));
+      const targets:PaintTarget[]=[];
+      for(let row=0;row<rows;row++)for(let column=0;column<columns;column++){
+        const patchWidth=areaWidth/columns,patchHeight=areaHeight/rows,points:PaintPoint[]=[];
+        let line=0;
+        for(let y=0;y<patchHeight;y+=cell,line++){
+          const cells:PaintPoint[]=[];
+          for(let x=0;x<patchWidth;x+=cell)cells.push({x,y,width:Math.min(cell,patchWidth-x),height:Math.min(cell,patchHeight-y)});
+          points.push(...(line%2?cells.reverse():cells));
         }
-      }
-
-      const nodes: { node: Text; element: HTMLElement; priority: number }[] = [];
-      const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
-      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-        const element = node.parentElement;
-        if (!element || !node.textContent?.trim() || element.closest("script,style,svg,textarea,input,select,option,.virus-boot,dialog,.site-header")) continue;
-        const bounds = element.getBoundingClientRect();
-        if (!inView(bounds) || styleOf(element).visibility === "hidden" || styleOf(element).display === "none") continue;
-        nodes.push({ node: node as Text, element, priority: element.closest("h1,h2,h3") ? 0 : 2 });
-      }
-      nodes.sort((a, b) => a.priority - b.priority);
-      const raster = document.createElement("canvas");
-      const ink = raster.getContext("2d", { willReadFrequently: true });
-      if (!ink) return targets;
-      const range = document.createRange();
-      let letters = 0;
-      for (const { node, element, priority } of nodes) {
-        const style = styleOf(element);
-        const size = parseFloat(style.fontSize);
-        const font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-        let offset = 0;
-        for (const character of node.data) {
-          const start = offset;
-          offset += character.length;
-          if (!character.trim() || letters >= (mobile ? 280 : 440)) continue;
-          range.setStart(node, start);
-          range.setEnd(node, offset);
-          const bounds = range.getBoundingClientRect();
-          if (!inView(bounds)) continue;
-          const glyph = style.textTransform === "uppercase" ? character.toUpperCase() : style.textTransform === "lowercase" ? character.toLowerCase() : character;
-          raster.width = Math.max(1, Math.ceil(bounds.width));
-          raster.height = Math.max(1, Math.ceil(bounds.height));
-          ink.font = font;
-          ink.textBaseline = "alphabetic";
-          const metrics = ink.measureText(glyph);
-          const ascent = metrics.fontBoundingBoxAscent ?? size * .8;
-          const descent = metrics.fontBoundingBoxDescent ?? size * .2;
-          const spacing = parseFloat(style.letterSpacing) || 0;
-          const scaleX = metrics.width > 0 ? Math.min(1.25, Math.max(.6, (bounds.width - spacing) / metrics.width)) : 1;
-          ink.setTransform(scaleX, 0, 0, 1, 0, 0);
-          ink.fillStyle = "#fff";
-          ink.fillText(glyph, 0, (bounds.height - ascent - descent) / 2 + ascent);
-          const pixels = ink.getImageData(0, 0, raster.width, raster.height).data;
-          const cell = Math.max(3, Math.ceil(size / 14));
-          const points: PaintPoint[] = [];
-          let line = 0;
-          for (let y = 0; y < raster.height; y += cell, line++) {
-            const cells: PaintPoint[] = [];
-            for (let x = 0; x < raster.width; x += cell) {
-              const cellWidth = Math.min(cell, raster.width - x);
-              const cellHeight = Math.min(cell, raster.height - y);
-              let painted = false;
-              for (let py = y; py < y + cellHeight && !painted; py += 2) for (let px = x; px < x + cellWidth; px += 2) {
-                if (pixels[(py * raster.width + px) * 4 + 3] > 40) { painted = true; break; }
-              }
-              if (painted) cells.push({ x, y, width: Math.min(cellWidth, bounds.width - x), height: Math.min(cellHeight, bounds.height - y) });
-            }
-            points.push(...(line % 2 ? cells.reverse() : cells));
-          }
-          if (!points.length) continue;
-          targets.push({ x: bounds.left - originX, y: bounds.top - originY, width: bounds.width, height: bounds.height,
-            kind: "letter", background: backgroundOf(element), priority, points });
-          letters++;
-        }
+        // A stable spatial scramble exposes individual pixels throughout the
+        // patch, rather than turning synchronized scan rows into broad wipes.
+        const rank=(point:PaintPoint)=>{let hash=Math.imul(Math.floor(point.x/cell)+column*97,0x9e3779b1)^Math.imul(Math.floor(point.y/cell)+row*83,0x85ebca6b);hash=Math.imul(hash^(hash>>>16),0x7feb352d);hash=Math.imul(hash^(hash>>>15),0x846ca68b);return(hash^(hash>>>16))>>>0;};
+        points.sort((a,b)=>rank(a)-rank(b));
+        targets.push({x:column*patchWidth,y:top+row*patchHeight,width:patchWidth,height:patchHeight,kind:"image",priority:0,background,points});
       }
       return targets;
+    }
+
+    function prepareScene(scene:Scene):Scene {
+      scene.ordered=[...scene.tiles].sort((a,b)=>a.at-b.at);
+      scene.cursor=0;scene.wetCursor=0;
+      if(!scene.decorative&&scene.masks.length){
+        const x=Math.min(...scene.masks.map(m=>m.x)),y=Math.min(...scene.masks.map(m=>m.y));
+        const w=Math.max(...scene.masks.map(m=>m.x+m.width))-x,h=Math.max(...scene.masks.map(m=>m.y+m.height))-y;
+        const cover=document.createElement("canvas");cover.width=Math.min(2048,Math.ceil(w));cover.height=Math.min(2048,Math.ceil(h));
+        const buffer=cover.getContext("2d");if(!buffer)throw Error("Pixel mask unavailable");
+        buffer.setTransform(cover.width/w,0,0,cover.height/h,0,0);
+        buffer.fillStyle=scene.masks[0].background;buffer.fillRect(0,0,w,h);
+        for(const mask of scene.masks){buffer.fillStyle=mask.background;buffer.fillRect(mask.x-x,mask.y-y,mask.width,mask.height);}
+        buffer.globalAlpha=.13;buffer.fillStyle=root.dataset.theme==="dark"?"#62e8a5":"#34764a";buffer.font="9px monospace";
+        for(let row=12;row<h;row+=24)for(let column=12;column<w;column+=24)buffer.fillText("01.:+"[(Math.floor(column/24)+Math.floor(row/24)*7)%5],column,row);
+        buffer.globalAlpha=1;
+        scene.cover=cover;scene.buffer=buffer;scene.coverBounds={x,y,width:w,height:h};
+      }
+      return scene;
     }
 
     function choreography(element: HTMLElement | null, fullIntro: boolean) {
       const started = performance.now();
       const rect = element?.getBoundingClientRect();
       const sceneWidth = rect?.width ?? width;
-      const sceneHeight = rect?.height ?? height;
+      const sceneHeight = rect?.height ?? Math.max(height,(document.querySelector(".folio-hero")?.getBoundingClientRect().bottom??height)+80);
       const result = createChoreography(sceneWidth, sceneHeight, fullIntro, mobile,
-        paintTargets(element ?? document.body, rect?.left ?? 0, rect?.top ?? 0));
+        paintTargets(element ?? document.body, fullIntro),height);
       performance.measure("virus:prepare-painting", { start: started, end: performance.now() });
       surface.dataset.virusPaintCells = String(result.tiles.length);
       return result;
@@ -225,6 +174,10 @@ export function installVirusRuntime(
         window.clearTimeout(deadline);
         performance.measure("virus:intro", { start: scene.start, end: now });
         for (const key of scene.coveredKeys ?? []) remember(key);
+        for(const element of document.querySelectorAll<HTMLElement>("[data-virus-reveal]")){
+          const rect=element.getBoundingClientRect(),top=rect.top+scrollY;
+          if(visible(element)&&top>=(scene.anchorY??0)&&top+rect.height<=(scene.anchorY??0)+scene.height)remember(keyFor(element));
+        }
         for (const element of pending) if (scene.coveredKeys?.includes(keyFor(element))) pending.delete(element);
       } else performance.measure("virus:section", { start: scene.start, end: now });
     }
@@ -283,7 +236,7 @@ export function installVirusRuntime(
         // Only the viewport-sized piece needs pixels, including very tall cards.
         const artwork = choreography(element, false);
         if (!artwork.paths.length) { remember(key); pending.delete(element); continue; }
-        scenes.push({ ...artwork, element, key, start: now, intro: false });
+        scenes.push(prepareScene({ ...artwork, element, key, start: now, intro: false }));
         pending.delete(element);
         // Reserve immediately, so re-mounted filter results cannot queue twice.
         remember(key);
@@ -314,31 +267,22 @@ export function installVirusRuntime(
       ctx.clip();
       ctx.translate(x, y);
 
-      // Each letter and photo patch has its own paper-colored mask. Only the
-      // cells actually reached by its worker's brush become visible underneath.
-      for (const mask of scene.masks) {
-        if (elapsed >= mask.end + 40) continue;
-        ctx.globalAlpha = clamp((mask.end + 40 - elapsed) / 40);
-        ctx.fillStyle = mask.background;
-        ctx.fillRect(mask.x, mask.y, mask.width, mask.height);
+      const ordered=scene.ordered!;
+      let cursor=scene.cursor!;
+      while(cursor<ordered.length&&ordered[cursor].at<=elapsed){
+        const tile=ordered[cursor++],box=scene.coverBounds;
+        if(scene.buffer&&box)scene.buffer.clearRect(tile.x-box.x,tile.y-box.y,tile.width+.5,tile.height+.5);
       }
-      for (const tile of scene.tiles) {
-        if (elapsed < tile.at || elapsed >= scene.masks[tile.target].end + 40) continue;
-        ctx.clearRect(tile.x, tile.y, tile.width + .25, tile.height + .25);
-      }
-      const wetTime = scene.intro ? 180 : 100;
-      for (const tile of scene.tiles) {
-        const age = elapsed - tile.at;
-        if (age < 0 || age > wetTime) continue;
-        const picture = scene.masks[tile.target].kind === "image";
-        ctx.globalAlpha = (1 - age / wetTime) * (picture ? .28 : .8) * fade;
-        ctx.fillStyle = "#93ff62";
-        ctx.fillRect(tile.x, tile.y, tile.width, tile.height);
-        if (picture) {
-          ctx.globalAlpha *= 1.8;
-          ctx.strokeStyle = "#b8ff8b";
-          ctx.strokeRect(tile.x + .5, tile.y + .5, Math.max(0, tile.width - 1), Math.max(0, tile.height - 1));
-        }
+      scene.cursor=cursor;
+      if(scene.cover&&scene.coverBounds){const box=scene.coverBounds;ctx.drawImage(scene.cover,box.x,box.y,box.width,box.height);}
+      const wetTime=scene.intro?130:85;
+      let wet=scene.wetCursor!;
+      while(wet<cursor&&elapsed-ordered[wet].at>wetTime)wet++;
+      scene.wetCursor=wet;
+      for(let index=wet;index<cursor;index++){
+        const tile=ordered[index],age=elapsed-tile.at;
+        ctx.globalAlpha=(1-age/wetTime)*.24*fade;
+        ctx.fillStyle="#78ed5c";ctx.fillRect(tile.x,tile.y,tile.width,tile.height);
       }
       ctx.restore();
       ctx.save();
@@ -440,12 +384,20 @@ export function installVirusRuntime(
     }
 
     function dismiss() {
+      startupCanceled=true;
       clear();
       // Never start another cover on the control the visitor is using.
       for (const element of pending) if (visible(element)) { remember(keyFor(element)); pending.delete(element); }
     }
 
-    function onVisibility() { if (document.hidden) dismiss(); }
+    function onVisibility() {
+      if(document.hidden){dismiss();return;}
+      if(!initialized&&effectsEnabled()){
+        // A preview loaded in a background tab should still greet the visitor
+        // when first shown, without covering content that is already visible.
+        window.dispatchEvent(new Event("portfolio:effects-change"));
+      }else queue();
+    }
     function onScroll() { queue(); }
     function onKeydown(event: KeyboardEvent) {
       const control = (event.target as Element | null)?.closest?.("input,textarea,select,button,[role=button]");
@@ -453,6 +405,7 @@ export function installVirusRuntime(
       dismiss();
     }
     function onClick(event: MouseEvent) {
+      if((event.target as Element|null)?.closest?.(".effects-toggle"))return;
       if ((event.target as Element | null)?.closest?.("a,button,input,textarea,select,[role=button]")) dismiss();
     }
     function onMotion() {
@@ -466,19 +419,20 @@ export function installVirusRuntime(
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     anchorSurface();
 
-    // Trace the settled web-font shapes, so a late font swap cannot move a
-    // letter away from the virus painting it. The cover still expires on time.
-    document.fonts.ready.then(() => {
+    // Mosaic geometry covers the actual DOM, so it needs no font rasterization
+    // or external image. Wait only until the initial HTML has been parsed.
+    const contentReady=document.readyState==="loading"?new Promise<void>(resolve=>document.addEventListener("DOMContentLoaded",()=>resolve(),{once:true})):Promise.resolve();
+    contentReady.then(() => {
       if (disposed) return;
       if (!effectsEnabled() || document.hidden) { clearIntro(); return; }
+      initialized=true;
       performance.mark("virus:creature-start");
       creature ??= makeCreature();
       performance.measure("virus:prepare-creature", "virus:creature-start");
       surface.dataset.virusRigFrames = String(creature.frames);
       root.dataset.virusEnabled = "true";
-      const bootAt = Number(root.dataset.virusStart);
-      const now = performance.now();
-      intro = Boolean(root.dataset.virusIntro) && Number.isFinite(bootAt) && now - bootAt < 850 &&
+      const bootAt = startupAt;
+      intro = startupRequested && !startupCanceled && Number.isFinite(bootAt) &&
         canPlayIntro({ path: pathname, hash: location.hash, restored: false,
           reduced: !effectsEnabled(), seen: introConsumed, reload: isReload });
       if (intro) {
@@ -487,19 +441,26 @@ export function installVirusRuntime(
         const artwork = choreography(null, true);
         if (!artwork.paths.length) { intro = false; clearIntro(); return; }
         const coveredKeys = Array.from(document.querySelectorAll<HTMLElement>("[data-virus-reveal]")).filter(visible).map(keyFor);
-        scenes.push({ ...artwork, element: null, key: "intro", start: bootAt, intro: true, anchorX: scrollX, anchorY: scrollY, coveredKeys });
-        surface.dataset.virusLetters = String(artwork.masks.filter(mask => mask.kind === "letter").length);
-        surface.dataset.virusImagePatches = String(artwork.masks.filter(mask => mask.kind === "image").length);
         const readyAt = performance.now();
+        const decorative=replayRequested||!root.dataset.virusIntro||readyAt-bootAt>INTRO_LIMIT-1400;
+        const budget=decorative?artwork.duration:Math.min(artwork.duration,INTRO_LIMIT-(readyAt-bootAt)-64);
+        const scale=budget/artwork.duration;
+        artwork.duration=budget;
+        for(const path of artwork.paths){path.delay*=scale;path.travel*=scale;}
+        for(const tile of artwork.tiles)tile.at*=scale;
+        for(const mask of artwork.masks)mask.end*=scale;
+        scenes.push(prepareScene({ ...artwork, element: null, key: "intro", start: readyAt, intro: true, anchorX: scrollX, anchorY: scrollY, coveredKeys,decorative }));
+        surface.dataset.virusCoverage = "mosaic";
+        surface.dataset.virusImagePatches = String(artwork.masks.filter(mask => mask.kind === "image").length);
         // A compositor-side expiry also hides a stale frame if the main thread
         // is busy at the deadline. Leave two frames for style activation.
-        surface.style.setProperty("--virus-time-left", `${Math.max(0, INTRO_LIMIT - (readyAt - bootAt) - 32)}ms`);
+        surface.style.setProperty("--virus-time-left", `${budget+32}ms`);
         surface.dataset.virusStage = "intro";
         // Paint the canvas before making the independent CSS cover transparent.
         anchorSurface();
         paint(scenes[0], readyAt);
-        root.dataset.virusIntro = "drawing";
-        deadline = window.setTimeout(dismiss, Math.max(0, INTRO_LIMIT - (readyAt - bootAt)));
+        if(root.dataset.virusIntro)root.dataset.virusIntro = "drawing";
+        deadline = window.setTimeout(dismiss,budget+32);
       } else {
         clearIntro();
         // Do not cover content that was already visible while JS/image loaded.
@@ -559,6 +520,8 @@ export function installVirusRuntime(
   window.addEventListener("portfolio:effects-change", () => {
     cleanup?.();
     cleanup = undefined;
+    const root=document.documentElement;
+    if(root.dataset.effects==="on"&&!document.hidden){introConsumed=false;root.dataset.virusStart=String(performance.now());root.dataset.virusIntro="drawing";root.dataset.virusReplay="true";}
     window.__gabVirus!.pathname = "";
     window.__gabVirus!.navigate(location.pathname);
   });

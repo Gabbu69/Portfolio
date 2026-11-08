@@ -128,7 +128,7 @@ export function ProjectShowcase({ projects, archiveProjects, categories }: Proje
 
   return (
     <div className="project-showcase">
-      <div className="project-filter" aria-label="Filter projects by category">
+      <div className="project-filter" aria-label="Filter projects by category" data-virus-reveal="project-filters">
         <span className="project-filter__title">
           <span>Projects</span>
           <small>Explore the work</small>
@@ -159,7 +159,7 @@ export function ProjectShowcase({ projects, archiveProjects, categories }: Proje
         </div>
       </div>
 
-      <div className="project-search-row">
+      <div className="project-search-row" data-virus-reveal="project-search">
         <label className="project-search">
           <Search aria-hidden="true" />
           <span className="sr-only">Search projects by name, technology, or topic</span>
