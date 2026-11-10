@@ -8,6 +8,7 @@ import { virusBootstrap, virusRuntimeScript } from "../src/lib/virus-bootstrap";
 test("full intro supports refreshes while preserving motion and navigation safeguards", () => {
   const eligible = { path: "/", hash: "", restored: false, reduced: false, seen: false };
   assert.equal(canPlayIntro(eligible), true);
+  assert.equal(canPlayIntro({ ...eligible, hash: "#top" }), true);
   for (const exception of [{ path: "/projects/pasibudget" }, { hash: "#work" }, { restored: true }, { reduced: true }, { seen: true }]) {
     assert.equal(canPlayIntro({ ...eligible, ...exception }), false);
   }
@@ -143,6 +144,11 @@ test("startup skips ordinary anchor navigation, direct case studies, reduced mot
     assert.equal(dataset.virusIntro, undefined);
     assert.equal(timers.length, 0);
   }
+});
+
+test("the top-of-page anchor still permits the opening build", () => {
+  const { dataset } = bootstrap({ hash: "#top" });
+  assert.equal(dataset.virusIntro, "pending");
 });
 
 test("every refresh replays despite old session flags, anchors and restored scroll positions", () => {

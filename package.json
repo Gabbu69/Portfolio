@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
+    "build:low-memory": "node scripts/build-low-memory.mjs",
     "build:sites": "vinext build",
     "start": "next start",
     "lint": "eslint",

@@ -137,5 +137,5 @@ export function canPlayIntro({ path, hash, restored, reduced, seen, reload = fal
   path: string; hash: string; restored: boolean; reduced: boolean; seen: boolean; reload?: boolean;
 }) {
   return (path === "/" || (reload && path.startsWith("/projects/"))) &&
-    (reload || (!hash && !restored)) && !reduced && !seen;
+    (reload || ((!hash || hash === "#top") && !restored)) && !reduced && !seen;
 }

@@ -38,6 +38,7 @@ export function ContactSection({ identity, contact, github }: ContactSectionProp
             <Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" />
           </a>
           <a href="#top">Back to top <ArrowUp aria-hidden="true" /></a>
+          <a href="#project-usm-hospital">Back to work <ArrowUp aria-hidden="true" /></a>
         </div>
       </div>
     </footer>

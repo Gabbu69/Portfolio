@@ -123,6 +123,27 @@ export const portfolio = {
   },
   projects: [
     {
+      title: "USM Hospital System",
+      slug: "usm-hospital",
+      caseStudy: caseStudies["usm-hospital"],
+      eyebrow: "Hospital operations · full stack",
+      category: "Healthcare",
+      featured: true,
+      spotlight: true,
+      summary:
+        "A collaborative hospital operations system connecting patient records, laboratory and radiology transactions, pharmacy inventory and dispensing, Konsulta settings, reports, and staff-specific dashboards.",
+      note: "Built around distinct workflows for administrators, doctors, nurses, pharmacists, laboratory staff, radiology staff, and receptionists.",
+      stack: ["Laravel", "PHP", "Vue", "Tailwind"],
+      repo: "https://github.com/rzgonzaga/USMHospital",
+      visual: {
+        kind: "image",
+        src: "/images/usm-hospital-logo-cutout.png",
+        alt: "USM Hospital logo used in the hospital system case study",
+        fit: "contain",
+        tone: "institution",
+      },
+    },
+    {
       title: "PSITS Thesis Scheduler",
       slug: "thesis-defense-scheduler",
       searchTerms: ["thesis_scheduler", "PSITS_thesis_scheduler", "Thesis Scheduler", "PSITS", "Thesis Defense Scheduler"],
@@ -162,27 +183,6 @@ export const portfolio = {
         label: "PaSiBudget",
         detail: "Offline · bilingual · break-even",
         tone: "market",
-      },
-    },
-    {
-      title: "USM Hospital System",
-      slug: "usm-hospital",
-      caseStudy: caseStudies["usm-hospital"],
-      eyebrow: "Hospital operations · full stack",
-      category: "Healthcare",
-      featured: true,
-      spotlight: true,
-      summary:
-        "A collaborative hospital operations system connecting patient records, laboratory and radiology transactions, pharmacy inventory and dispensing, Konsulta settings, reports, and staff-specific dashboards.",
-      note: "Built around distinct workflows for administrators, doctors, nurses, pharmacists, laboratory staff, radiology staff, and receptionists.",
-      stack: ["Laravel", "PHP", "Vue", "Tailwind"],
-      repo: "https://github.com/rzgonzaga/USMHospital",
-      visual: {
-        kind: "image",
-        src: "/images/usm-hospital-logo-cutout.png",
-        alt: "USM Hospital logo used in the hospital system case study",
-        fit: "contain",
-        tone: "institution",
       },
     },
     {

@@ -1,6 +1,7 @@
 import type { createChoreography as choreograph, clamp as clampValue, sampleVirusCrawl } from "./virus-animation";
 import type { PaintTarget, PaintPoint } from "./virus-animation";
 import type { createVirusPainter } from "./virus-creature";
+import type { sampleVirusDuel } from "./virus-duel";
 
 declare global {
   interface Window {
@@ -14,15 +15,17 @@ export function installVirusRuntime(
   clamp: typeof clampValue,
   sampleCrawl: typeof sampleVirusCrawl,
   makeCreature: () => ReturnType<typeof createVirusPainter>,
+  sampleDuel: typeof sampleVirusDuel,
   config: { INTRO_LIMIT: number; REVEAL_SESSION_KEY: string },
 ) {
   const { INTRO_LIMIT, REVEAL_SESSION_KEY } = config;
   const canPlayIntro = ({ path, hash, restored, reduced, seen, reload }: {
     path: string; hash: string; restored: boolean; reduced: boolean; seen: boolean; reload: boolean;
   }) => (path === "/" || (reload && path.startsWith("/projects/"))) &&
-    (reload || (!hash && !restored)) && !reduced && !seen;
+    (reload || ((!hash || hash === "#top") && !restored)) && !reduced && !seen;
   const completed = new Set<string>();
   let introConsumed = false;
+  let openingPullConsumed = false;
   let creature: ReturnType<typeof createVirusPainter> | undefined;
 
 
@@ -66,6 +69,17 @@ export function installVirusRuntime(
     let height = innerHeight;
     let intro = false;
     let batch = 0;
+    let pull: {
+      start: number; from: number; hospital: number; contact: number;
+      expected: number; seed: number;
+      timing: { haul: number; solo: number; delivery: number };
+      elapsed: number; lastNow: number; expiryAt: number;
+      pose?: ReturnType<typeof sampleVirusDuel>;
+      hospitalElement: Element | null; contactElement: Element | null; offset: number;
+      headings: { x: number; y: number; width: number }[];
+    } | undefined;
+    let previousOverflowAnchor: string | undefined;
+    let openingInterrupted = false;
     const pending = new Set<HTMLElement>();
     const observed = new WeakSet<HTMLElement>();
 
@@ -164,7 +178,7 @@ export function installVirusRuntime(
       return result;
     }
 
-    function finish(scene: Scene, now: number) {
+    function finish(scene: Scene, now: number, natural = false) {
       remember(scene.key);
       if (scene.intro) {
         intro = false;
@@ -179,10 +193,50 @@ export function installVirusRuntime(
           if(visible(element)&&top>=(scene.anchorY??0)&&top+rect.height<=(scene.anchorY??0)+scene.height)remember(keyFor(element));
         }
         for (const element of pending) if (scene.coveredKeys?.includes(keyFor(element))) pending.delete(element);
+        if (natural && startupRequested && !replayRequested && !openingPullConsumed && !openingInterrupted && pathname === "/" && (!location.hash || location.hash === "#top") && scrollY < 8 && !document.hidden && effectsEnabled()) {
+          openingPullConsumed = true;
+          const remaining = document.documentElement.scrollHeight - innerHeight - scrollY;
+          if (remaining > 80 && !document.querySelector("dialog[open],details[open],[aria-modal=true]") && !document.activeElement?.closest("input,textarea,select,[contenteditable=true]")) {
+            let variant = Math.floor(Math.random() * 3);
+            try {
+              const previous = sessionStorage.getItem("gab-portfolio-duel-variant");
+              if (previous === "0" || previous === "1" || previous === "2") variant = (Number(previous) + 1 + Math.floor(Math.random() * 2)) % 3;
+              sessionStorage.setItem("gab-portfolio-duel-variant", String(variant));
+            } catch { /* A random seed still varies the movement without storage. */ }
+            const seed = Math.floor(Math.random() * 100000000) * 3 + variant;
+            const header = document.querySelector(".site-header")?.getBoundingClientRect().bottom ?? 80;
+            const stopAt = (element: Element | null) => Math.max(scrollY, Math.min(remaining + scrollY, (element?.getBoundingClientRect().top ?? height) + scrollY - header - 24));
+            const hospitalElement = document.querySelector('[data-virus-reveal="project-usm-hospital"]') ?? document.querySelector("#work");
+            const contactElement = document.querySelector("#contact");
+            const hospital = stopAt(hospitalElement);
+            const contact = Math.max(hospital, stopAt(contactElement));
+            const pace = Math.max(160, Math.min(480, height * .55));
+            const timing = {
+              haul: Math.max(5000, (hospital - scrollY) / pace * 1250),
+              solo: Math.max(18000, (contact - hospital) / pace * 1200),
+              delivery: Math.max(3200, (remaining + scrollY - contact) / pace * 1600),
+            };
+            const headings = Array.from(document.querySelectorAll(".page-section h2,.project-entry h3,.contact-section h2")).map(element => {
+              const rect = element.getBoundingClientRect();
+              return { x: rect.left + scrollX, y: rect.top + scrollY, width: rect.width };
+            });
+            pull = { start: now + 250, from: scrollY, hospital, contact, expected: scrollY, seed, headings, hospitalElement, contactElement, offset: header + 24, timing, elapsed: 0, lastNow: now + 250, expiryAt: now };
+            previousOverflowAnchor = root.style.overflowAnchor;
+            root.style.overflowAnchor = "none";
+            surface.dataset.virusDuelSeed = String(seed);
+            surface.dataset.virusStage = "pull";
+            surface.style.animation = "virus-section-expire-a 3600ms step-end forwards";
+            surface.dataset.virusJourneyDuration = String(Math.round(650 + timing.haul + 4150 + timing.solo + timing.delivery + 700));
+          }
+        }
       } else performance.measure("virus:section", { start: scene.start, end: now });
     }
 
     function clear() {
+      pull = undefined;
+      if (previousOverflowAnchor !== undefined) { root.style.overflowAnchor = previousOverflowAnchor; previousOverflowAnchor = undefined; }
+      delete surface.dataset.virusPullProgress;
+      delete surface.dataset.virusDuelPhase;
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
       const now = performance.now();
@@ -226,7 +280,7 @@ export function installVirusRuntime(
 
     function startPending(now: number) {
       // Start groups in pairs so one CSS deadline protects the entire batch.
-      if (intro || scenes.length) return;
+      if (intro || scenes.length >= 2 || (!pull && scenes.length)) return;
       for (const element of pending) {
         const key = keyFor(element);
         if (!element.isConnected || completed.has(key)) { pending.delete(element); continue; }
@@ -236,13 +290,21 @@ export function installVirusRuntime(
         // Only the viewport-sized piece needs pixels, including very tall cards.
         const artwork = choreography(element, false);
         if (!artwork.paths.length) { remember(key); pending.delete(element); continue; }
+        if (pull) {
+          const duration = rect.height < 240 ? 1800 : 2600;
+          const scale = duration / artwork.duration;
+          artwork.duration = duration;
+          for (const path of artwork.paths) { path.delay *= scale; path.travel *= scale; }
+          for (const tile of artwork.tiles) tile.at *= scale;
+          for (const mask of artwork.masks) mask.end *= scale;
+        }
         scenes.push(prepareScene({ ...artwork, element, key, start: now, intro: false }));
         pending.delete(element);
         // Reserve immediately, so re-mounted filter results cannot queue twice.
         remember(key);
         performance.mark("virus:section-start");
       }
-      if (scenes.length) {
+      if (scenes.length && !pull) {
         surface.dataset.virusStage = "section";
         // Alternate names to restart the CSS clock without forced layout.
         surface.style.animation = `virus-section-expire-${batch++ % 2 ? "a" : "b"} ${scenes[0].duration}ms step-end forwards`;
@@ -346,15 +408,137 @@ export function installVirusRuntime(
       ctx.restore();
     }
 
+    function updatePull(now: number) {
+      if (!pull) return;
+      if (document.hidden || document.activeElement?.closest("input,textarea,select,[contenteditable=true]") || document.querySelector("dialog[open],details[open],[aria-modal=true]") || window.getSelection()?.isCollapsed === false) { dismiss(); return; }
+      // Do not catch up with a sudden page jump after a dropped frame.
+      pull.elapsed += Math.min(64, Math.max(0, now - pull.lastNow));
+      pull.lastNow = Math.max(pull.start, now);
+      const duel = sampleDuel(pull.elapsed, width, height, pull.seed, pull.timing);
+      pull.pose = duel;
+      const bottom = Math.max(0, document.documentElement.scrollHeight - innerHeight);
+      if (pull.hospitalElement?.isConnected) pull.hospital = Math.max(pull.from, Math.min(bottom, pull.hospitalElement.getBoundingClientRect().top + scrollY - pull.offset));
+      if (pull.contactElement?.isConnected) pull.contact = Math.max(pull.hospital, Math.min(bottom, pull.contactElement.getBoundingClientRect().top + scrollY - pull.offset));
+      const stops = [pull.from, Math.min(bottom, pull.hospital), Math.min(bottom, pull.contact), bottom];
+      const next = Math.round(stops[duel.leg] + (stops[duel.leg + 1] - stops[duel.leg]) * duel.fraction);
+      pull.expected = next;
+      if (Math.abs(scrollY - next) > .5) window.scrollTo({ top: next, behavior: "instant" });
+      // Rebase the shared document canvas after scrolling, in the same frame.
+      anchorSurface();
+      surface.dataset.virusPullProgress = String(Math.round(duel.progress * 100));
+      if (surface.dataset.virusDuelPhase !== duel.phase) surface.dataset.virusDuelPhase = duel.phase;
+      surface.dataset.virusDuelWinner = String(duel.winner);
+      surface.dataset.virusJourneyElapsed = String(Math.round(pull.elapsed));
+      // A short CSS watchdog keeps any builder mask fail-open if JS stalls.
+      if (now - pull.expiryAt >= 700) {
+        surface.style.animation = `virus-section-expire-${batch++ % 2 ? "a" : "b"} 3600ms step-end forwards`;
+        pull.expiryAt = now;
+      }
+    }
+
+    function paintPull() {
+      if (!pull?.pose) return;
+      const elapsed = pull.elapsed;
+      const duel = pull.pose;
+      ctx.save();
+      ctx.font = "bold 12px monospace";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      for (let worker = 0; worker < 2; worker++) {
+        const actor = duel.actors[worker];
+        if (actor.opacity <= .001) continue;
+        for (const side of [-1, 1]) {
+          const ax = actor.anchorX + side * 22;
+          const jawX = actor.x + Math.cos(actor.angle) * actor.size * .26 + side * 9;
+          const jawY = actor.y + Math.sin(actor.angle) * actor.size * .26;
+          for (let packet = 0; packet < 8; packet++) {
+            const t = (packet / 8 + elapsed / 650) % 1;
+            ctx.globalAlpha = actor.opacity * actor.grip * (.35 + Math.sin(t * Math.PI) * .6);
+            ctx.fillStyle = packet % 2 ? "#62e8d4" : "#93ff62";
+            ctx.fillText(packet % 2 ? ":" : "+", jawX + (ax - jawX) * t, jawY + (actor.anchorY - jawY) * t);
+          }
+          ctx.globalAlpha = actor.opacity * actor.grip;
+          ctx.fillStyle = "#93ff62";
+          ctx.fillText(side < 0 ? "[" : "]", ax, actor.anchorY);
+          // A small serrated edge makes the bottom attachment read as a grip
+          // on the portfolio, instead of a laser aimed at floating content.
+          for (let tooth = 0; tooth < 3; tooth++) ctx.fillRect(ax + side * tooth * 5, height - 6 - tooth % 2 * 3, 3, 2);
+          ctx.strokeStyle = "#62e8d4";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(ax - 28, height - 1);
+          ctx.quadraticCurveTo(ax, height - 10 - actor.grip * 12, ax + 28, height - 1);
+          ctx.stroke();
+        }
+        creature!.draw(ctx, actor.x, actor.y, actor.size, actor.angle, actor.travel, worker, actor.opacity);
+        if (actor.wins && (duel.phase === "solo" || duel.phase === "delivery" || duel.phase === "exit")) {
+          for (let code = 0; code < 16; code++) {
+            const age = (elapsed / 900 + code / 16) % 1;
+            ctx.globalAlpha = (1 - age) * .42;
+            ctx.fillStyle = code % 2 ? "#62e8d4" : "#93ff62";
+            ctx.fillText("01:+"[code % 4], actor.x + Math.sin(code * 2.4) * (8 + age * 20), actor.y - age * 150);
+          }
+        }
+      }
+      if (duel.phase === "solo" || duel.phase === "haul") {
+        for (const heading of pull.headings) {
+          const y = heading.y - scrollY;
+          if (y < 100 || y > height - 40) continue;
+          const glow = Math.max(0, 1 - Math.abs(y - height * .65) / (height * .45));
+          ctx.globalAlpha = glow * .45;
+          ctx.fillStyle = "#62e8d4";
+          ctx.fillText("[", Math.max(12, heading.x - scrollX - 12), y + 12);
+          ctx.fillText("01:+", Math.min(width - 30, heading.x - scrollX + heading.width - 25), y + 34);
+        }
+      }
+      // Local contact sparks and a collapsing ASCII shell: no screen flash.
+      if (duel.impact > .25) {
+        for (let spark = 0; spark < 7; spark++) {
+          const angle = spark * 2.4 + elapsed / 160;
+          const reach = 8 + duel.impact * (12 + spark * 2);
+          ctx.globalAlpha = duel.impact * .85;
+          ctx.fillStyle = spark % 2 ? "#62e8d4" : "#93ff62";
+          ctx.fillText("+x:*"[spark % 4], duel.center + Math.cos(angle) * reach, duel.floor - 22 + Math.sin(angle) * reach);
+        }
+      }
+      if (duel.phase === "defeat") {
+        const loser = duel.actors[1 - duel.winner];
+        for (let shard = 0; shard < 22; shard++) {
+          const angle = shard * 2.399 + pull.seed % 11;
+          const reach = duel.defeat * (22 + shard * 2);
+          ctx.globalAlpha = (1 - duel.defeat) * .9;
+          ctx.fillStyle = shard % 3 ? "#62e8d4" : "#93ff62";
+          ctx.fillText("01x:+"[shard % 5], loser.x + Math.cos(angle) * reach, loser.y + Math.sin(angle) * reach - Math.sin(duel.defeat * Math.PI) * 20);
+        }
+      }
+      ctx.restore();
+      if (duel.done) {
+        pull = undefined;
+        if (previousOverflowAnchor !== undefined) { root.style.overflowAnchor = previousOverflowAnchor; previousOverflowAnchor = undefined; }
+        if (scenes.length) {
+          surface.dataset.virusStage = "section";
+          const remaining = Math.max(...scenes.map(scene => scene.duration - (performance.now() - scene.start)));
+          surface.style.animation = `virus-section-expire-${batch++ % 2 ? "a" : "b"} ${Math.max(64, remaining + 64)}ms step-end forwards`;
+        } else {
+          delete surface.dataset.virusStage;
+          surface.style.removeProperty("animation");
+        }
+        delete surface.dataset.virusPullProgress;
+        delete surface.dataset.virusDuelPhase;
+        queue();
+      }
+    }
+
     function draw(now: number) {
       frame = 0;
       try {
+        updatePull(now);
         anchorSurface();
         ctx.clearRect(0, 0, width, height);
         const alive: Scene[] = [];
         for (const scene of scenes) {
           const introOffscreen = scene.intro && ((scene.anchorY ?? 0) - scrollY + scene.height <= 0 || (scene.anchorY ?? 0) - scrollY >= height);
-          if (now - scene.start >= scene.duration || introOffscreen || (scene.element && (!scene.element.isConnected || !visible(scene.element)))) finish(scene, now);
+          if (now - scene.start >= scene.duration || introOffscreen || (scene.element && (!scene.element.isConnected || !visible(scene.element)))) finish(scene, now, now - scene.start >= scene.duration && !introOffscreen);
           else alive.push(scene);
         }
         scenes = alive;
@@ -364,8 +548,9 @@ export function installVirusRuntime(
         }
         startPending(now);
         for (const scene of scenes) paint(scene, now);
+        paintPull();
         surface.dataset.virusScenes = String(scenes.length);
-        if (scenes.length) queue();
+        if (scenes.length || pull) queue();
       } catch {
         clear();
         observer?.disconnect();
@@ -384,6 +569,7 @@ export function installVirusRuntime(
     }
 
     function dismiss() {
+      openingInterrupted = true;
       startupCanceled=true;
       clear();
       // Never start another cover on the control the visitor is using.
@@ -398,7 +584,15 @@ export function installVirusRuntime(
         window.dispatchEvent(new Event("portfolio:effects-change"));
       }else queue();
     }
-    function onScroll() { queue(); }
+    function onScroll() {
+      if (pull && Math.abs(scrollY - pull.expected) > 2) { dismiss(); return; }
+      if (!pull && scrollY > 8) openingInterrupted = true;
+      queue();
+    }
+    function interruptOpening() {
+      openingInterrupted = true;
+      if (pull) dismiss();
+    }
     function onKeydown(event: KeyboardEvent) {
       const control = (event.target as Element | null)?.closest?.("input,textarea,select,button,[role=button]");
       if (!control && ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) return;
@@ -437,6 +631,12 @@ export function installVirusRuntime(
           reduced: !effectsEnabled(), seen: introConsumed, reload: isReload });
       if (intro) {
         introConsumed = true;
+        // A fresh opening gets fresh building crews. Returning from a case
+        // study, filters and effects toggles still keep completed targets.
+        if (!replayRequested && pathname === "/" && scrollY < 8) {
+          for (const key of completed) if (key.startsWith("/:")) completed.delete(key);
+          try { sessionStorage.setItem(REVEAL_SESSION_KEY, JSON.stringify([...completed])); } catch { /* In-memory fallback. */ }
+        }
         root.dataset.virusAssembled = "true";
         const artwork = choreography(null, true);
         if (!artwork.paths.length) { intro = false; clearIntro(); return; }
@@ -460,7 +660,17 @@ export function installVirusRuntime(
         anchorSurface();
         paint(scenes[0], readyAt);
         if(root.dataset.virusIntro)root.dataset.virusIntro = "drawing";
-        deadline = window.setTimeout(dismiss,budget+32);
+        deadline = window.setTimeout(() => {
+          if (disposed) return;
+          const scene = scenes.find(candidate => candidate.intro);
+          if (!scene) return;
+          // A missed frame is still a completed build, not a user cancellation.
+          // The independent CSS cover keeps its original fail-open deadline.
+          scenes = scenes.filter(candidate => candidate !== scene);
+          finish(scene, performance.now(), true);
+          ctx.clearRect(0, 0, width, height);
+          queue();
+        }, budget + 32);
       } else {
         clearIntro();
         // Do not cover content that was already visible while JS/image loaded.
@@ -484,6 +694,8 @@ export function installVirusRuntime(
     }).catch(() => { if (!disposed) clear(); });
 
     window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    const pullInputs = ["wheel", "touchstart", "touchmove", "pointerdown", "keydown"] as const;
+    for (const event of pullInputs) window.addEventListener(event, interruptOpening, { passive: true, capture: true });
     window.addEventListener("resize", resize, { passive: true });
     window.addEventListener("keydown", onKeydown);
     window.addEventListener("click", onClick, { passive: true });
@@ -497,6 +709,7 @@ export function installVirusRuntime(
       observer?.disconnect();
       mutations?.disconnect();
       window.removeEventListener("scroll", onScroll, true);
+      for (const event of pullInputs) window.removeEventListener(event, interruptOpening, true);
       window.removeEventListener("resize", resize);
       window.removeEventListener("keydown", onKeydown);
       window.removeEventListener("click", onClick);
